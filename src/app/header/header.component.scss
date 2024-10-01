@@ -1,0 +1,7 @@
+.nav-item {
+    font-size: 1.25rem;
+
+    + .nav-item {
+        margin-left: 1rem;
+    }
+}

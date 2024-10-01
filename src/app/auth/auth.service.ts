@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {BehaviorSubject, catchError, tap} from "rxjs";
+import {catchError, tap} from "rxjs";
 import {User} from "./user.model";
+import {PhotoStore} from "../store/photoStore";
 
 export interface AuthResponse {
     idToken: string;
@@ -22,17 +23,13 @@ export class AuthService {
     #firebaseApiKey = 'AIzaSyAfObhkzq4lv9UvrpoP5V1Nny3iNcXDMh4';
     #signUpWithEmailUrl: string;
     #signInWithEmailUrl: string;
-    #user: User | null = null;
     #expireSignOutTimer?: number;
-    public user$ = new BehaviorSubject<User | null>(null);
+    readonly store = inject(PhotoStore);
+
 
     constructor(private http: HttpClient, private router: Router) {
         this.#signUpWithEmailUrl = this.#firebaseSignUpUrl.replace('[API_KEY]', this.#firebaseApiKey);
         this.#signInWithEmailUrl = this.#firebaseLoginUrl.replace('[API_KEY]', this.#firebaseApiKey)
-    }
-
-    get userToken(): string | null {
-        return this.#user?.idToken || null;
     }
 
     signUpEmail(email: string, password: string) {
@@ -72,34 +69,33 @@ export class AuthService {
     }
 
     onSignInSuccess(authResponse: AuthResponse) {
-        this.#user = new User(authResponse)
-        this.user$.next(this.#user);
-        localStorage.setItem('authUser', JSON.stringify(this.#user));
-        this.autoSignOut(+this.#user?.getValidMilliSeconds());
+        const user = new User(authResponse)
+        this.store.updateAuthUser(user);
+        localStorage.setItem('authUser', JSON.stringify(user));
+        this.autoSignOut(+user?.getValidMilliSeconds());
     }
 
     signOut(): void {
-        this.#user = null;
-        this.user$.next(this.#user);
+        this.store.updateAuthUser(null);
         localStorage.removeItem('authUser');
         clearTimeout(this.#expireSignOutTimer);
         this.#expireSignOutTimer = undefined;
-        // this.router.navigate(['/signIn']);
         alert('You have been signed out.');
+        // this.router.navigate(['/signIn']);
     }
 
     autoSignIn() {
         const userJSON = localStorage.getItem('authUser');
         if (!userJSON) return;
-        this.#user = new User(userJSON);
-        if (this.#user.idToken) {
-            this.user$.next(this.#user);
-            this.autoSignOut(this.#user.getValidMilliSeconds());
+        const user = new User(userJSON);
+        if (user.idToken) {
+            this.store.updateAuthUser(user);
+            this.autoSignOut(user.getValidMilliSeconds());
         }
     }
 
     autoSignOut(validMilliSeconds: number) {
-        this.#expireSignOutTimer = window.setTimeout(this.signOut.bind(this), validMilliSeconds);
+        this.#expireSignOutTimer = window.setTimeout(() => this.signOut(), validMilliSeconds);
     }
 }
 

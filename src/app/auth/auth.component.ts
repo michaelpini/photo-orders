@@ -1,21 +1,23 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, signal, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
-import {AuthResponse, AuthService} from "./auth.service";
-import {Observable} from "rxjs";
 import {Location} from "@angular/common";
+import {Observable} from "rxjs";
+import {AuthResponse, AuthService} from "./auth.service";
+import {SpinnerComponent} from "../shared/spinner/spinner.component";
 
 @Component({
     selector: 'app-sign-in',
     standalone: true,
-    imports: [FormsModule],
-    templateUrl: './sign-in.component.html',
-    styleUrl: './sign-in.component.scss'
+    imports: [FormsModule, SpinnerComponent],
+    templateUrl: './auth.component.html',
+    styleUrl: './auth.component.scss',
+
 })
-export class SignInComponent implements AfterViewInit{
-    isPasswordHidden = true;
-    error = '';
+export class AuthComponent implements AfterViewInit{
     @ViewChild('form', {static: false}) signUpForm!: NgForm;
-    private isBusy = false;
+    isPasswordHidden = signal(true);
+    error = signal('');
+    isBusy = signal(false);
 
     constructor(private authService: AuthService, private location: Location) {}
 
@@ -24,9 +26,9 @@ export class SignInComponent implements AfterViewInit{
         const rememberMe = Boolean(email);
         setTimeout(() => {
             this.signUpForm.form.patchValue({email, rememberMe});
-            // @ts-ignore
+            // @ts-ignore  // signUpForm will be initialized when inside timeout
             this.signUpForm.valueChanges.subscribe(selectedValue => {
-                this.error = '';
+                this.error.set('');
             })
         }, 0);
 
@@ -43,24 +45,25 @@ export class SignInComponent implements AfterViewInit{
     }
 
     authenticate(auth$: Observable<AuthResponse>): void {
-        this.isBusy = true;
+        this.isBusy.set(true);
         auth$.subscribe({
             next: (res: AuthResponse) => {
                 console.log(res);
                 // this.router.navigate(['/recipes']);
                 this.location.back();
-                this.isBusy = false;
-                this.error = '';
+                this.isBusy.set(false);
+                this.error.set('');
             },
             error: errMsg => {
-                this.isBusy = false;
-                this.error = errMsg;
+                this.isBusy.set(false);
+                this.error.set(errMsg);
             }
         })
     }
 
-
     resetPassword() {
+        this.isBusy.set(true);
+        setTimeout(() => this.isBusy.set(false), 3000);
         // send password reset request
     }
 }

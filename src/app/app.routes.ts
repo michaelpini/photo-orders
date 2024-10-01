@@ -1,11 +1,11 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from "./home/home.component";
-import {SignInComponent} from "./auth/sign-in.component";
+import {AuthComponent} from "./auth/auth.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
-    {path: 'signin', component: SignInComponent},
+    {path: 'signin', component: AuthComponent},
     {path: 'account',
         loadComponent: () => import('./account/account.component').then(m => m.AccountComponent),},
     {path: 'customers',

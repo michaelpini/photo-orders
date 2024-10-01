@@ -1,0 +1,21 @@
+<dialog #dialog>
+    <div class="circular-bullets-spinner">
+        <div class="circular-bullets">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <ng-content></ng-content>
+    <button type="button" class="btn btn-hide" (click)="forcedClose()">X</button>
+</dialog>
+
