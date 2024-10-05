@@ -64,6 +64,6 @@ export class AuthComponent implements AfterViewInit{
     resetPassword() {
         this.isBusy.set(true);
         setTimeout(() => this.isBusy.set(false), 3000);
-        // send password reset request
+        // Todo: send password reset request
     }
 }

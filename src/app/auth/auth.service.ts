@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {catchError, tap} from "rxjs";
-import {User} from "./user.model";
+import {AuthUser} from "./user.model";
 import {PhotoStore} from "../store/photoStore";
 
 export interface AuthResponse {
@@ -69,7 +69,7 @@ export class AuthService {
     }
 
     onSignInSuccess(authResponse: AuthResponse) {
-        const user = new User(authResponse)
+        const user = new AuthUser(authResponse)
         this.store.updateAuthUser(user);
         localStorage.setItem('authUser', JSON.stringify(user));
         this.autoSignOut(+user?.getValidMilliSeconds());
@@ -87,7 +87,7 @@ export class AuthService {
     autoSignIn() {
         const userJSON = localStorage.getItem('authUser');
         if (!userJSON) return;
-        const user = new User(userJSON);
+        const user = new AuthUser(userJSON);
         if (user.idToken) {
             this.store.updateAuthUser(user);
             this.autoSignOut(user.getValidMilliSeconds());

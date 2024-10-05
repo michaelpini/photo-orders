@@ -1,6 +1,6 @@
 import {AuthResponse} from "./auth.service";
 
-export class User {
+export class AuthUser {
     public readonly id: string;
     public readonly email: string;
     public readonly refreshToken: string;
@@ -12,7 +12,7 @@ export class User {
     constructor(authResponse: AuthResponse);
     constructor(param: AuthResponse | string)  {
         if (typeof param === "string") {
-            const user: User = JSON.parse(param);
+            const user: AuthUser = JSON.parse(param);
             this.id = user.id;
             this.email = user.email;
             this.refreshToken = user.refreshToken;

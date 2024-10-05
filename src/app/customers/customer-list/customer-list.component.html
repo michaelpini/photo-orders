@@ -1,1 +1,6 @@
-<p>customers-list works!</p>
+
+<app-table
+        [rowData]="store.usersEntities()"
+        [colDefs]="colDefs"
+        [(state)]="tableState"
+></app-table>

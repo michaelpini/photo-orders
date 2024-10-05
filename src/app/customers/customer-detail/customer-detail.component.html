@@ -1,10 +1,206 @@
-<p>customer-details works!</p>
-<select class="form-select" aria-label="Default select example">
-    <option selected>Open this select menu</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    <option value="3">Three</option>
-</select>
+<form class="form" (submit)="onSubmit(form)" #form=ngForm>
+
+    <!--User name-->
+    <div class="row mb-3 g-2">
+        <div class="col">
+            <label class="form-label" for="userName">User Name</label>
+            <div class="input-group">
+                <span class="input-group-text">&#64;</span>
+                <input type="text"
+                       class="form-control"
+                       id="userName"
+                       name="userName"
+                       ngModel
+                       disabled
+                >
+            </div>
+        </div>
+
+        <!-- Auth-->
+        <div class="auth">
+            <label for="auth" class="form-label">Auth *</label>
+            <select class="form-select"
+                    [ngClass]="{'is-invalid': !auth.valid && auth.touched}"
+                    id="auth"
+                    name="auth"
+                    ngModel
+                    required
+                    #auth="ngModel"
+            >
+                <option value="admin">admin</option>
+                <option value="user">user</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- First Name  |  Last Name-->
+    <div class="row g-2 mb-3 align-items-center" >
+        <div class="col">
+            <label class="form-label" for="firstName">Vorname *</label>
+            <input type="text"
+                   class="form-control"
+                   [ngClass]="{'is-invalid': !firstName.valid && firstName.touched}"
+                   id="firstName"
+                   name="firstName"
+                   ngModel
+                   required
+                   #firstName="ngModel"
+            >
+        </div>
+        <div class="col">
+            <label class="form-label" for="lastName">Nachname *</label>
+            <input type="text"
+                   class="form-control"
+                   [ngClass]="{'is-invalid': !lastName.valid && lastName.touched}"
+                   id="lastName"
+                   name="lastName"
+                   ngModel
+                   required
+                   #lastName="ngModel"
+            >
+        </div>
+    </div>
+
+    <!-- Email-->
+    <div class="row mb-3">
+        <div class="col">
+            <label for="email" class="form-label">Email *</label>
+            <input type="email"
+                   class="form-control"
+                   [ngClass]="{'is-invalid': !email.valid && email.touched}"
+                   id="email"
+                   name="email"
+                   ngModel
+                   required
+                   email
+                   #email="ngModel"
+            >
+        </div>
+    </div>
+
+    <!-- Phone-->
+    <div class="row mb-3">
+        <div class="col-6 phone">
+            <label for="phone" class="form-label">Telefon</label>
+            <input type="text"
+                   class="form-control"
+                   id="phone"
+                   name="phone"
+                   ngModel
+            >
+        </div>
+    </div>
+
+
+
+
+
+    <!--Billing Address-->
+    <div class="row mb-3 align-items-center">
+        <div class="col-auto me-3">
+            <label class="form-label">Rechnungsaddresse</label>
+        </div>
+        <div class="col">
+            <input type="checkbox"
+                   class="form-check-input me-2"
+                   id="isBusiness"
+                   name="isBusiness"
+                   [(ngModel)]="isBusiness"
+            >
+            <label for="isBusiness" class="form-label">Firma?</label>
+        </div>
+    </div>
+
+    @if (isBusiness()) {
+        <div class="row mb-2 align-items-center">
+            <div class="address-label">
+                <label class="form-label" for="company">Firma</label>
+            </div>
+            <div class="col">
+                <input type="text"
+                       class="form-control"
+                       id="company"
+                       name="company"
+                       ngModel
+                >
+            </div>
+        </div>
+    }
+
+    <div class="row mb-2 align-items-center">
+        <div class="address-label">
+            <label class="form-label" for="street">Strasse + Nr</label>
+        </div>
+        <div class="col">
+            <input type="text"
+                   class="form-control"
+                   id="street"
+                   name="street"
+                   ngModel
+            >
+        </div>
+    </div>
+
+    <div class="row gx-2 align-items-center">
+        <div class="address-label">
+            <label class="form-label me-1" for="plz">PLZ,</label>
+            <label class="form-label" for="place">Ort</label>
+        </div>
+        <div class="plz">
+            <input type="text"
+                   class="form-control"
+                   id="plz"
+                   name="plz"
+                   ngModel
+            >
+        </div>
+        <div class="col" style="min-width: 8rem;">
+            <input type="text"
+                   class="form-control"
+                   id="place"
+                   name="place"
+                   ngModel
+            >
+        </div>
+
+        <div class="row col-auto gx-2 align-items-center country">
+            <div class="col-auto country-label">
+                <label for="country" class="form-label">Land</label>
+            </div>
+            <div class="col-auto">
+                <select class="form-select"
+                        id="country"
+                        name="country"
+                        ngModel
+                >
+                    <option value="CH">CH</option>
+                    <option value="DE">DE</option>
+                    <option value="FR">FR</option>
+                    <option value="IT">IT</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row ">
+        <div class="col text-center">
+            <button type="submit"
+                    class="btn btn-primary col-6"
+
+                    (mouseenter)="validate()"
+            >Speichern</button>
+        </div>
+
+    </div>
+
+
+
+
+</form>
+
 
 
 

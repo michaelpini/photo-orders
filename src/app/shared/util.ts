@@ -1,4 +1,5 @@
-type Obj = {[key: string]: string | number | boolean};
+export type Primitive = string | number | boolean | Date | null | undefined
+export type Obj = {[key: string]: Primitive};
 
 
 
@@ -57,7 +58,12 @@ function getRandomId(): string {
 }
 
 
-const compare = (a: string | number | boolean, b: string | number | boolean) => (a < b ? -1 : a > b ? 1 : 0);
+const compare = (a: Primitive , b: Primitive) => {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+    return  a < b ? -1 : a > b ? 1 : 0
+};
 
 /**
  * **Sorts an array of objects by a property / key**

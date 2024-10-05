@@ -1,51 +1,78 @@
-<p>table works!</p>
 
-<form>
-    <div class="mb-3 row">
-        <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
-        <div class="col-xs-3 col-sm-auto">
-            <input
-                    id="table-complete-search"
-                    type="text"
-                    class="form-control"
-                    name="searchTerm"
-                    [(ngModel)]="tableState().filter"
+<!-- Filter -->
+    <div class="mb-3 row" [ngClass]="{'d-none': hideFilter()}">
+        <label [htmlFor]="tableId + '_search'" class="col-2 col-form-label">Filter:</label>
+        <div class="col-6 d-flex">
+            <input #search
+                   [id]="tableId + '_search'"
+                   type="text"
+                   class="form-control"
+                   name="searchTerm"
+                   [value]="state().filter"
+                   (input)="onFilter(search.value)"
             />
+            <img src="filter_off_red.svg" alt="filter off"
+                 [hidden]="!isFiltered()"
+                 (click)="onClearFilter()"
+                 class="clear-filter"
+            >
         </div>
-        @if (isLoading()) {
-            <span class="col col-form-label">Loading...</span>
-        }
+        <span class="col col-form-label ms-3">{{countInfo()}}</span>
     </div>
 
-    <table class="table table-striped">
+<!-- Table -->
+    <table class="table table-striped table-hover">
         <thead (click)="onSort($event)">
         <tr>
             @for(colDef of colDefs(); track $index) {
                 <th scope="col"
-                    data-field="{{colDef.field}}"
+                    [attr.data-field]="colDef.field"
+                    [width]="colDef.width ? colDef.width : 'unset' "
                     [ngClass]="{
-                    'asc' : colDef.field === tableState().sortColumn && tableState().sortOrder === 'asc',
-                    'desc' : colDef.field === tableState().sortColumn && tableState().sortOrder === 'desc',
+                    'sortable': !colDef.disableSort,
+                    'asc' : state().sortOrder === 'asc' && state().sortColumn === colDef.field,
+                    'desc' : state().sortOrder === 'desc' && state().sortColumn === colDef.field,
                     }"
                 >
                     {{ colDef.headerName }}
                 </th>
             }
+            @if (showChevron()) {
+                <th></th>
+            }
         </tr>
         </thead>
         <tbody>
             @for (row of rowDataFilteredSorted(); track row['id'] || $index) {
-                <tr>
+                <tr (click)="onSelected(row)">
                     @for(colDef of colDefs(); track $index) {
-                        <td>{{ row[colDef.field] || '' }}</td>
+                        @switch (colDef.format) {
+                            @case (undefined) {
+                                <td>{{ row[colDef.field] }}</td>
+                            }
+                            @case ('boolean') {
+                                <td class="text-center">
+                                    @if (row[colDef.field]) {
+                                        <fa-icon [icon]="faCheck"></fa-icon>
+                                    } @else if (!row[colDef.field] == undefined) {
+                                        <fa-icon [icon]="faXmark" class="text-danger"></fa-icon>
+                                    }
+                                </td>
+                            }
+                            @default {
+                                <td [innerHTML]="formatValue( row[colDef.field], colDef.format)"></td>
+                            }
+                        }
+                    }
+                    @if (showChevron()) {
+                        <td><fa-icon [icon]="faChevronRight" class="text-primary"></fa-icon></td>
                     }
                 </tr>
             } @empty {
                 <tr>
-                    <td colspan="4" style="text-align: center">No data found</td>
+                    <td [attr.colspan]="colDefs().length" class="no-data" style="text-align: center">No data found</td>
                 </tr>
             }
         </tbody>
     </table>
 
-</form>

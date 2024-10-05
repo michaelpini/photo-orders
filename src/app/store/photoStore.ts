@@ -1,36 +1,52 @@
-import {User} from "../auth/user.model";
-import {patchState, signalStore, withMethods, withState} from "@ngrx/signals";
-import {withEntities} from "@ngrx/signals/entities";
+import {AuthUser} from "../auth/user.model";
+import {patchState, signalState, signalStore, type, withHooks, withMethods, withState} from "@ngrx/signals";
+import {setAllEntities, withEntities} from "@ngrx/signals/entities";
 
 export type State = {
-    authUser: User | null;
+    authUser: AuthUser | null;
     isLoading: boolean;
 }
-
-export type Customer = {
+export type Auth = 'admin' | 'customer';
+export type User = {
     id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    type: 'private' | 'business' | 'friend'
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    phone: string;
+    type?: 'private' | 'business' | 'friend',
+    auth?: Auth,
+    amount?: number
 }
 
 const initialState: State = {
     authUser: null,
-    isLoading: false
+    isLoading: false,
 }
+const initialUsersState: User[] = [
+    {id: '1', firstName: 'Michi', lastName: 'Pini', phone: '078 7732560', auth: 'admin'},
+    {id: '2', firstName: 'The', lastName: 'Pini-On', phone: '076 2200283', auth: 'customer', amount: 23556},
+    {id: '3', firstName: 'Kevin', lastName: 'Pini', phone: '076 1234567', auth: 'admin', amount: 904.45},
+    {id: '4', firstName: 'Markus', lastName: 'Kurz', phone: '', auth: 'customer', amount: 34322.60},
+]
+
+
 
 export const PhotoStore = signalStore(
     {providedIn: 'root'},
     withState(initialState),
-    withEntities<Customer>(),
+    withEntities({ entity: type<User>(), collection: 'users' }),
+    withHooks({
+        onInit(store) {
+            patchState(store, setAllEntities(initialUsersState, {collection: 'users' }));
+        }
+    }),
     withMethods(store => ({
-        updateAuthUser(user: User | null) {
+        updateAuthUser(user: AuthUser | null) {
             patchState(store, state => {
                 return {...state, authUser: user};
             })
         },
     }))
 )
+
 
