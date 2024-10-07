@@ -1,7 +1,7 @@
 
 <main class="form-signin w-100 m-auto">
     <form (submit)="submit(form)" #form="ngForm">
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal">{{ viewEl().title }}</h1>
 
         <div class="form-floating">
             <input type="email"
@@ -13,8 +13,9 @@
                    ngModel
                    required
                    email
+                   #email
             >
-            <label for="signInEmail">Email address:</label>
+            <label for="signInEmail">Email:</label>
         </div>
         <div class="form-floating position-relative">
                 <input [type]= "isPasswordHidden() ? 'password' : 'text'"
@@ -26,7 +27,7 @@
                        ngModel
                        required
                 >
-                <label for="signInPassword">Password:</label>
+                <label for="signInPassword">Passwort:</label>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 -960 960 960"
                      fill="#5f6368" class="form-password-svg"
                      (click)="isPasswordHidden.set(!isPasswordHidden())"
@@ -41,34 +42,39 @@
 
         </div>
 
-        <div class="form-check text-start my-3">
-            <input type="checkbox"
-                   id="signInRememberEmail"
-                   class="form-check-input"
-                   name="rememberMe"
-                   ngModel
-            >
-            <label class="form-check-label" for="signInRememberEmail">
-                Remember me
-            </label>
-        </div>
+        @if (!isSignUp()) {
+            <div class="form-check text-start my-3">
+                <input type="checkbox"
+                       id="signInRememberEmail"
+                       class="form-check-input"
+                       name="rememberMe"
+                       ngModel
+                >
+                <label class="form-check-label" for="signInRememberEmail">
+                    Email merken
+                </label>
+            </div>
+        }
         <button type="submit"
                 class="btn btn-primary w-100 py-2"
                 [disabled]="!form.valid"
-        >Sign in</button>
-        @if(error()) {
+        >{{viewEl().btnOk}}</button>
+
+        @if(store.authError()) {
             <hr>
             <div class="alert alert-danger">
-                <div>Error: {{error()}}</div>
+                <div>Error: {{store.authError()}}</div>
             </div>
             <br>
         }
 
-        <button type="button" class="btn btn-link mt-4 mx-auto"
-                (click)="resetPassword()"
-        >Forgot password?<span class="me-2"></span>Reset via email</button>
+        @if (!isSignUp()) {
+            <button type="button" class="btn btn-link mt-4 mx-auto"
+                    (click)="resetPassword(email.value)"
+            >Passwort vergessen?<span class="me-2"></span>Zurücksetzen via email</button>
+        }
 
     </form>
 </main>
 
-<spinner [open]="isBusy()"></spinner>
+<spinner [open]="store.isBusy()"></spinner>

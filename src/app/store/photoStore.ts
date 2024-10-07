@@ -1,10 +1,12 @@
 import {AuthUser} from "../auth/user.model";
 import {patchState, signalState, signalStore, type, withHooks, withMethods, withState} from "@ngrx/signals";
 import {setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {state} from "@angular/animations";
 
 export type State = {
     authUser: AuthUser | null;
-    isLoading: boolean;
+    authError: string;
+    isBusy: boolean;
 }
 export type Auth = 'admin' | 'customer';
 export type User = {
@@ -20,7 +22,8 @@ export type User = {
 
 const initialState: State = {
     authUser: null,
-    isLoading: false,
+    authError: '',
+    isBusy: false,
 }
 const initialUsersState: User[] = [
     {id: '1', firstName: 'Michi', lastName: 'Pini', phone: '078 7732560', auth: 'admin'},
@@ -41,11 +44,15 @@ export const PhotoStore = signalStore(
         }
     }),
     withMethods(store => ({
-        updateAuthUser(user: AuthUser | null) {
-            patchState(store, state => {
-                return {...state, authUser: user};
-            })
+        setBusy(busy: boolean = false) {
+            patchState(store, state => ({...state, isBusy: busy}));
         },
+        updateAuthUser(user: AuthUser | null = null) {
+            patchState(store, state => ({...state, authUser: user}));
+        },
+        setAuthError(errorMessage: string = '') {
+            patchState(store, state => ({...state, authError: errorMessage}));
+        }
     }))
 )
 
