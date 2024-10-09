@@ -104,39 +104,38 @@
         <div class="col">
             <input type="checkbox"
                    class="form-check-input me-2"
-                   id="isBusiness"
-                   name="isBusiness"
-                   [(ngModel)]="isBusiness"
+                   id="isCompany"
+                   name="isCompany"
+                   [(ngModel)]="isCompany"
             >
-            <label for="isBusiness" class="form-label">Firma?</label>
+            <label for="isCompany" class="form-label">Firma?</label>
         </div>
     </div>
 
-    @if (isBusiness()) {
-        <div class="row mb-2 align-items-center">
-            <div class="address-label">
-                <label class="form-label" for="company">Firma</label>
-            </div>
-            <div class="col">
-                <input type="text"
-                       class="form-control"
-                       id="company"
-                       name="company"
-                       ngModel
-                >
-            </div>
-        </div>
-    }
-
-    <div class="row mb-2 align-items-center">
+    <div class="row mb-2 align-items-center" [hidden]="!isCompany()">
         <div class="address-label">
-            <label class="form-label" for="street">Strasse + Nr</label>
+            <label class="form-label" for="companyName">Firma</label>
         </div>
         <div class="col">
             <input type="text"
                    class="form-control"
-                   id="street"
-                   name="street"
+                   id="companyName"
+                   name="companyName"
+                   ngModel
+            >
+        </div>
+    </div>
+
+
+    <div class="row mb-2 align-items-center">
+        <div class="address-label">
+            <label class="form-label" for="streetAndNumber">Strasse + Nr</label>
+        </div>
+        <div class="col">
+            <input type="text"
+                   class="form-control"
+                   id="streetAndNumber"
+                   name="streetAndNumber"
                    ngModel
             >
         </div>
@@ -193,11 +192,23 @@
                     (mouseenter)="validate()"
             >Speichern</button>
         </div>
-
     </div>
 
-
-
+    <div class="row hidden-controls mt-5">
+        <label class="col-auto " for="id">Kunden Id</label>
+        <div class="col">
+            <input type="text"
+                   class="form-control form-control-plaintext hidden-controls"
+                   id="id"
+                   name="id"
+                   ngModel
+                   readonly
+                   hidden
+                   #id
+            >
+            <div>{{id.value}}</div>
+        </div>
+    </div>
 
 </form>
 

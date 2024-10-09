@@ -21,6 +21,9 @@
 .plz {
     width: 5rem;
 }
+.hidden-controls {
+    color: rgba(40,40,40, 10%)
+}
 @container form-container (width < 500px) {
     .country {
         width: 100%;

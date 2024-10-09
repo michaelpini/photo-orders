@@ -1,6 +1,6 @@
 
 <nav class="navbar navbar-expand-sm " aria-label="Navigation bar">
-    <div class="container-fluid mb-xl-5">
+    <div class="container-fluid mb-sm-3">
         <a class="navbar-brand" href="#">
             <img src="pinistudios_200.png" alt="Pini Studios" height="50">
         </a>
@@ -19,29 +19,29 @@
                 <li class="nav-item">
                     <a class="nav-link" role="button"
                        routerLink="/customers" routerLinkActive="active"
-                    >Customers</a>
+                    >Kunden</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" role="button"
                        routerLink="/projects" routerLinkActive="active"
-                    >Projects</a>
+                    >Projekte</a>
                 </li>
             </ul>
 
             <!-- Right -->
             <ul class="navbar-nav">
-                @if (store.authUser()?.idToken) {
+                @if (store.authUser()?.token) {
                     <li class="nav-item">
                         <a class="nav-link" role="button"
                            routerLink="/account" routerLinkActive="active"
-                        >Account</a>
+                        >Konto</a>
                     </li>
                 }
                 @else {
                     <li class="nav-item">
                         <a class="nav-link" role="button"
                         routerLink="/signin" routerLinkActive="active"
-                        >Sign In</a>
+                        >Login</a>
                     </li>
                 }
             </ul>

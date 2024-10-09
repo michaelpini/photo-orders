@@ -39,3 +39,8 @@
     height: 6rem;
 
 }
+.table-active {
+    outline: 2px solid var(--bs-primary);
+    border-radius: 3px;
+    --bs-table-bg-state: rgba(45, 45, 45, 5%);
+}

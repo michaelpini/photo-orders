@@ -1,8 +1,9 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {ColDef, TableComponent, TableState} from "../../shared/table/table.component";
+import {ColDef, Obj, TableComponent, TableState} from "../../shared/table/table.component";
 import {patchState} from "@ngrx/signals";
 import {PhotoStore} from "../../store/photoStore";
 import {tableState} from "../../store/tableState";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'customer-list',
@@ -16,17 +17,23 @@ export class CustomerListComponent implements OnInit, OnDestroy{
     readonly tableState = signal<TableState>({filter: '', sortColumn: '', sortOrder: ''});
 
     colDefs: ColDef[] = [
-        {field: 'firstName', headerName: 'First Name', width: '25%'},
-        {field: 'lastName', headerName: 'Last Name', width: '25%'},
-        {field: 'phone', headerName: 'Phone', disableSort: true},
-        {field: 'auth', headerName: 'Auth', width: '15%'},
-        {field: 'amount', headerName: 'Amount', format: 'number2'},
+        {field: 'firstName', headerName: 'Vorname', width: '25%'},
+        {field: 'lastName', headerName: 'Nachname', width: '25%'},
+        {field: 'email', headerName: 'Email', width: '25%'},
+        {field: 'phone', headerName: 'Tel.', disableSort: true, excludeFromQuickFilter: true},
+        {field: 'id', headerName: 'Id', hidden: true},
     ]
+
+    constructor(private router: Router) {}
 
     ngOnInit() {
         this.tableState.set(tableState.users());
     }
     ngOnDestroy(): void {
         patchState(tableState, old => ({...old, users: this.tableState()}))
+    }
+    onSelect(obj: Obj) {
+        const id = obj['id'];
+        this.router.navigate([`/customers/${id}`]);
     }
 }

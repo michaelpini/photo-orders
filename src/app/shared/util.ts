@@ -57,7 +57,6 @@ function getRandomId(): string {
     }
 }
 
-
 const compare = (a: Primitive , b: Primitive) => {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
@@ -80,12 +79,7 @@ const compare = (a: Primitive , b: Primitive) => {
  * sortArr(arr, 'name');
  * @example Returns the ***the original array***, sorted by age in descending order
  * const sortedOriginal = sortArr(arr, 'age', 'desc', false); */
-function sortArr(
-    array: Obj[],
-    sortBy: string,
-    direction: 'asc' | 'desc' | '' = 'asc',
-    clone = true): Obj[]
-{
+function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' = 'asc', clone = true): any[] {
     const arr = clone ? [...array] : array;
     if (sortBy === '' || direction === '') return arr;
     return arr.sort((a, b) => {
@@ -96,20 +90,44 @@ function sortArr(
 
 /**
  * Filters an array of objects for a filter string. All rows are included where at least one field has a match
- * @param array {Object[]} An array of objects
- * @param filter {string} filter string
+ * @param array {Object[]} Source array of objects
+ * @param filter {string} Filter string
+ * @param fields {string[]} Optional array of fields (columns) to check - default: all
+ *
+ * @example
+ * const list = [
+ *     {id: '1', firstname: 'Peter', lastName: 'Hug'},
+ *     {id: '2', firstname: 'Michael', lastName: 'Peters'},
+ *     {id: '3', firstname: 'Hans', lastName: 'Meier'},
+ * ]
+ * const filteredList = quickFilter(list, 'peter')
+ * // Returns rows 1 and 2
+ * const filteredList = quickFilter(list, 'peter', ['lastName'])
+ * // Returns row 2 (only lastName is checked)
+ *
  */
-function quickFilter(
-    array: Obj[],
-    filter: string,
-): Obj[] {
+function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
     const lower = filter.toLowerCase();
     return array.filter(row => {
-        for (let value of Object.values(row)) {
-            if (String(value).toLowerCase().includes(lower)) return true;
+        const keys = fields || Object.keys(row);
+        for (const key of keys) {
+            if (String(row[key]).toLowerCase().includes(filter)) return true;
         }
         return false
     })
+}
+
+/**
+ * Cleans an object by removing all keys, which have undefined or null values
+ * @param {object} obj object
+ * @returns {object} object
+ */
+function cleanObject(obj: any) {
+    const cleaned: any = {};
+    for (const key in obj) {
+        if (obj[key] != null) cleaned[key] = obj[key];
+    }
+    return cleaned;
 }
 
 /**
@@ -147,4 +165,4 @@ function setBrokenImage(e: ErrorEvent) {
     if (!target.src.includes(brokenImg)) target.src = brokenImg;
 }
 
-export { Deferred, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage };
+export { Deferred, cleanObject, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage };

@@ -1,5 +1,16 @@
-<div class="row">
-    <div class="col-md-6">
+<div class="row m-0">
+    <div class="row pe-0">
+        <div class="col">
+            <h1 class="">Kunden Liste</h1>
+        </div>
+        <div class="col-auto float-end pe-0">
+            <button class="btn btn-primary"
+                    (click)="createUser()"
+            >Neuer Kunde</button>
+        </div>
+    </div>
+
+    <div class="col-md-6 px-3">
         <customer-list></customer-list>
     </div>
     <div class="col-md-6">

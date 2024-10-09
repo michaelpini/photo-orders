@@ -1,10 +1,10 @@
 
 <!-- Filter -->
     <div class="mb-3 row" [ngClass]="{'d-none': hideFilter()}">
-        <label [htmlFor]="tableId + '_search'" class="col-2 col-form-label">Filter:</label>
+        <label for="_search" class="col-2 col-form-label">Filter:</label>
         <div class="col-6 d-flex">
             <input #search
-                   [id]="tableId + '_search'"
+                   id="_search"
                    type="text"
                    class="form-control"
                    name="searchTerm"
@@ -21,58 +21,65 @@
     </div>
 
 <!-- Table -->
-    <table class="table table-striped table-hover">
-        <thead (click)="onSort($event)">
-        <tr>
-            @for(colDef of colDefs(); track $index) {
-                <th scope="col"
-                    [attr.data-field]="colDef.field"
-                    [width]="colDef.width ? colDef.width : 'unset' "
-                    [ngClass]="{
-                    'sortable': !colDef.disableSort,
-                    'asc' : state().sortOrder === 'asc' && state().sortColumn === colDef.field,
-                    'desc' : state().sortOrder === 'desc' && state().sortColumn === colDef.field,
-                    }"
-                >
-                    {{ colDef.headerName }}
-                </th>
-            }
-            @if (showChevron()) {
-                <th></th>
-            }
-        </tr>
-        </thead>
-        <tbody>
-            @for (row of rowDataFilteredSorted(); track row['id'] || $index) {
-                <tr (click)="onSelected(row)">
-                    @for(colDef of colDefs(); track $index) {
-                        @switch (colDef.format) {
-                            @case (undefined) {
-                                <td>{{ row[colDef.field] }}</td>
-                            }
-                            @case ('boolean') {
-                                <td class="text-center">
-                                    @if (row[colDef.field]) {
-                                        <fa-icon [icon]="faCheck"></fa-icon>
-                                    } @else if (!row[colDef.field] == undefined) {
-                                        <fa-icon [icon]="faXmark" class="text-danger"></fa-icon>
+<div class="row">
+    <div class="col overflow-x-auto">
+        <table class="table table-striped table-hover">
+            <thead (click)="onSort($event)">
+            <tr>
+                @for(colDef of colDefs(); track $index) {
+                    @if (!colDef.hidden) {
+                        <th scope="col"
+                            [attr.data-field]="colDef.field"
+                            [width]="colDef.width ? colDef.width : 'unset' "
+                            [ngClass]="{
+                                'sortable': !colDef.disableSort,
+                                'asc' : state().sortOrder === 'asc' && state().sortColumn === colDef.field,
+                                'desc' : state().sortOrder === 'desc' && state().sortColumn === colDef.field,
+                                }"
+                        > {{ colDef.headerName }}
+                        </th>
+                    }
+                }
+                @if (showChevron()) {
+                    <th></th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+                @for (row of rowDataFilteredSorted(); track row['id'] || $index) {
+                    <tr role="button" [ngClass]="{'table-active': row['id'] === selectedId()}" (click)="onSelected(row)">
+                        @for(colDef of colDefs(); track $index) {
+                            @if (!colDef.hidden) {
+                                @switch (colDef.format) {
+                                    @case (undefined) {
+                                        <td>{{ row[colDef.field] }}</td>
                                     }
-                                </td>
-                            }
-                            @default {
-                                <td [innerHTML]="formatValue( row[colDef.field], colDef.format)"></td>
+                                    @case ('boolean') {
+                                        <td class="text-center">
+                                            @if (row[colDef.field]) {
+                                                <fa-icon [icon]="faCheck"></fa-icon>
+                                            } @else if (!row[colDef.field] == undefined) {
+                                                <fa-icon [icon]="faXmark" class="text-danger"></fa-icon>
+                                            }
+                                        </td>
+                                    }
+                                    @default {
+                                        <td [innerHTML]="formatValue( row[colDef.field], colDef.format)"></td>
+                                    }
+                                }
                             }
                         }
-                    }
-                    @if (showChevron()) {
-                        <td><fa-icon [icon]="faChevronRight" class="text-primary"></fa-icon></td>
-                    }
-                </tr>
-            } @empty {
-                <tr>
-                    <td [attr.colspan]="colDefs().length" class="no-data" style="text-align: center">No data found</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        @if (showChevron()) {
+                            <td><fa-icon [icon]="faChevronRight" class="text-primary"></fa-icon></td>
+                        }
+                    </tr>
+                } @empty {
+                    <tr>
+                        <td [attr.colspan]="colDefs().length" class="no-data" style="text-align: center">No data found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 

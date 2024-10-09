@@ -1,19 +1,12 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {catchError, from, Observable, tap} from "rxjs";
-import {AuthUser} from "./user.model";
+import {catchError, from, map, Observable, tap} from "rxjs";
+import {AuthUser} from "./authUser.model";
 import {PhotoStore} from "../store/photoStore";
 import {fbAuth} from "../app.component";
-import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
+import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword} from 'firebase/auth';
 
-
-// export interface AuthResponseHTTP {
-//     email: string;
-//     idToken: string;
-//     localId: string;
-//     expiresIn: string;
-// }
 export interface AuthResponseSDK {
     email: string;
     uid: string;
@@ -35,26 +28,16 @@ const errorMessagesEN: {[key: string]: string} = {
     providedIn: 'root',
 })
 export class AuthService {
-    // #firebaseSignUpUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]'
-    // #firebaseLoginUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]'
-    // #firebaseApiKey = 'AIzaSyAfObhkzq4lv9UvrpoP5V1Nny3iNcXDMh4';
-    // #signUpWithEmailUrl: string;
-    // #signInWithEmailUrl: string;
     #expireSignOutTimer?: number;
     readonly store = inject(PhotoStore);
 
-
-
-
     constructor(private http: HttpClient, private router: Router) {
-        // this.#signUpWithEmailUrl = this.#firebaseSignUpUrl.replace('[API_KEY]', this.#firebaseApiKey);
-        // this.#signInWithEmailUrl = this.#firebaseLoginUrl.replace('[API_KEY]', this.#firebaseApiKey);
         fbAuth.onAuthStateChanged(authState => {console.log(authState);});
     }
 
-    signInEmail(email: string, password: string): Observable<UserCredential> {
+    signInEmail(email: string, password: string): Observable<AuthUser> {
         return from(signInWithEmailAndPassword(fbAuth, email, password))
-            .pipe(tap((res: any) => this.onSignInSuccess(res.user)))
+            .pipe(map((res: any) => this.onSignInSuccess(res.user)))
             .pipe(catchError(err => {
                 const key = err?.message || '';
                 const errorMessage = errorMessagesEN[key] || key;
@@ -63,9 +46,9 @@ export class AuthService {
             }))
     }
 
-    signUpEmail(email: string, password: string): Observable<UserCredential> {
+    signUpEmail(email: string, password: string): Observable<AuthUser> {
         return from(createUserWithEmailAndPassword(fbAuth, email, password))
-            .pipe(tap((res: any) => this.onSignUpSuccess(res.user)))
+            .pipe(map((res: any) => this.onSignUpSuccess(res.user)))
             .pipe(catchError(err => {
                 const key = err?.message || '';
                 const errorMessage = errorMessagesEN[key] || key;
@@ -73,38 +56,17 @@ export class AuthService {
             }))
     }
 
-    // signInEmailHTTP(email: string, password: string): Observable<AuthResponseHTTP> {
-    //     return this.http.post<AuthResponseHTTP>(this.#signInWithEmailUrl, {email, password, returnSecureToken: true})
-    //         .pipe(tap(res => this.onSignInSuccess(res)))
-    //         .pipe(catchError(err => {
-    //             const key = err?.error?.error?.message || '';
-    //             const errorMessage = errorMessagesEN[key] || key;
-    //             this.store.setAuthError(errorMessage)
-    //             throw(errorMessage)
-    //         }))
-    // }
-
-    // signUpEmailHTTP(email: string, password: string): Observable<AuthResponseHTTP> {
-    //     return this.http.post<AuthResponseHTTP>(this.#signUpWithEmailUrl, {email, password, returnSecureToken: true})
-    //         .pipe(tap(res => this.onSignUpSuccess(res)))
-    //         .pipe(catchError(err => {
-    //             const key = err?.error?.error?.message || '';
-    //             const errorMessage = errorMessagesEN[key] || key;
-    //             this.store.setAuthError(errorMessage)
-    //             throw(errorMessage)
-    //         }))
-    // }
-
-    onSignInSuccess(authResponse: AuthResponseSDK) {
-        const user = new AuthUser(<any>authResponse)
+    onSignInSuccess(authResponse: AuthResponseSDK): AuthUser {
+        const user = new AuthUser(authResponse);
         this.store.updateAuthUser(user);
         this.store.setAuthError();
         localStorage.setItem('authUser', JSON.stringify(user));
         this.autoSignOut(+user?.getValidMilliSeconds());
+        return user;
     }
 
-    onSignUpSuccess(authResponse: AuthResponseSDK) {
-        //Todo: Add user users
+    onSignUpSuccess(authResponse: AuthResponseSDK): AuthUser {
+        return new AuthUser(authResponse);
     }
 
     signOut(): Observable<void>{
@@ -122,7 +84,7 @@ export class AuthService {
         const userJSON = localStorage.getItem('authUser');
         if (!userJSON) return;
         const user = new AuthUser(userJSON);
-        if (user.idToken) {
+        if (user.token) {
             this.store.updateAuthUser(user);
             this.autoSignOut(user.getValidMilliSeconds());
         }
@@ -133,16 +95,7 @@ export class AuthService {
     }
 
     sendResetEmail(email: string) {
-        sendPasswordResetEmail(fbAuth, email)
-            .then(() => {
-                // Password reset email sent!
-                // ..
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // ..
-            });
+        return from(sendPasswordResetEmail(fbAuth, email))
     }
 }
 

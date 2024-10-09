@@ -1,25 +1,25 @@
 /* Importing complete Bootstrap SCSS file. */
-///////// @import 'bootstrap/scss/bootstrap';
+// @import 'bootstrap/scss/bootstrap';
 
 
 /* Importing individual Bootstrap components  */
 // Configuration
 @import "bootstrap/scss/functions";
 
-// ___________ Modify existing bootstrap colors ___________
+// ************* Modify existing bootstrap colors *************
 $body-bg: #f7f7f7;
-// ________________________________________________________
+// ************************************************************
 
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 
-// ________________ Add new custom colors _________________
+// ******************* Add new custom colors *******************
 $custom-colors: (
         "custom-body-bg": #ffeded,
         "custom-input-bg": white,
 );
 $theme-colors: map-merge($theme-colors, $custom-colors);
-// ________________________________________________________
+// ************************************************************
 
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
@@ -63,6 +63,10 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
 // Utilities
 @import "bootstrap/scss/utilities/api";
+
+
+
+
 
 
 [data-theme="dark"] {

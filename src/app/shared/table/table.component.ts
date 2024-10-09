@@ -1,7 +1,7 @@
 import {formatCurrency, formatDate, formatNumber, NgClass,} from '@angular/common';
 import {Component, computed, input, model, output, Signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {getRandomId, Primitive, quickFilter, sortArr} from "../util";
+import {Primitive, quickFilter, sortArr} from "../util";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCheck, faChevronRight, faXmark} from "@fortawesome/free-solid-svg-icons";
 
@@ -15,7 +15,12 @@ export interface ColDef {
     initialSortOrder?: SortOrder;
     format?: string | ValueFormatter;
     width?: string;
+    hidden?: boolean;
+    excludeFromQuickFilter?: boolean;
 }
+// interface tableOptions {
+//     filterOnlyVisibleColumns?: boolean;
+// }
 export interface TableState {
     filter: string;
     sortColumn: string;
@@ -37,16 +42,14 @@ const rotateSort: {[key: string]: SortOrder} = {'': 'asc', asc: 'desc', desc: ''
 
 })
 export class TableComponent {
-    tableId = '';
     colDefs = input<ColDef[]>([]);
     rowData = input<Obj[]>([]);
     hideFilter = input(false, {transform: (val: string | boolean) => typeof val === 'boolean' ? val : true});
     showChevron = input(false, {transform: (val: string | boolean) => typeof val === 'boolean' ? val : true});
     locale = input('de-CH');
-
-    selected = output<Obj>();
-
     state = model<TableState>(getTableState('', '', ''));
+    selectedId = model<string>('');
+    selected = output<Obj>();
 
     colDefsMap: Signal<{[field: string]: ColDef}> = computed(() => {
         return this.colDefs().reduce((acc: {[field: string]: ColDef}, val: ColDef) => {
@@ -54,28 +57,23 @@ export class TableComponent {
             return acc;
         }, {})
     })
-
     rowDataFilteredSorted: Signal<Obj[]> = computed(() => {
+        const filterFieldsArray = this.colDefs().filter(x => !x.excludeFromQuickFilter).map(x => x.field);
         const {filter, sortColumn, sortOrder} = this.state();
-        const filtered = quickFilter(this.rowData(), filter)
+        const filtered = quickFilter((this.rowData()), filter, filterFieldsArray)
         return sortArr(filtered, sortColumn, sortOrder)
     })
-
     countInfo: Signal<string> = computed(() => {
         const totalRows = this.rowData().length;
         const filteredRows = this.rowDataFilteredSorted().length;
         if (!totalRows) return '';
         if (totalRows === filteredRows) return `${totalRows} item${totalRows > 1 ? 's' : ''}`;
-        return `${filteredRows} of ${totalRows} item${totalRows > 1 ? 's' : ''}`;
+        return `${filteredRows} von ${totalRows} item${totalRows > 1 ? 's' : ''}`;
     })
-
     isFiltered: Signal<boolean> = computed(() => {
         return  this.rowDataFilteredSorted().length < this.rowData().length
     })
 
-    constructor() {
-        this.tableId = getRandomId();
-    }
 
     onSort(event: MouseEvent) {
         const field = (event.target as HTMLElement).dataset?.['field'];
@@ -108,6 +106,7 @@ export class TableComponent {
     }
 
     onSelected(obj: Obj) {
+        this.selectedId.set(String(obj['id']) || '')
         this.selected.emit(obj);
     }
 
