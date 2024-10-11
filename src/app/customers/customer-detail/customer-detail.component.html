@@ -35,7 +35,7 @@
     </div>
 
     <!-- First Name  |  Last Name-->
-    <div class="row g-2 mb-3 align-items-center" >
+    <div class="row g-2 mb-3 align-items-center">
         <div class="col">
             <label class="form-label" for="firstName">Vorname *</label>
             <input type="text"
@@ -93,9 +93,6 @@
     </div>
 
 
-
-
-
     <!--Billing Address-->
     <div class="row mb-3 align-items-center">
         <div class="col-auto me-3">
@@ -125,7 +122,6 @@
             >
         </div>
     </div>
-
 
     <div class="row mb-2 align-items-center">
         <div class="address-label">
@@ -184,15 +180,24 @@
 
     <hr>
 
+    <!-- Button Ok / Cancel -->
     <div class="row ">
         <div class="col text-center">
             <button type="submit"
-                    class="btn btn-primary col-6"
+                    class="btn btn-primary col-4 me-1"
 
                     (mouseenter)="validate()"
-            >Speichern</button>
+            >Speichern
+            </button>
+
+            <button type="button"
+                    class="btn btn-light col-4"
+                    (click)="onCancel()"
+            >Abbrechen
+            </button>
         </div>
     </div>
+
 
     <div class="row hidden-controls mt-5">
         <label class="col-auto " for="id">Kunden Id</label>
@@ -206,12 +211,9 @@
                    hidden
                    #id
             >
-            <div>{{id.value}}</div>
+            <div>{{ id.value }}</div>
         </div>
     </div>
 
 </form>
-
-
-
 

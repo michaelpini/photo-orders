@@ -1,6 +1,6 @@
 import {Component, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {PhotoStore} from "../store/photoStore";
+import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {JsonPipe} from "@angular/common";
 
 @Component({
@@ -11,11 +11,11 @@ import {JsonPipe} from "@angular/common";
         RouterLinkActive,
         JsonPipe
     ],
-    templateUrl: './header.component.html',
-    styleUrl: './header.component.scss'
+    templateUrl: './nav.component.html',
+    styleUrl: './nav.component.scss'
 })
-export class HeaderComponent {
+export class NavComponent {
     collapsed = signal(true);
-    readonly store = inject(PhotoStore);
+    readonly store = inject(PhotoOrdersStore);
 
 }

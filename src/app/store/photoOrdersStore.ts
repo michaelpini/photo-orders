@@ -1,9 +1,11 @@
-import {computed, inject} from "@angular/core";
-import {AuthUser} from "../auth/authUser.model";
+import {inject} from "@angular/core";
 import {patchState, signalStore, type, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
 import {addEntity, removeEntity, setAllEntities, setEntity, updateEntity, withEntities} from "@ngrx/signals/entities";
 import {FirebaseService} from "../persistance/firebase.service";
-import {User} from "../customers/customer.model";
+import {User as AuthUser} from "firebase/auth";
+import {User} from "../customers/user.model";
+import {rxMethod} from "@ngrx/signals/rxjs-interop";
+import {map, pipe} from "rxjs";
 
 export type State = {
     authUser: AuthUser | null;
@@ -16,23 +18,26 @@ export type State = {
 const initialState: State = {
     authUser: null,
     authError: '',
-    activeUser: null,
+    activeUser:  null,
     isBusy: false,
     isDirty: false,
 }
 
-export const PhotoStore = signalStore(
+export const PhotoOrdersStore = signalStore(
     {providedIn: 'root'},
     withState(initialState),
     withEntities({entity: type<User>(), collection: 'users'}),
-    withMethods(store => ({
+    withMethods((store, firebaseService = inject(FirebaseService)) => ({
         setBusy(busy: boolean = false) {
             patchState(store, state => ({...state, isBusy: busy}));
         },
-        updateAuthUser(authUser: AuthUser | null = null) {
-            patchState(store, state => ({...state, authUser: authUser}));
+        async updateActiveUser(authUser: AuthUser | null = null) {
+            let activeUser = null;
+            if (authUser) activeUser = await firebaseService.getUser(authUser.uid);
+            patchState(store, state => ({...state, authUser, activeUser}));
+            console.info('Active user:', activeUser);
         },
-        setAuthError(errorMessage: string = '') {
+        setAuthError(errorMessage: string | undefined = '') {
             patchState(store, state => ({...state, authError: errorMessage}));
         },
         // Users
@@ -51,21 +56,27 @@ export const PhotoStore = signalStore(
         },
         setAllUsers(users: User[]) {
             patchState(store, setAllEntities(users, {collection: 'users'}));
+        },
+        async loadUsers(user: User | null): Promise<User[]>{
+            let users: User[] = [];
+            if (user?.auth === 'user') {users = [user]}
+            if (user?.auth === 'admin') {users = await firebaseService.getAllUsers();}
+            this.setAllUsers(users);
+            return users;
         }
+
     })),
-    withComputed(({authUser, usersEntityMap}) => ({
-        activeUser: computed((): any => {
-            const id: string = authUser()?.id || '';
-            const user = usersEntityMap()[id];
-            console.log('active user:', user)
-            return user;
-        }),
+    withComputed((store) => ({
+
     })),
     withHooks({
         async onInit(store) {
-            const allUsers: User[] = await inject(FirebaseService).getAllUsers()
-            store.setAllUsers(allUsers);
+            const  loadUsersForActiveUser = rxMethod<User | null>(pipe(
+                map(user => store.loadUsers(user))
+            ))
+            loadUsersForActiveUser(store.activeUser);
         }
+
     }),
 )
 

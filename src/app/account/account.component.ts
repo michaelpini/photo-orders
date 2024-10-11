@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {Location} from "@angular/common";
-import {fbAuth} from "../app.component";
 import {AuthService} from "../auth/auth.service";
 
 @Component({
@@ -16,8 +15,9 @@ export class AccountComponent {
         private location: Location)
     {  }
 
-    logout() {
-        this.authService.signOut().subscribe(() => this.location.back())
+    async logout() {
+        await this.authService.signOut();
+        this.location.back();
     }
 
 }

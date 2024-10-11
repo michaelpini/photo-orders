@@ -1,9 +1,9 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ColDef, Obj, TableComponent, TableState} from "../../shared/table/table.component";
 import {patchState} from "@ngrx/signals";
-import {PhotoStore} from "../../store/photoStore";
-import {tableState} from "../../store/tableState";
-import {Router} from "@angular/router";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
+import {tableState as storedTableState} from "../../store/tableState";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
     selector: 'customer-list',
@@ -13,8 +13,10 @@ import {Router} from "@angular/router";
     styleUrl: './customer-list.component.scss'
 })
 export class CustomerListComponent implements OnInit, OnDestroy{
-    readonly store = inject(PhotoStore);
+    readonly store = inject(PhotoOrdersStore);
     readonly tableState = signal<TableState>({filter: '', sortColumn: '', sortOrder: ''});
+
+    selectedId = signal('');
 
     colDefs: ColDef[] = [
         {field: 'firstName', headerName: 'Vorname', width: '25%'},
@@ -26,12 +28,25 @@ export class CustomerListComponent implements OnInit, OnDestroy{
 
     constructor(private router: Router) {}
 
+    checkUrlAndSetUserId(url: string) {
+        const segments = url.split('/');
+        const lastSegment = segments[segments.length - 1];
+        const id = lastSegment === 'customers' ?  '' : lastSegment;
+        this.selectedId.set(id);
+    }
+
     ngOnInit() {
-        this.tableState.set(tableState.users());
+        this.tableState.set(storedTableState().users);
+        this.checkUrlAndSetUserId(this.router.url);
+        this.router.events.subscribe((event: any) => {
+            if (event instanceof NavigationEnd) this.checkUrlAndSetUserId(event.url);
+        })
     }
+
     ngOnDestroy(): void {
-        patchState(tableState, old => ({...old, users: this.tableState()}))
+        patchState(storedTableState, old => ({...old, users: this.tableState()}))
     }
+    
     onSelect(obj: Obj) {
         const id = obj['id'];
         this.router.navigate([`/customers/${id}`]);

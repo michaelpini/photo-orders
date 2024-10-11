@@ -1,16 +1,14 @@
 import {AfterViewInit, Component, computed, inject, input, model, signal, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {Location} from "@angular/common";
-import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {SpinnerComponent} from "../shared/spinner/spinner.component";
-import {PhotoStore} from "../store/photoStore";
-import {AuthUser} from "./authUser.model";
+import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from "@angular/router";
 import {FirebaseService} from "../persistance/firebase.service";
-import {Customer, User} from "../customers/customer.model";
+import {User} from "../customers/user.model";
 
 @Component({
     selector: 'auth-form',
@@ -23,7 +21,7 @@ import {Customer, User} from "../customers/customer.model";
 export class AuthComponent implements AfterViewInit{
     @ViewChild('form', {static: false}) authForm!: NgForm;
     readonly faChevronLeft = faChevronLeft;
-    readonly store = inject(PhotoStore);
+    readonly store = inject(PhotoOrdersStore);
     isPasswordHidden = signal(true);
     isSignUp = signal(false);
     viewEl = computed(() => ({
@@ -56,7 +54,6 @@ export class AuthComponent implements AfterViewInit{
 
     submit(form: NgForm) {
         const {email, password} = form.value;
-        this.store.setBusy(true);
         if (this.isSignUp()) {
             this.signUp(email, password);
         } else {
@@ -69,36 +66,45 @@ export class AuthComponent implements AfterViewInit{
         }
     }
 
-    signIn(email: string, password: string) {
-        this.authService.signInEmail(email, password).subscribe(() => {
+    async signIn(email: string, password: string) {
+        try {
+            this.store.setBusy(true);
+            await this.authService.signInEmail(email, password);
             this.store.setBusy(false);
+            this.store.setAuthError();
             this.location.back();
-        });
+        } catch (err: any) {
+            this.store.setAuthError(err);
+            this.store.setBusy(false);
+        }
     }
 
-    signUp(email: string, password: string) {
-        this.authService.signUpEmail(email, password).subscribe((authUser: AuthUser) => {
-            const newUser: User = {
-                id: authUser.id,
-                email: authUser.email,
-                userName: authUser.email,
-                firstName: 'Neu',
-                auth: 'user'
-            }
-            this.firebaseService.setUser(newUser).then(user => {
-                this.store.setUser(user);
-                this.store.setBusy(false);
-                this.location.back();
-            });
-        })
+    async signUp(email: string, password: string) {
+        try {
+            this.store.setBusy(true);
+            const newUser: User = await this.authService.signUpEmail(email, password)
+            const savedUser: User = await this.firebaseService.setUser(newUser);
+            this.store.setUser(savedUser);
+            this.store.setBusy(false);
+            this.store.setAuthError();
+            this.location.back();
+        } catch (err) {
+            this.store.setAuthError(err as string);
+            this.store.setBusy(false);
+        }
     }
 
-    resetPassword(email: string): void {
-        this.store.setBusy(true);
-        this.authService.sendResetEmail(email).subscribe(() => {
+    async resetPassword(email: string): Promise<void> {
+        try {
+            this.store.setBusy(true);
+            await this.authService.sendResetEmail(email);
             this.store.setBusy(false)
+            this.store.setAuthError();
             alert(`Email sent to ${email}`);
-        })
+        } catch (err: any) {
+            this.store.setAuthError(err);
+            this.store.setBusy(false)
+        }
     }
 
     back(): void {

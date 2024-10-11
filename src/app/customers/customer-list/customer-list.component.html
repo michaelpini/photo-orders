@@ -1,6 +1,7 @@
 <app-table
         [rowData]="store.usersEntities()"
         [colDefs]="colDefs"
+        [selectedId]="selectedId()"
         [(state)]="tableState"
         (selected)="onSelect($event)"
 ></app-table>

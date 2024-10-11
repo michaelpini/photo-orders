@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {registerLocaleData} from '@angular/common';
 import * as deCH from '@angular/common/locales/de-CH';
-import {HeaderComponent} from './header/header.component';
+import {NavComponent} from './nav/nav.component';
 import {AuthService} from "./auth/auth.service";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {getAuth} from "firebase/auth";
 import {initializeApp} from "firebase/app";
-import {getDatabase} from "firebase/database";
+import {getAuth} from "firebase/auth";
 import {getFirestore} from "firebase/firestore"
 
 const firebaseConfig = {
@@ -21,26 +20,22 @@ const firebaseConfig = {
     measurementId: "G-1JR2G8H2H9"
 
 };
-export const fbApp = initializeApp(firebaseConfig);
-export const fbAuth = getAuth();
-export const fbDb = getDatabase();
-export const fbFs = getFirestore();
+export const fireApp = initializeApp(firebaseConfig);
+export const fireAuth = getAuth();
+export const fireStore = getFirestore();
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, HeaderComponent, FontAwesomeModule],
+    imports: [RouterOutlet, NavComponent, FontAwesomeModule],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
 
     constructor(private authService: AuthService) {
         registerLocaleData(deCH.default);
     }
 
-    ngOnInit(): void {
-        this.authService.autoSignIn();
-    }
 }

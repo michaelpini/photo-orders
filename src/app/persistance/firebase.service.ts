@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {fbFs} from "../app.component";
-import {collection, doc, getDocs, setDoc, QuerySnapshot, DocumentData} from "firebase/firestore";
-import {User} from "../customers/customer.model";
-const users = collection(fbFs, "users");
+import {fireStore as db} from "../app.component";
+import {collection, doc, getDocs, getDoc, setDoc, QuerySnapshot, DocumentData} from "firebase/firestore";
+import {User} from "../customers/user.model";
+//const users = collection(db, "users");
 
 type Collections = 'users' | 'projects' | 'invoices'
 
@@ -20,12 +20,17 @@ export class FirebaseService {
     }
 
     async setUser(user: User): Promise<User> {
-        await setDoc(doc(users, user.id), user);
+        await setDoc(doc(collection(db, "users"), user.id), user);
         return {...user};
+    }
+    async getUser(id: string): Promise<User | undefined> {
+        if (!id) return undefined;
+        const user = await getDoc(doc(collection(db, "users"), id));
+        return user.data() as User ;
     }
 
     async getAllUsers(): Promise<User[]> {
-        return this.toArray( await getDocs(users)) as User[];
+        return this.toArray( await getDocs(collection(db, "users")) ) as User[];
     }
 
 }

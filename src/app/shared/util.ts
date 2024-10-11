@@ -118,14 +118,19 @@ function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
 }
 
 /**
- * Cleans an object by removing all keys, which have undefined or null values
- * @param {object} obj object
- * @returns {object} object
+ * Returns a cleaned copy of an object by removing all keys, which have undefined or null values
+ * @param {object} obj source object
+ * @returns {object} cleaned object
+ * @example
+ * const obj1 = {a: 'yes', b: '', c: null, d: undefined}
+ * const cleaned = removeNullishObjectKeys(obj1);
+ * // Returns {a: 'yes', b: ''}
  */
-function cleanObject(obj: any) {
+function removeNullishObjectKeys(obj: object): object {
     const cleaned: any = {};
-    for (const key in obj) {
-        if (obj[key] != null) cleaned[key] = obj[key];
+    for (let key in obj) {
+        let objKey = key as keyof typeof obj;
+        if (obj[objKey as keyof typeof obj] != null) cleaned[objKey] = obj[objKey];
     }
     return cleaned;
 }
@@ -165,4 +170,4 @@ function setBrokenImage(e: ErrorEvent) {
     if (!target.src.includes(brokenImg)) target.src = brokenImg;
 }
 
-export { Deferred, cleanObject, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage };
+export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage };
