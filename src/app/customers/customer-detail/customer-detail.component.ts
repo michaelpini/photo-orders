@@ -1,15 +1,5 @@
 import {
-    Component,
-    computed,
-    effect,
-    inject,
-    input,
-    OnDestroy,
-    OnInit,
-    output,
-    Signal,
-    signal,
-    ViewChild
+    Component, effect, inject, input, OnDestroy, OnInit, output, signal, ViewChild
 } from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {NgClass} from "@angular/common";
@@ -18,6 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../user.model"
 import {FirebaseService} from "../../persistance/firebase.service";
 import {removeNullishObjectKeys} from "../../shared/util";
+import {debounceTime} from "rxjs";
 
 @Component({
     selector: 'customer-detail',
@@ -28,28 +19,32 @@ import {removeNullishObjectKeys} from "../../shared/util";
 })
 export class CustomerDetailComponent implements OnInit, OnDestroy {
     @ViewChild('form', {static: true}) form!: NgForm;
-    store = inject(PhotoOrdersStore)
+    protected readonly  store = inject(PhotoOrdersStore)
+    id = input<string>();  // Can be populated by router :id
     isCompany = signal(false);
-    id = input<string>();
     isRendered = output<boolean>();
 
-
-    constructor(private router: Router ,private route: ActivatedRoute, private firebaseService: FirebaseService) {
+    constructor(private router: Router, private route: ActivatedRoute, private firebaseService: FirebaseService) {
         effect(() => {
             const id = this.id() || '';
             const userMap = this.store.usersEntityMap();
             const selectedUser = userMap[id];
-            console.log('Selected User', selectedUser)
             setTimeout(() => this.setFormData(selectedUser));
         });
     }
 
     setFormData(user: User | null) {
-        if(user) {
+        if (user) {
             this.form.resetForm(user)
         } else {
             this.form.resetForm();
         }
+        this.store.setDirty(false);
+        this.form.valueChanges?.pipe(
+            debounceTime(500)
+        ).subscribe(() => {
+            this.store.setDirty(true);
+        })
     }
 
     validate() {
@@ -68,12 +63,12 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     };
 
     onCancel() {
-        this.router.navigate(['../'], {relativeTo : this.route});
+        this.store.setDirty(false);
+        this.router.navigate(['../'], {relativeTo: this.route});
     }
 
     ngOnInit(): void {
         this.isRendered.emit(true);
-        // this.store.setSelectedUserId(this.id() || '')
     }
 
     ngOnDestroy(): void {

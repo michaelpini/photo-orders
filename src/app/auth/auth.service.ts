@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {firebaseAuth} from "../app.component";
+import {firebaseAuth} from "../../main";
 import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FirebaseError} from "firebase/app"
 import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential, User as AuthUser} from 'firebase/auth';

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {firebaseStore as db} from "../app.component";
+import {firebaseStore as db} from "../../main";
 import {collection, doc, getDocs, getDoc, setDoc, QuerySnapshot, DocumentData} from "firebase/firestore";
 import {User} from "../customers/user.model";
 
