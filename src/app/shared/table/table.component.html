@@ -11,11 +11,13 @@
                    [value]="state().filter"
                    (input)="onFilter(search.value)"
             />
-            <img src="filter_off_red.svg" alt="filter off"
-                 [hidden]="!isFiltered()"
-                 (click)="onClearFilter()"
-                 class="clear-filter"
-            >
+            <fa-icon [icon]="faFilterCircleXmark"
+                     [hidden]="!search.value"
+                     (click)="onClearFilter()"
+                     class="clear-filter"
+                     size="lg"
+            ></fa-icon>
+
         </div>
         <span class="col col-form-label ms-3">{{countInfo()}}</span>
     </div>

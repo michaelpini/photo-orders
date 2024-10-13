@@ -3,7 +3,7 @@ import {Component, computed, input, model, output, Signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Primitive, quickFilter, sortArr} from "../util";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faCheck, faChevronRight, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faChevronRight, faFilter, faFilterCircleXmark, faXmark} from "@fortawesome/free-solid-svg-icons";
 
 export type Obj = {[key: string]: Primitive};
 export type SortOrder = 'asc' | 'desc' | '';
@@ -136,6 +136,8 @@ export class TableComponent {
     protected readonly faCheck = faCheck;
     protected readonly faXmark = faXmark;
     protected readonly faChevronRight = faChevronRight;
+    protected readonly faFilter = faFilter;
+    protected readonly faFilterCircleXmark = faFilterCircleXmark;
 }
 
 
