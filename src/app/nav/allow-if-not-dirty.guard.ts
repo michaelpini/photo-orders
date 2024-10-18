@@ -4,8 +4,9 @@ import {ModalConfirm} from "../modals/confirm"
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 export const allowIfNotDirtyGuard: () => Promise<boolean> = async () => {
-    const dirty = inject(PhotoOrdersStore).isDirty();
-    if (!dirty) return true;
+    const store = inject(PhotoOrdersStore);
+    const dirty = store.isDirty();
+    if (!store.isDirty()) return true;
 
     const modalRef = inject(NgbModal).open(ModalConfirm);
     modalRef.componentInstance.btnOkText.set('Egal, weiter...');
@@ -14,7 +15,10 @@ export const allowIfNotDirtyGuard: () => Promise<boolean> = async () => {
     modalRef.componentInstance.message.set('Änderungen verwerfen und fortfahren?');
 
     return new Promise<boolean>((resolve, reject) => modalRef.result
-        .then(() => resolve(true))
+        .then(() => {
+            store.setDirty(false);
+            resolve(true);
+        })
         .catch(() => resolve(false))
     );
 };

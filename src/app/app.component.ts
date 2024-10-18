@@ -8,12 +8,13 @@ import {SpinnerComponent} from "./shared/spinner/spinner.component";
 import {PhotoOrdersStore} from "./store/photoOrdersStore";
 
 import {AuthService} from "./auth/auth.service";
+import {NgbdToastGlobal} from "./shared/toasts/toast-global.component";
 
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, NavComponent, FontAwesomeModule, SpinnerComponent],
+    imports: [RouterOutlet, NavComponent, FontAwesomeModule, SpinnerComponent, NgbdToastGlobal],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

@@ -48,7 +48,7 @@ export class AuthComponent implements AfterViewInit{
         setTimeout(() => {  // Timeout required to have form initialized
             if (!this.isSignUp()) this.authForm.form.patchValue({email, rememberMe});
             this.authForm.valueChanges?.subscribe(selectedValue => {
-                this.store.setAuthError('');
+                this.store.setIdle();  // Reset possible error when filling in form
             })
         }, 0);
     }
@@ -69,42 +69,36 @@ export class AuthComponent implements AfterViewInit{
 
     async signIn(email: string, password: string) {
         try {
-            this.store.setBusy(true);
+            this.store.setBusy();
             await this.authService.signInEmail(email, password);
-            this.store.setBusy(false);
-            this.store.setAuthError();
+            this.store.setIdle();
             this.location.back();
         } catch (err) {
-            this.store.setAuthError((err as Error).message);
-            this.store.setBusy(false);
+            this.store.setError((err as Error).message);
         }
     }
 
     async signUp(email: string, password: string) {
         try {
-            this.store.setBusy(true);
+            this.store.setBusy();
             const newUser: User = await this.authService.signUpEmail(email, password)
             const savedUser: User = await this.firebaseService.setUser(newUser);
             this.store.setUser(savedUser);
-            this.store.setBusy(false);
-            this.store.setAuthError();
+            this.store.setIdle();
             await this.router.navigate(['/customers/' + savedUser.id]);
         } catch (err) {
-            this.store.setAuthError((err as Error).message);
-            this.store.setBusy(false);
+            this.store.setError((err as Error).message);
         }
     }
 
     async resetPassword(email: string): Promise<void> {
         try {
-            this.store.setBusy(true);
+            this.store.setBusy();
             await this.authService.sendResetEmail(email);
-            this.store.setBusy(false)
-            this.store.setAuthError();
+            this.store.setIdle()
             alert(`Email sent to ${email}`);
         } catch (err) {
-            this.store.setAuthError((err as Error).message);
-            this.store.setBusy(false)
+            this.store.setError((err as Error).message);
         }
     }
 

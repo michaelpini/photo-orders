@@ -19,6 +19,7 @@ export class ModalConfirm {
      * CAUTION: Do not use with user generated content (bypasses security)
      */
     html = signal('');
+    btnClass = signal('btn-warning');
 
     constructor(public modal: NgbActiveModal) { }
 }

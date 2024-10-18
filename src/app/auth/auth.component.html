@@ -74,16 +74,16 @@
                 [disabled]="!form.valid"
         >{{viewEl().btnOk}}</button>
 
-        <!-- Error text -->
-        @if(store.authError()) {
-            <hr>
-            <div class="alert alert-danger">
-                <div>
-                    <fa-icon [icon]="faTriangleExclamation" size="xl" class="me-3"></fa-icon>
-                    {{store.authError()}}</div>
-            </div>
-            <br>
-        }
+<!--        &lt;!&ndash; Error text &ndash;&gt;-->
+<!--        @if(store.error()) {-->
+<!--            <hr>-->
+<!--            <div class="alert alert-danger">-->
+<!--                <div>-->
+<!--                    <fa-icon [icon]="faTriangleExclamation" size="xl" class="me-3"></fa-icon>-->
+<!--                    {{store.error()}}</div>-->
+<!--            </div>-->
+<!--            <br>-->
+<!--        }-->
 
         <!-- Reset password -->
         @if (!isSignUp()) {

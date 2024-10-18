@@ -8,7 +8,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../user.model"
 import {FirebaseService} from "../../persistance/firebase.service";
 import {removeNullishObjectKeys} from "../../shared/util";
-import {debounceTime} from "rxjs";
+import {Subscription} from "rxjs";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ModalConfirm} from "../../modals/confirm";
 
 @Component({
     selector: 'customer-detail',
@@ -20,31 +22,22 @@ import {debounceTime} from "rxjs";
 export class CustomerDetailComponent implements OnInit, OnDestroy {
     @ViewChild('form', {static: true}) form!: NgForm;
     protected readonly  store = inject(PhotoOrdersStore)
+    protected ngbModal = inject(NgbModal);
     id = input<string>();  // Can be populated by router :id
     isCompany = signal(false);
     isRendered = output<boolean>();
+    valueChangesSubscription: Subscription | undefined;
 
     constructor(private router: Router, private route: ActivatedRoute, private firebaseService: FirebaseService) {
         effect(() => {
-            const id = this.id() || '';
-            const userMap = this.store.usersEntityMap();
-            const selectedUser = userMap[id];
+            const selectedUser = this.store.getUser(this.id())
             setTimeout(() => this.setFormData(selectedUser));
         });
     }
 
     setFormData(user: User | null) {
-        if (user) {
-            this.form.resetForm(user)
-        } else {
-            this.form.resetForm();
-        }
+        this.form.resetForm(user);
         this.store.setDirty(false);
-        this.form.valueChanges?.pipe(
-            debounceTime(500)
-        ).subscribe(() => {
-            this.store.setDirty(true);
-        })
     }
 
     validate() {
@@ -67,12 +60,31 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         this.router.navigate(['../'], {relativeTo: this.route});
     }
 
+    async onDelete() {
+        const {firstName, lastName} = this.form.value;
+        const modalRef = this.ngbModal.open(ModalConfirm);
+        modalRef.componentInstance.btnOkText.set('Löschen');
+        modalRef.componentInstance.btnCancelText.set('Abbrechen');
+        modalRef.componentInstance.title.set('User Löschen?');
+        modalRef.componentInstance.message.set('');
+        modalRef.componentInstance.html.set(`<p>User ${firstName} ${lastName} wirklich löschen?</p><p>Dies kann nicht rückgängig gemacht werden!</p>`);
+        modalRef.componentInstance.btnClass.set('btn-danger');
+        await modalRef.result;
+        this.store.removeUser(this.id());
+        await this.router.navigate(['../'], {relativeTo: this.route});
+    }
+
     ngOnInit(): void {
         this.isRendered.emit(true);
+        this.valueChangesSubscription = this.form.valueChanges?.subscribe(() => {
+            if (!this.store.isDirty()) this.store.setDirty(true);
+        })
+
     }
 
     ngOnDestroy(): void {
         this.isRendered.emit(false);
+        this.valueChangesSubscription?.unsubscribe();
     }
 
 

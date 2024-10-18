@@ -41,7 +41,7 @@ export class AuthService {
             if (authState == null) {
                 this.store.updateActiveUser(null);
             } else if (this.store.activeUser() == null) {
-                this.store.updateActiveUser(authState);
+                this.store.updateActiveUser(authState);     // Only update if logged out (skip during signup)
             }
             console.info(authState ? 'User login:' + authState.email : 'User logout');
         });
@@ -59,12 +59,12 @@ export class AuthService {
         if (!email || !password) throw getError('auth/missing-app-credential');
         try {
             const userCredential: UserCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-            const user: AuthUser = userCredential.user;
+            const newUser: AuthUser = userCredential.user;
             await firebaseAuth.updateCurrentUser(this.store.authUser());  // Login original user again
             return {
-                id: user.uid,
-                email: user.email,
-                userName: user.email
+                id: newUser.uid,
+                email: newUser.email,
+                userName: newUser.email
             };
         } catch (err: unknown) {
             throw getError(err)

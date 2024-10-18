@@ -180,21 +180,24 @@
 
     <hr>
 
-    <!-- Button Ok / Cancel -->
+    <!-- Button Ok / Cancel / Delete -->
     <div class="row ">
         <div class="col text-center">
             <button type="submit"
-                    class="btn btn-primary col-4 me-1"
+                    class="btn btn-primary col-4"
 
                     (mouseenter)="validate()"
-            >Speichern
-            </button>
-
+            >Speichern</button>
             <button type="button"
-                    class="btn btn-light col-4"
+                    class="btn btn-light col-4 ms-3"
                     (click)="onCancel()"
-            >Abbrechen
-            </button>
+            >Abbrechen</button>
+            @if (store.isAdmin()) {
+                <button type="button"
+                        class="btn btn-outline-danger col-auto ms-3"
+                        (click)="onDelete()"
+                >Löschen</button>
+            }
         </div>
     </div>
 
