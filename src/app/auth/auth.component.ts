@@ -9,6 +9,8 @@ import {FirebaseService} from "../persistance/firebase.service";
 import {AuthService} from "./auth.service";
 import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {User} from "../customers/user.model";
+import {ToastService} from "../shared/toasts/toast.service";
+import {safeAwait} from "../shared/util";
 
 @Component({
     selector: 'auth-form',
@@ -36,7 +38,8 @@ export class AuthComponent implements AfterViewInit{
         private firebaseService: FirebaseService,
         private location: Location,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private toastService: ToastService,
     ) {
         const url = this.route.snapshot.url;
         this.isSignUp.set(url[url.length - 1].path.includes('signup'))
@@ -73,6 +76,7 @@ export class AuthComponent implements AfterViewInit{
             await this.authService.signInEmail(email, password);
             this.store.setIdle();
             this.location.back();
+            this.toastService.showSuccess('Logged in successfully!');
         } catch (err) {
             this.store.setError((err as Error).message);
         }
@@ -96,7 +100,7 @@ export class AuthComponent implements AfterViewInit{
             this.store.setBusy();
             await this.authService.sendResetEmail(email);
             this.store.setIdle()
-            alert(`Email sent to ${email}`);
+            this.toastService.showSuccess(`Email wurde an ${email} gesendet`);
         } catch (err) {
             this.store.setError((err as Error).message);
         }
@@ -105,7 +109,6 @@ export class AuthComponent implements AfterViewInit{
     back(): void {
         this.location.back();
     }
-
 
     validateMinLengthNoSpace(value: string): boolean {
         return /^(?!.* ).{10,100}$/.test(value)!;

@@ -170,4 +170,31 @@ function setBrokenImage(e: ErrorEvent) {
     if (!target.src.includes(brokenImg)) target.src = brokenImg;
 }
 
-export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage };
+/**
+ * Use for async calls to handle errors gracefully
+ * @param {Promise<T>} promise An asnyc function returning a promise (e.g. http call)
+ * @param errorHandler optional error handling function, can return treated error
+ * @example Simple
+ * const [error, data] = await safeAwait( fetch("https://api.example.com") );
+ * if (error) return; // Exit if there's an error
+ * return data; // Return response data if successful
+ *
+ * @example 2 - Using an optional error handler
+ * const [error, response] = await safeAwait(
+ *   fetch("https://api.example.com"),
+ *   (err) => console.error("Request failed:", err)
+ * );
+ * return response; // Return response if successful
+ *
+ */
+async function safeAwait<T>(promise: Promise<T | null>, errorHandler?: (error: any) => any): Promise<[error: any, data: T | null]> {
+    try {
+        const data = await promise;
+        return [null, data]; // Success: No error, return the data
+    } catch (error) {
+        if (errorHandler) error = errorHandler(error) || error; // Optional error handler
+        return [error, null]; // Error occurred, return error with null data
+    }
+}
+
+export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage, safeAwait };

@@ -1,9 +1,7 @@
-import {Component, inject, OnDestroy} from '@angular/core';
+import {Component, effect, inject, OnDestroy} from '@angular/core';
 import {ToastService} from './toast.service';
 import {ToastsContainer} from './toasts-container.component';
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
-import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {pipe, tap} from "rxjs";
 
 @Component({
     selector: 'ngbd-toast-global',
@@ -17,14 +15,10 @@ export class NgbdToastGlobal implements OnDestroy {
     store = inject(PhotoOrdersStore);
 
     constructor() {
-        rxMethod<string | null>(pipe(
-            tap(error => {
-                setTimeout(() => {
-                    if (error) this.toastService.showError('Error occurred');
-                }, 20)
-                // if (error) this.toastService.showError('Error occurred');
-            })
-        ))(this.store.error);
+        effect(() => {
+            const error = this.store.error();
+            if (error) setTimeout(() => this.toastService.showError(error));
+        })
     }
 
     ngOnDestroy(): void {

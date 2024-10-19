@@ -1,4 +1,5 @@
 import { Injectable, TemplateRef } from '@angular/core';
+import {signal} from "@angular/core";
 
 export interface Toast {
     header?: string;
@@ -11,33 +12,37 @@ export interface Toast {
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
-    toasts: Toast[] = [];
+    toasts = signal<Toast[]>([]);
 
     show(toast: Toast) {
-        this.toasts.push(toast);
+        this.toasts.update(toasts => ([...toasts, toast]));
     }
 
     showNormal(param: Toast | string) {
         const toastTemplate: Toast = { delay: 5000 };
-        this.toasts.push(this.getToast(param, toastTemplate));
+        const toast = this.getToast(param, toastTemplate);
+        this.toasts.update(toasts => ([...toasts, toast]));
     }
 
     showError(param: Toast | string) {
         const toastTemplate: Toast = { classname: 'bg-danger text-light', icon: 'error', delay: 10000 };
-        this.toasts.push(this.getToast(param, toastTemplate));
+        const toast = this.getToast(param, toastTemplate);
+        this.toasts.update(toasts => ([...toasts, toast]));
     }
 
     showSuccess(param: Toast | string) {
         const toastTemplate: Toast = { classname: 'bg-success text-light', icon: 'success', delay: 5000 };
-        this.toasts.push(this.getToast(param, toastTemplate));
+        const toast = this.getToast(param, toastTemplate);
+        this.toasts.update(toasts => ([...toasts, toast]));
     }
 
     remove(toast: Toast) {
-        this.toasts = this.toasts.filter((t) => t !== toast);
+        const toasts = this.toasts().filter((t) => t !== toast);
+        this.toasts.set(toasts);
     }
 
     clear() {
-        this.toasts.splice(0, this.toasts.length);
+        this.toasts.set([]);
     }
 
     private getToast(param: Toast | string, toastTemplate: Toast) {

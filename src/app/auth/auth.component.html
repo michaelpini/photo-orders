@@ -74,17 +74,6 @@
                 [disabled]="!form.valid"
         >{{viewEl().btnOk}}</button>
 
-<!--        &lt;!&ndash; Error text &ndash;&gt;-->
-<!--        @if(store.error()) {-->
-<!--            <hr>-->
-<!--            <div class="alert alert-danger">-->
-<!--                <div>-->
-<!--                    <fa-icon [icon]="faTriangleExclamation" size="xl" class="me-3"></fa-icon>-->
-<!--                    {{store.error()}}</div>-->
-<!--            </div>-->
-<!--            <br>-->
-<!--        }-->
-
         <!-- Reset password -->
         @if (!isSignUp()) {
             <button type="button" class="btn btn-link mt-4 mx-auto"

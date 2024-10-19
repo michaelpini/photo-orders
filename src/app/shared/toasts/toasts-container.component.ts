@@ -9,7 +9,7 @@ import {ToastService} from "./toast.service";
     imports: [NgbToastModule, NgTemplateOutlet],
     template: `
         <div class="toast-container position-fixed bottom-center p-3">
-            @for (toast of toastService.toasts; track toast) {
+            @for (toast of toastService.toasts(); track toast) {
                 <ngb-toast
                         [header]="toast.header ||''"
                         [class]="toast.classname"

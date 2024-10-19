@@ -48,11 +48,8 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
 
     async onSubmit(form: NgForm): Promise<void> {
         if (form.invalid) return;
-        const data = removeNullishObjectKeys(form.value) as User;
-        this.firebaseService.setUser(data).then((user: User) => {
-            this.store.setUser(user);
-            alert('Gespeichert')
-        });
+        const user = removeNullishObjectKeys(form.value) as User;
+        this.store.setUser(user);
     };
 
     onCancel() {

@@ -5,8 +5,9 @@ import {FirebaseService} from "../persistance/firebase.service";
 import {User as AuthUser} from "firebase/auth";
 import {User} from "../customers/user.model";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {map, pipe, tap} from "rxjs";
+import {first, map, pipe, tap} from "rxjs";
 import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
+import {ToastService} from "../shared/toasts/toast.service";
 
 export type State = {
     authUser: AuthUser | null;
@@ -25,9 +26,9 @@ export const PhotoOrdersStore = signalStore(
     withState(initialState),
     withLoadingState(),
     withEntities({entity: type<User>(), collection: 'users'}),
-    withMethods((store, firebaseService = inject(FirebaseService)) => ({
-        setBusy(busy: boolean = false) {
-            patchState(store, busy ? setBusy() : setIdle());
+    withMethods((store, firebaseService = inject(FirebaseService), toastService = inject(ToastService)) => ({
+        setBusy() {
+            patchState(store, setBusy());
         },
         setIdle() {
             patchState(store, setIdle())
@@ -49,31 +50,46 @@ export const PhotoOrdersStore = signalStore(
             const userMap = store.usersEntityMap();
             return userMap[id] || null;
         },
-        setUser(user: User) {
-            // Firebase
-            patchState(store, setEntity(user, {collection: 'users'}));
-        },
-        removeUser(id: string = '') {
-            // Firebase
-            patchState(store, removeEntity(id, {collection: 'users'}));
-        },
-        setAllUsers(users: User[]) {
-            patchState(store, setAllEntities(users, {collection: 'users'}), setIdle());
-        },
         async loadUsers(user: User | null | undefined): Promise<User[]>{
             patchState(store, setBusy());
             let users: User[] = [];
-            if (user?.auth === 'user') {users = [user]}
-            if (user?.auth === 'admin') {users = await firebaseService.getAllUsers();}
-            this.setAllUsers(users);
-            return users;
+            if (user?.auth === 'user') users = [user];
+            try {
+                if (user?.auth === 'admin') {users = await firebaseService.getAllUsers();}
+                patchState(store, setAllEntities(users, {collection: 'users'}), setIdle());
+                return users;
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+        async setUser(user: User) {
+            try {
+                await firebaseService.setUser(user);
+                patchState(store, setEntity(user, {collection: 'users'}));
+                toastService.showSuccess('User wurde gespeichert');
+            } catch (error) {
+                this.setError((error as Error).message);
+            }
+        },
+        async removeUser(id: string = '') {
+            try {
+                await firebaseService.removeUser(id);
+                patchState(store, removeEntity(id, {collection: 'users'}));
+                toastService.showSuccess('User wurde gelöscht. (Auth separat löschen)');
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
         },
         async getAuth() {
             return new Promise(resolve => {
-                rxMethod<User | null | undefined>(pipe(
+                const rx = rxMethod<User | null | undefined>(pipe(
                     tap(user => {
+                        if (user === undefined) return
                         if (user === null) resolve(null)
                         else if (typeof user === 'object') resolve(user.auth)
+                        rx.unsubscribe();
                     })
                 ))(store.activeUser);
             })
