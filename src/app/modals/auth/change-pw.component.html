@@ -1,0 +1,57 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Passwort ändern</h4>
+    <button type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('x')"
+    ></button>
+</div>
+
+<div class="modal-body">
+    <form (submit)="submit(form)" class="d-flex flex-column" #form="ngForm">
+
+        <!-- Old Password -->
+        <password-formfield
+                id="oldPassword"
+                class="form-floating position-relative mb-2"
+                name="oldPassword"
+                ngModel
+                required
+        >
+            <label for="oldPassword">Aktuelles Passwort:</label>
+        </password-formfield>
+
+        <!-- New Password -->
+        <password-formfield
+                id="newPassword"
+                class="form-floating position-relative mb-2"
+                name="newPassword"
+                ngModel
+                required
+                [enableValidation]="true"
+        >
+            <label for="newPassword">Neues Passwort:</label>
+            <div class="mt-2">
+                <password-formfield
+                        id="repeatPassword"
+                        class="form-floating position-relative mb-2"
+                        name="repeatPassword"
+                        ngModel
+                        required
+                >
+                    <label for="repeatPassword">Neues Passwort wiederholen:</label>
+                </password-formfield>
+            </div>
+        </password-formfield>
+
+        <!-- Repeat new Password -->
+
+
+        <!-- Button -->
+        <button type="submit"
+                class="btn btn-primary w-100 py-2"
+                [disabled]="!form.valid"
+        > Passwort ändern</button>
+
+    </form>
+</div>

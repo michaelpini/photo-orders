@@ -41,9 +41,9 @@
                 }
                 @else {
                     <li class="nav-item">
-                        <a class="nav-link" role="button"
-                        routerLink="/signin" routerLinkActive="active"
-                        >Login</a>
+                        <button class="btn btn-outline-secondary"
+                                (click)="onSignIn()"
+                        >Login</button>
                     </li>
                 }
             </ul>

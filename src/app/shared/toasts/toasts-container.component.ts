@@ -36,7 +36,7 @@ import {ToastService} from "./toast.service";
                                 }
                             </svg>
                         }
-                        <span>{{ toast.message }}</span>
+                        <span class="toast-message">{{ toast.message }}</span>
                     } 
                     @if (toast.template) {
                         <ng-template [ngTemplateOutlet]="toast.template"></ng-template>
@@ -51,6 +51,9 @@ import {ToastService} from "./toast.service";
             left: 50%; 
             transform: translateX(-50%); 
             z-index: 1200; 
+        }
+        .toast-message {
+            white-space: pre;
         }
     `,
 })

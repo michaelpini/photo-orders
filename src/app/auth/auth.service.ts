@@ -78,6 +78,11 @@ export class AuthService {
     async sendResetEmail(email: string): Promise<void> {
         await (sendPasswordResetEmail(firebaseAuth, email));
     }
+
+    async changePassword(oldPassword: string, newPassword: string) {
+        // Todo First reauthenticate
+        // Todo Submit password change request
+    }
 }
 
 // Todo: Delete code types before deploying

@@ -10,7 +10,8 @@ import {FirebaseService} from "../../persistance/firebase.service";
 import {removeNullishObjectKeys} from "../../shared/util";
 import {Subscription} from "rxjs";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ModalConfirm} from "../../modals/confirm";
+import {ModalConfirm, ModalConfirmConfig} from "../../modals/confirm/confirm";
+import {ModalService} from "../../modals/modal.service";
 
 @Component({
     selector: 'customer-detail',
@@ -28,7 +29,12 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     isRendered = output<boolean>();
     valueChangesSubscription: Subscription | undefined;
 
-    constructor(private router: Router, private route: ActivatedRoute, private firebaseService: FirebaseService) {
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private firebaseService: FirebaseService,
+        private modalService: ModalService
+        ) {
         effect(() => {
             const selectedUser = this.store.getUser(this.id())
             setTimeout(() => this.setFormData(selectedUser));
@@ -59,14 +65,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
 
     async onDelete() {
         const {firstName, lastName} = this.form.value;
-        const modalRef = this.ngbModal.open(ModalConfirm);
-        modalRef.componentInstance.btnOkText.set('Löschen');
-        modalRef.componentInstance.btnCancelText.set('Abbrechen');
-        modalRef.componentInstance.title.set('User Löschen?');
-        modalRef.componentInstance.message.set('');
-        modalRef.componentInstance.html.set(`<p>User ${firstName} ${lastName} wirklich löschen?</p><p>Dies kann nicht rückgängig gemacht werden!</p>`);
-        modalRef.componentInstance.btnClass.set('btn-danger');
-        await modalRef.result;
+        await this.modalService.confirmDeleteUser(firstName, lastName);
         this.store.removeUser(this.id());
         await this.router.navigate(['../'], {relativeTo: this.route});
     }

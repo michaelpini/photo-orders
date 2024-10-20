@@ -1,8 +1,19 @@
-<div class="row">
-    <div class="col">
-        <button class="btn btn-primary" (click)="logout()">
-            Logout
-        </button>
-
+<div class="container-fluid">
+    <div class="row d-flex">
+        <div class="col-auto ms-auto">
+            <button class="btn btn-outline-primary" (click)="changePassword()">
+                Passwort ändern
+            </button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-primary" (click)="changeEmail()">
+                User-Email ändern
+            </button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-danger" (click)="logout()">
+                Logout
+            </button>
+        </div>
     </div>
 </div>

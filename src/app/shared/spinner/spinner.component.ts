@@ -10,7 +10,6 @@ export class SpinnerComponent {
     /**
      * Spinner component
      * @example
-     * <spinner [open]="isBusy"><spinner/>    // bind isBusy PROPERTY of parent component
      * <spinner [open]="isBusy()"><spinner/>  // bind isBusy SIGNAL of parent component
      * <spinner open><spinner/>  // open attribute will always show spinner (to test)
      */

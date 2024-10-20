@@ -187,13 +187,14 @@ function setBrokenImage(e: ErrorEvent) {
  * return response; // Return response if successful
  *
  */
-async function safeAwait<T>(promise: Promise<T | null>, errorHandler?: (error: any) => any): Promise<[error: any, data: T | null]> {
+async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (error: any) => any): Promise<[error: any, data: T | null]> {
     try {
         const data = await promise;
         return [null, data]; // Success: No error, return the data
     } catch (error) {
         if (errorHandler) error = errorHandler(error) || error; // Optional error handler
-        return [error, null]; // Error occurred, return error with null data
+        return [error || new Error('unknown error'), null]; // Error occurred, return error with null data
+
     }
 }
 

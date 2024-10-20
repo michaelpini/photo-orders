@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ config().title }}</h4>
+    <button type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('x')"
+    ></button>
+</div>
+
+<div class="modal-body">
+    <div class="mb-3">
+        @if (config().message) {
+            <div class="col">
+                {{ config().message }}
+            </div>
+        }
+        @if (config().html) {
+            <div [innerHTML]="config().html || '' | safeHtml"></div>
+        }
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button"
+            class="btn"
+            [class]="config().btnClass"
+            (click)="modal.close('ok')"
+    >{{ config().btnOkText }}</button>
+    <button type="button"
+            class="btn btn-outline-secondary"
+            (click)="modal.dismiss('cancel')"
+    >{{ config().btnCancelText }}</button>
+</div>

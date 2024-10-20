@@ -1,6 +1,6 @@
 import {ApplicationConfig, LOCALE_ID, provideExperimentalZonelessChangeDetection} from '@angular/core';
 import {provideRouter, withComponentInputBinding} from '@angular/router';
-import {routes} from './app.routes';
+import {routes} from './routes/app.routes';
 import {provideHttpClient} from "@angular/common/http";
 
 export const appConfig: ApplicationConfig = {
