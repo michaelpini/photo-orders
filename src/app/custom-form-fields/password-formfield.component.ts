@@ -12,6 +12,7 @@ import {
 } from "@angular/forms";
 
 type Validated = {
+    required?: boolean;
     minLengthNoSpace?: boolean,
     hasCapital?: boolean,
     hasChar?: boolean,
@@ -32,7 +33,8 @@ type Validated = {
 export class PasswordFormFieldComponent implements ControlValueAccessor, Validator  {
     protected readonly faEyeSlash = faEyeSlash;
     protected readonly faEye = faEye;
-    enableValidation = input(false);
+    enableValidation = input<boolean | string>(false);
+    required = input<boolean | string>(false);
     disabled = model(false);
     value = signal('');
     isPasswordHidden = signal(true);
@@ -85,14 +87,16 @@ export class PasswordFormFieldComponent implements ControlValueAccessor, Validat
     }
 
     validate(control: AbstractControl): ValidationErrors | null {
-        if (!this.enableValidation()) return null;
         const val: string = control.value;
         const validated: Validated = {};
         const errors: Validated = {}
-        this.validateMinLengthNoSpace(val) ? validated.minLengthNoSpace = true : errors.minLengthNoSpace = false;
-        this.validateHasCapital(val) ? validated.hasCapital = true : errors.hasCapital = false;
-        this.validateHasChar(val) ? validated.hasChar = true : errors.hasChar = false;
-        this.validateHasNumber(val) ? validated.hasNumber = true : errors.hasNumber = false;
+        if (this.required() || this.required() === '') val ? validated.required = true : errors.required = false;
+        if (this.enableValidation() || this.enableValidation() === '') {
+            this.validateMinLengthNoSpace(val) ? validated.minLengthNoSpace = true : errors.minLengthNoSpace = false;
+            this.validateHasCapital(val) ? validated.hasCapital = true : errors.hasCapital = false;
+            this.validateHasChar(val) ? validated.hasChar = true : errors.hasChar = false;
+            this.validateHasNumber(val) ? validated.hasNumber = true : errors.hasNumber = false;
+        }
         this.validated.set(validated);
         this.isInvalid = (Object.keys(errors).length > 0);
         return this.isInvalid ? errors : null;

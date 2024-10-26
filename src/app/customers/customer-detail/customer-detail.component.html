@@ -1,38 +1,50 @@
 <form class="form" (submit)="onSubmit(form)" #form=ngForm>
 
     <!--User name-->
-    <div class="row mb-3 g-2">
-        <div class="col">
-            <label class="form-label" for="userName">User Name</label>
-            <div class="input-group">
-                <span class="input-group-text">&#64;</span>
-                <input type="text"
-                       class="form-control"
-                       id="userName"
-                       name="userName"
-                       ngModel
-                       disabled
-                >
+    @if (!editOwnAccount()) {
+        <div class="row mb-3 g-2">
+            <div class="col">
+                <label class="form-label" for="userName">User Name</label>
+                <div class="input-group">
+                    @if (!formValue()?.userName) {
+                        <button class="input-group-text btn btn-outline-primary"
+                                title="E-mail an Kunden senden zur Erstellung eines Kontos"
+                                (click)="onSignUpUser()" >
+                            <fa-icon [icon]="faUserPlus" ></fa-icon>
+                        </button>
+                    } @else if (formValue()?.emailVerified) {
+                        <fa-icon [icon]="faUserCheck" class="input-group-text"></fa-icon>
+                    } @else {
+                        <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
+                    }
+                    <input type="text"
+                           class="form-control"
+                           id="userName"
+                           name="userName"
+                           ngModel
+                           disabled
+                    >
+                </div>
             </div>
-        </div>
 
-        <!-- Auth-->
-        <div class="auth">
-            <label for="auth" class="form-label">Auth *</label>
-            <select class="form-select"
-                    [ngClass]="{'is-invalid': !auth.valid && auth.touched}"
-                    id="auth"
-                    name="auth"
-                    ngModel
-                    required
-                    #auth="ngModel"
-            >
-                <option value="admin">admin</option>
-                <option value="user">user</option>
-            </select>
-        </div>
+            <!-- Auth-->
+            <div class="auth">
+                <label for="auth" class="form-label">Auth *</label>
+                <select class="form-select"
+                        [ngClass]="{'is-invalid': !auth.valid && auth.touched}"
+                        id="auth"
+                        name="auth"
+                        ngModel
+                        required
+                        #auth="ngModel"
+                >
+                    <option value="admin">admin</option>
+                    <option value="user">user</option>
+                </select>
+            </div>
 
-    </div>
+        </div>
+    }
 
     <!-- First Name  |  Last Name-->
     <div class="row g-2 mb-3 align-items-center">
@@ -181,18 +193,19 @@
     <hr>
 
     <!-- Button Ok / Cancel / Delete -->
-    <div class="row ">
-        <div class="col text-center">
+    <div class="row">
+        <div class="col d-flex justify-content-center">
             <button type="submit"
-                    class="btn btn-primary col-4"
-
-                    (mouseenter)="validate()"
+                    class="btn btn-primary col"
+                    (mouseenter)="markAllTouched()"
             >Speichern</button>
-            <button type="button"
-                    class="btn btn-light col-4 ms-3"
-                    (click)="onCancel()"
-            >Abbrechen</button>
-            @if (store.isAdmin()) {
+            @if (!editOwnAccount()) {
+                <button type="button"
+                        class="btn btn-light col ms-3"
+                        (click)="onCancel()"
+                >Abbrechen</button>
+            }
+            @if (!editOwnAccount() && store.isAdmin()) {
                 <button type="button"
                         class="btn btn-outline-danger col-auto ms-3"
                         (click)="onDelete()"

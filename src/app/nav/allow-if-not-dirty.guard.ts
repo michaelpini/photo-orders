@@ -9,8 +9,8 @@ export const allowIfNotDirtyGuard: () => Promise<boolean> = async () => {
 
     if (!store.isDirty()) return true;
 
-    const [error, success] = await safeAwait(modalService.discardChanges());
-    if (error) return error;
+    const [error, success] = await safeAwait(modalService.confirmDiscardChanges());
+    if (error) return false;
     store.setDirty(false);
     return true;
 };

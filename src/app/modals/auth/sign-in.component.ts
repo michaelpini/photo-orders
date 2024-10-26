@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {AuthService} from "../../auth/auth.service";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {ToastService} from "../../shared/toasts/toast.service";
@@ -11,7 +10,7 @@ import {NgClass} from "@angular/common";
 @Component({
     selector: 'sign-in',
     standalone: true,
-    imports: [FormsModule, FaIconComponent, NgClass, PasswordFormFieldComponent],
+    imports: [FormsModule, NgClass, PasswordFormFieldComponent],
     templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements AfterViewInit{

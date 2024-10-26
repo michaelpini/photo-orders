@@ -2,8 +2,8 @@ import {inject, Injectable} from '@angular/core';
 import {firebaseAuth} from "../../main";
 import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FirebaseError} from "firebase/app"
-import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential, User as AuthUser, deleteUser} from 'firebase/auth';
-import {User} from "../customers/user.model";
+import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential, User as AuthUser, updatePassword, updateEmail, sendEmailVerification} from 'firebase/auth';
+import {delay} from "../shared/util";
 
 type Lang = 'de' | 'en'
 const errorMessagesArray: {[key: string]: {en: string, de: string }} = {
@@ -39,9 +39,9 @@ export class AuthService {
     constructor() {
         firebaseAuth.onAuthStateChanged(authState => {
             if (authState == null) {
-                this.store.updateActiveUser(null);
+                this.store.setActiveUserFromAuthUser(null);
             } else if (this.store.activeUser() == null) {
-                this.store.updateActiveUser(authState);     // Only update if logged out (skip during signup)
+                this.store.setActiveUserFromAuthUser(authState);     // Only update if logged out (skip during signup)
             }
             console.info(authState ? 'User login:' + authState.email : 'User logout');
         });
@@ -55,17 +55,11 @@ export class AuthService {
         }
     }
 
-    async signUpEmail(email: string, password: string): Promise<User> {
+    async signUpEmail(email: string, password: string): Promise<AuthUser> {
         if (!email || !password) throw getError('auth/missing-app-credential');
         try {
             const userCredential: UserCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-            const newUser: AuthUser = userCredential.user;
-            await firebaseAuth.updateCurrentUser(this.store.authUser());  // Login original user again
-            return {
-                id: newUser.uid,
-                email: newUser.email,
-                userName: newUser.email
-            };
+            return userCredential.user;
         } catch (err: unknown) {
             throw getError(err)
         }
@@ -79,10 +73,27 @@ export class AuthService {
         await (sendPasswordResetEmail(firebaseAuth, email));
     }
 
-    async changePassword(oldPassword: string, newPassword: string) {
-        // Todo First reauthenticate
-        // Todo Submit password change request
+    async sendEmailVerificationLink(): Promise<void> {
+        await sendEmailVerification(firebaseAuth.currentUser!);
     }
+
+    async changePassword(oldPassword: string, newPassword: string) {
+        const user = firebaseAuth.currentUser;
+        if (!user || !user.email) throw new Error('No user or user email!');
+        await signInWithEmailAndPassword(firebaseAuth, user.email, oldPassword);
+        await delay(3000);
+        await updatePassword(user, newPassword);
+    }
+
+    async changeEmail(newEmail: string, password: string) {
+        const user = firebaseAuth.currentUser;
+        if (!user || !user.email) throw new Error('No user or user email!');
+        await signInWithEmailAndPassword(firebaseAuth, user.email, password);
+        await delay(3000);
+        await updateEmail(user, newEmail);
+    }
+
+
 }
 
 // Todo: Delete code types before deploying

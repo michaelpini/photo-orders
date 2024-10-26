@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Neuer Kunde</h4>
+    <h4 class="modal-title" id="modal-basic-title">Konto erstellen</h4>
     <button type="button"
             class="btn-close"
             aria-label="Close"
@@ -8,42 +8,47 @@
 </div>
 
 <div class="modal-body">
-    <form (submit)="submit(form)" class="d-flex flex-column" #form="ngForm">
+    @if (!this.id) {
+        <h4>Keine ID angegeben</h4>
+        <p>Es kann nur ein Login Konto für eine bestehende Kunden-Id erstellt werden!</p>
+    } @else{
+        <form (submit)="submit(form)" class="d-flex flex-column" #form="ngForm">
 
-        <!-- Email -->
-        <div class="form-floating mb-2">
-            <input type="email"
-                   id="signUpEmail"
-                   class="form-control"
-                   [ngClass]="{'is-invalid': email.invalid && email.touched}"
-                   autocomplete="email"
-                   placeholder="name@provider.com"
-                   ngModel
-                   name="email"
-                   required
-                   email
-                   #email="ngModel"
+            <!-- Email -->
+            <div class="form-floating mb-2">
+                <input type="email"
+                       id="signUpEmail"
+                       class="form-control"
+                       [ngClass]="{'is-invalid': email.invalid && email.touched}"
+                       autocomplete="email"
+                       placeholder="name@provider.com"
+                       ngModel
+                       name="email"
+                       required
+                       email
+                       #email="ngModel"
+                >
+                <label for="signUpEmail">Email:</label>
+            </div>
+
+            <!-- Password -->
+            <password-formfield
+                    id="signUpPassword"
+                    class="form-floating position-relative mb-2"
+                    name="password"
+                    ngModel
+                    required
+                    enableValidation
             >
-            <label for="signUpEmail">Email:</label>
-        </div>
+                <label for="signUpPassword">Passwort:</label>
+            </password-formfield>
 
-        <!-- Password -->
-        <password-formfield
-                id="signUpPassword"
-                class="form-floating position-relative mb-2"
-                name="password"
-                ngModel
-                required
-                [enableValidation]="true"
-        >
-            <label for="signUpPassword">Passwort:</label>
-        </password-formfield>
+            <!-- Button -->
+            <button type="submit"
+                    class="btn btn-primary w-100 py-2"
+                    [disabled]="!form.valid"
+            > Neuen Kunden erstellen</button>
 
-        <!-- Button -->
-        <button type="submit"
-                class="btn btn-primary w-100 py-2"
-                [disabled]="!form.valid"
-        > Neuen Kunden erstellen</button>
-
-    </form>
+        </form>
+    }
 </div>

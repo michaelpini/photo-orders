@@ -1,19 +1,33 @@
 <div class="container-fluid">
-    <div class="row d-flex">
-        <div class="col-auto ms-auto">
-            <button class="btn btn-outline-primary" (click)="changePassword()">
-                Passwort ändern
+
+<!-- Buttons -->
+    <div class="row d-flex flex-row-reverse">
+        <div class="col-auto mb-2">
+            <button class="btn btn-danger col-md-auto" (click)="logout()">
+                Logout
             </button>
         </div>
-        <div class="col-auto">
+        <div class="col-sm-auto d-flex justify-content-end mb-2">
+            <button class="btn btn-outline-primary me-2" (click)="changePassword()">
+                Passwort ändern
+            </button>
             <button class="btn btn-outline-primary" (click)="changeEmail()">
                 User-Email ändern
             </button>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-danger" (click)="logout()">
-                Logout
+        <div class="col-sm-auto d-flex justify-content-end mb-2">
+            <button class="btn btn-outline-primary" (click)="verifyEmail()">
+                User-Email bestätigen
             </button>
         </div>
+    </div>
+
+<!-- User Form -->
+    <div class="container-fluid w-max-lg">
+        <h1>Konto Informationen</h1>
+        <customer-detail
+                [id]="userId()"
+                [editOwnAccount]="true"
+        ></customer-detail>
     </div>
 </div>

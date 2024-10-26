@@ -198,4 +198,20 @@ async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (er
     }
 }
 
-export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage, safeAwait };
+/**
+ * Returns a Promise, which will be resolved after a delay in milliseconds
+ * @param {number} delayMillis delay time in milliseconds
+ * @example
+ * async function checkMe() {
+ *     await verifyUser();
+ *     await delay(1000);  // waits for a second
+ *     await updateUser();
+ * }
+ */
+function delay(delayMillis: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(), delayMillis);
+    })
+}
+
+export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage, safeAwait, delay };

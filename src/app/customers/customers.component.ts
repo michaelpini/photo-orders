@@ -1,9 +1,11 @@
-import {Component, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {CustomerListComponent} from "./customer-list/customer-list.component";
 import {CustomerDetailComponent} from "./customer-detail/customer-detail.component";
 import {NgClass} from "@angular/common";
-import {ModalService} from "../modals/modal.service";
-import {RouterOutlet} from "@angular/router";
+import {Router, RouterOutlet} from "@angular/router";
+import {User} from "./user.model";
+import {PhotoOrdersStore} from "../store/photoOrdersStore";
+import {FirebaseService} from "../persistance/firebase.service";
 
 @Component({
     selector: 'app-customers',
@@ -12,10 +14,19 @@ import {RouterOutlet} from "@angular/router";
     styleUrl: './customers.component.scss'
 })
 export class CustomersComponent {
+    protected store = inject(PhotoOrdersStore);
     showDetail = signal(false);
-    constructor(private modalService: ModalService) {  }
+    constructor(private firebaseService: FirebaseService, private router: Router) {  }
 
     async createUser() {
-        this.modalService.signUp();
+        try {
+            this.store.setBusy();
+            const newUser: User = await this.firebaseService.addUser();
+            this.store.setUser(newUser);
+            this.store.setIdle();
+            await this.router.navigate(['/customers/' + newUser.id]);
+        } catch (err) {
+            this.store.setError((err as Error).message);
+        }
     }
 }

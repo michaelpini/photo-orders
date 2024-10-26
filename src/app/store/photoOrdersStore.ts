@@ -3,9 +3,9 @@ import {patchState, signalStore, type, withComputed, withHooks, withMethods, wit
 import {removeEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/entities";
 import {FirebaseService} from "../persistance/firebase.service";
 import {User as AuthUser} from "firebase/auth";
-import {User} from "../customers/user.model";
+import {Auth, User} from "../customers/user.model";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {first, map, pipe, tap} from "rxjs";
+import {map, pipe, tap} from "rxjs";
 import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
 import {ToastService} from "../shared/toasts/toast.service";
 
@@ -39,14 +39,22 @@ export const PhotoOrdersStore = signalStore(
         setDirty(dirty: boolean = false) {
             patchState(store, state => ({...state, isDirty: dirty}));
         },
-        async updateActiveUser(authUser: AuthUser | null = null) {
-            patchState(store, setBusy());
-            let activeUser: User | null | undefined;
-            if (authUser) activeUser = await firebaseService.getUser(authUser.uid);
-            patchState(store, state => ({...state, authUser, activeUser: activeUser || null}), setIdle());
+        setActiveUser(activeUser: User | null) {
+            patchState(store, state => ({...state, activeUser}));
+        },
+        async setActiveUserFromAuthUser(authUser: AuthUser | null = null): Promise<void> {
+            try {
+                patchState(store, setBusy());
+                let activeUser: User | null | undefined;
+                if (authUser) activeUser = await firebaseService.getUserByUid(authUser.uid);
+                patchState(store, state => ({...state, authUser, activeUser: activeUser || null}), setIdle());
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
         },
         // Users
-        getUser(id: string = '') {
+        getUser(id = ''): User | null {
             const userMap = store.usersEntityMap();
             return userMap[id] || null;
         },
@@ -63,7 +71,7 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
-        async setUser(user: User) {
+        async setUser(user: User): Promise<void> {
             try {
                 await firebaseService.setUser(user);
                 patchState(store, setEntity(user, {collection: 'users'}));
@@ -72,7 +80,19 @@ export const PhotoOrdersStore = signalStore(
                 this.setError((error as Error).message);
             }
         },
-        async removeUser(id: string = '') {
+        async updateUser(user: User): Promise<User> {
+            try {
+                patchState(store, setBusy());
+                const updatedUser = await firebaseService.updateUser(user);
+                patchState(store, state => ({...state, activeUser: updatedUser}), setIdle());
+                toastService.showSuccess('User wurde gespeichert');
+                return updatedUser;
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+        async removeUser(id: string = ''): Promise<void> {
             try {
                 await firebaseService.removeUser(id);
                 patchState(store, removeEntity(id, {collection: 'users'}));
@@ -82,13 +102,13 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
-        async getAuth() {
+        async getAuth(): Promise<Auth | null> {
             return new Promise(resolve => {
                 const rx = rxMethod<User | null | undefined>(pipe(
                     tap(user => {
                         if (user === undefined) return
                         if (user === null) resolve(null)
-                        else if (typeof user === 'object') resolve(user.auth)
+                        else if (typeof user === 'object') resolve(user.auth || null)
                         rx.unsubscribe();
                     })
                 ))(store.activeUser);

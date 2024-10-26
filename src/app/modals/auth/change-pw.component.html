@@ -24,13 +24,16 @@
         <!-- New Password -->
         <password-formfield
                 id="newPassword"
-                class="form-floating position-relative mb-2"
+                class="form-floating position-relative"
                 name="newPassword"
                 ngModel
                 required
-                [enableValidation]="true"
+                enableValidation
+
         >
             <label for="newPassword">Neues Passwort:</label>
+
+            <!-- Repeat new Password -->
             <div class="mt-2">
                 <password-formfield
                         id="repeatPassword"
@@ -38,14 +41,15 @@
                         name="repeatPassword"
                         ngModel
                         required
+                        #repeatPassword="ngModel"
                 >
                     <label for="repeatPassword">Neues Passwort wiederholen:</label>
                 </password-formfield>
             </div>
         </password-formfield>
-
-        <!-- Repeat new Password -->
-
+        <div class="form-text pw-error" [ngClass]="{'invisible': repeatPassword.valid}">
+            <span class="pw-error-x">✗</span>Passwörter stimmen nicht überein!
+        </div>
 
         <!-- Button -->
         <button type="submit"
