@@ -1,33 +1,31 @@
 <form class="form" (submit)="onSubmit(form)" #form=ngForm>
 
     <!--User name-->
-    @if (!editOwnAccount()) {
-        <div class="row mb-3 g-2">
-            <div class="col">
-                <label class="form-label" for="userName">User Name</label>
-                <div class="input-group">
-                    @if (!formValue()?.userName) {
-                        <button class="input-group-text btn btn-outline-primary"
-                                title="E-mail an Kunden senden zur Erstellung eines Kontos"
-                                (click)="onSignUpUser()" >
-                            <fa-icon [icon]="faUserPlus" ></fa-icon>
-                        </button>
-                    } @else if (formValue()?.emailVerified) {
-                        <fa-icon [icon]="faUserCheck" class="input-group-text"></fa-icon>
-                    } @else {
-                        <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
-                    }
-                    <input type="text"
-                           class="form-control"
-                           id="userName"
-                           name="userName"
-                           ngModel
-                           disabled
-                    >
-                </div>
+    <div class="row mb-3 g-2">
+        <div class="col">
+            <label class="form-label" for="userName">User Name</label>
+            <div class="input-group">
+                @if (formValue()?.userName) {
+                    <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
+                } @else {
+                    <button class="input-group-text btn btn-outline-primary"
+                            title="E-mail an Kunden senden zur Erstellung eines Kontos"
+                            (click)="onSignUpUser()" >
+                        <fa-icon [icon]="faUserPlus" ></fa-icon>
+                    </button>
+                }
+                <input type="text"
+                       class="form-control"
+                       id="userName"
+                       name="userName"
+                       ngModel
+                       disabled
+                >
             </div>
+        </div>
 
-            <!-- Auth-->
+        @if (!editOwnAccount()) {
+        <!-- Auth-->
             <div class="auth">
                 <label for="auth" class="form-label">Auth *</label>
                 <select class="form-select"
@@ -42,9 +40,9 @@
                     <option value="user">user</option>
                 </select>
             </div>
+        }
 
-        </div>
-    }
+    </div>
 
     <!-- First Name  |  Last Name-->
     <div class="row g-2 mb-3 align-items-center">

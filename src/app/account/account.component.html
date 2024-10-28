@@ -1,32 +1,32 @@
 <div class="container-fluid">
 
 <!-- Buttons -->
-    <div class="row d-flex flex-row-reverse">
-        <div class="col-auto mb-2">
-            <button class="btn btn-danger col-md-auto" (click)="logout()">
+    <div class="row d-flex flex-row-reverse px-4">
+        <div class="col-auto d-flex justify-content-end ps-2 pe-0 mb-2">
+            @if (store.authUser() && !store.authUser()?.emailVerified) {
+                <button class="btn btn-outline-primary me-2" (click)="verifyEmail()">
+                    User-Email bestätigen
+                </button>
+            }
+            <button class="btn btn-danger" (click)="logout()">
                 Logout
             </button>
         </div>
-        <div class="col-sm-auto d-flex justify-content-end mb-2">
-            <button class="btn btn-outline-primary me-2" (click)="changePassword()">
-                Passwort ändern
-            </button>
-            <button class="btn btn-outline-primary" (click)="changeEmail()">
-                User-Email ändern
-            </button>
-        </div>
-        <div class="col-sm-auto d-flex justify-content-end mb-2">
-            <button class="btn btn-outline-primary" (click)="verifyEmail()">
-                User-Email bestätigen
-            </button>
-        </div>
+        <div class="col-auto d-flex justify-content-end ps-2 pe-0 mb-2">
+                <button class="btn btn-outline-primary me-2" (click)="changePassword()">
+                    Passwort ändern
+                </button>
+                <button class="btn btn-outline-primary" (click)="changeEmail()">
+                    User-Email ändern
+                </button>
+            </div>
     </div>
 
 <!-- User Form -->
     <div class="container-fluid w-max-lg">
-        <h1>Konto Informationen</h1>
+        <h1 class="mt-4">Konto Informationen</h1>
         <customer-detail
-                [id]="userId()"
+                [id]="store.authUser()?.uid || ''"
                 [editOwnAccount]="true"
         ></customer-detail>
     </div>

@@ -15,8 +15,8 @@ $body-bg: #f7f7f7;
 
 // ******************* Add new custom colors *******************
 $custom-colors: (
-        "custom-body-bg": #ffeded,
-        "custom-input-bg": white,
+        "custom-pink": #ff51c6,
+        "custom-purple": #b516f5,
 );
 $theme-colors: map-merge($theme-colors, $custom-colors);
 // ************************************************************
@@ -65,20 +65,22 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "bootstrap/scss/utilities/api";
 
 
-
-
-
-
-[data-theme="dark"] {
-
-}
-.form-control, .form-control:focus, .form-select {
-    background-color: var(--bs-custom-input-bg);
-}
-
 .btn-light {
     --bs-btn-bg: #ebebeb;
 }
-body {
-    //background-color: var(--bs-mp-body-bg);
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 80%);
+    border-color: transparent;
+}
+
+[data-bs-theme="light"] {
+    .form-control, .form-control:focus, .form-select {
+        background-color: white
+    }
+}
+[data-bs-theme="dark"] {
+    .form-control, .form-control:focus, .form-select {
+        background-color: #383838
+    }
 }

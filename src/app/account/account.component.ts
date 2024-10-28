@@ -1,9 +1,10 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {AuthService} from "../auth/auth.service";
 import {Router} from "@angular/router";
 import {ModalService} from "../modals/modal.service";
 import {CustomerDetailComponent} from "../customers/customer-detail/customer-detail.component";
 import {firebaseAuth} from "../../main";
+import {PhotoOrdersStore} from "../store/photoOrdersStore";
 
 @Component({
     selector: 'app-account',
@@ -12,18 +13,14 @@ import {firebaseAuth} from "../../main";
     imports: [CustomerDetailComponent],
     styles: `.w-max-lg {max-width: 768px;}`
 })
-export class AccountComponent implements OnInit {
-    userId = signal('');
+export class AccountComponent {
+    protected store = inject(PhotoOrdersStore);
 
     constructor(
         private authService: AuthService,
         private modalService: ModalService,
         private router: Router
     ) {  }
-
-    ngOnInit(): void {
-        this.userId.set(firebaseAuth.currentUser?.uid || '')
-    }
 
     async verifyEmail() {
         await this.modalService.confirmSendEmailVerification(firebaseAuth.currentUser!.email!);
