@@ -6,36 +6,38 @@ import {NgClass} from "@angular/common";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../user.model"
-import {FirebaseService} from "../../persistance/firebase.service";
 import {removeNullishObjectKeys} from "../../shared/util";
-import {Subscription} from "rxjs";
+import {debounceTime, map, Subscription, take} from "rxjs";
 import {ModalService} from "../../modals/modal.service";
-import {faUser, faUserCheck, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import {faUser, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'customer-detail',
     standalone: true,
-    imports: [FormsModule, NgClass, FaIconComponent],
+    imports: [FormsModule, NgClass, FaIconComponent, NgbTooltip],
     templateUrl: './customer-detail.component.html',
     styleUrl: './customer-detail.component.scss'
 })
 export class CustomerDetailComponent implements OnInit, OnDestroy {
-    protected readonly  store = inject(PhotoOrdersStore)
+    protected readonly store = inject(PhotoOrdersStore);
+    protected readonly faUser = faUser;
+    protected readonly faUserPlus = faUserPlus;
+    private valueChangesSubscription: Subscription | undefined;
+    private formInitializing = false;
+
     @ViewChild('form', {static: true}) form: NgForm | undefined;
-    formValue = signal<User | null>(null);
+    data = signal<User | null>(null);
     id = model('');  // Will be populated by router :id when customers/:id
     editOwnAccount = input(false, {
         transform: (value: boolean|string) => typeof value === 'string' ? true : value,
     });
     isRendered = output<boolean>();
-    protected isCompany = signal(false);
-    private valueChangesSubscription: Subscription | undefined;
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private firebaseService: FirebaseService,
         private modalService: ModalService
         ) {
         effect(() => {
@@ -49,7 +51,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         effect(() => {
             if (this.editOwnAccount()) {
                 const activeUser = this.store.activeUser();
-                if (this.editOwnAccount() && activeUser) {
+                if (activeUser) {
                     setTimeout(() => this.setFormData(activeUser));
                 }
             }
@@ -57,9 +59,11 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     }
 
     setFormData(user: User | null) {
-        this.formValue.set(user);
+        this.formInitializing = true;
+        this.data.set(user);
         this.form!.resetForm(user);
         this.store.setDirty(false);
+        this.formInitializing = false;
     }
 
     markAllTouched() {
@@ -68,19 +72,19 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    async onSubmit(form: NgForm): Promise<void> {
-        if (form.invalid) return;
+    async onSave(form: NgForm): Promise<void> {
+        if (form.invalid || this.data() === null) return;
         if (this.editOwnAccount()) {
-            const data: User = form.value
+            const data: User = this.data() as User;
             data.id = this.id();
             delete data.auth;
             const activeUser = await this.store.updateUser(data);
             this.store.setActiveUser(activeUser);
-
         } else {
-            const user = removeNullishObjectKeys(form.value) as User;
-            this.store.setUser(user);
+            const data: User = this.data() as User;
+            this.store.setUser(data);
         }
+        this.store.setDirty(false);
     };
 
     onCancel() {
@@ -95,9 +99,10 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         await this.router.navigate(['../'], {relativeTo: this.route});
     }
 
-    onSignUpUser() {
-        if (!this.formValue()) return;
-        const {email, id} = this.formValue() as User;
+    onSignUpUser(el: HTMLButtonElement) {
+        el.blur();
+        if (!this.data()) return;
+        const {email, id} = this.data() as User;
         const subject = 'Konto erstellen'
         const origin = window.location.origin;
         const signUpLink = `${origin}/signup/${id}`
@@ -113,9 +118,13 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.formInitializing = true;
         this.isRendered.emit(true);
-        this.valueChangesSubscription = this.form!.valueChanges?.subscribe(() => {
-            if (!this.store.isDirty()) this.store.setDirty(true);
+        this.valueChangesSubscription = this.form!.valueChanges?.
+        subscribe((value) => {
+            if (this.formInitializing) return;
+            this.data.update(currentVal => ({...currentVal, ...value}));
+            this.store.setDirty(true);
         })
     }
 
@@ -125,7 +134,4 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     }
 
 
-    protected readonly faUser = faUser;
-    protected readonly faUserCheck = faUserCheck;
-    protected readonly faUserPlus = faUserPlus;
 }

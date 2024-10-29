@@ -1,17 +1,18 @@
-<form class="form" (submit)="onSubmit(form)" #form=ngForm>
+<form class="form" #form=ngForm>
 
     <!--User name-->
     <div class="row mb-3 g-2">
         <div class="col">
             <label class="form-label" for="userName">User Name</label>
             <div class="input-group">
-                @if (formValue()?.userName) {
+                @if (data()?.userName) {
                     <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
                 } @else {
-                    <button class="input-group-text btn btn-outline-primary"
-                            title="E-mail an Kunden senden zur Erstellung eines Kontos"
-                            (click)="onSignUpUser()" >
-                        <fa-icon [icon]="faUserPlus" ></fa-icon>
+                    <button type=button class="input-group-text btn btn-outline-primary"
+                            ngbTooltip="E-mail an Kunden senden zur Erstellung eines Kontos"
+                            (click)="onSignUpUser(signUpBtn)"
+                            #signUpBtn
+                    ><fa-icon [icon]="faUserPlus"></fa-icon>
                     </button>
                 }
                 <input type="text"
@@ -113,13 +114,14 @@
                    class="form-check-input me-2"
                    id="isCompany"
                    name="isCompany"
-                   [(ngModel)]="isCompany"
+                   ngModel
+                   #isCompany
             >
             <label for="isCompany" class="form-label">Firma?</label>
         </div>
     </div>
 
-    <div class="row mb-2 align-items-center" [hidden]="!isCompany()">
+    <div class="row mb-2 align-items-center" [hidden]="!isCompany.checked">
         <div class="address-label">
             <label class="form-label" for="companyName">Firma</label>
         </div>
@@ -147,7 +149,7 @@
         </div>
     </div>
 
-    <div class="row gx-2 align-items-center">
+    <div class="row mb-3 gx-2 align-items-center">
         <div class="address-label">
             <label class="form-label me-1" for="plz">PLZ,</label>
             <label class="form-label" for="place">Ort</label>
@@ -188,14 +190,27 @@
         </div>
     </div>
 
-    <hr>
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label" for="remarks">Bemerkungen</label>
+            <textarea id="remarks"
+                      class="form-control"
+                      rows="3"
+                      name="remarks"
+                      ngModel
+            ></textarea>
+        </div>
+    </div>
+
+    <br>
 
     <!-- Button Ok / Cancel / Delete -->
     <div class="row">
         <div class="col d-flex justify-content-center">
-            <button type="submit"
+            <button type="button"
                     class="btn btn-primary col"
                     (mouseenter)="markAllTouched()"
+                    (click)="onSave(form)"
             >Speichern</button>
             @if (!editOwnAccount()) {
                 <button type="button"
@@ -209,23 +224,6 @@
                         (click)="onDelete()"
                 >Löschen</button>
             }
-        </div>
-    </div>
-
-
-    <div class="row hidden-controls mt-5">
-        <label class="col-auto " for="id">Kunden Id</label>
-        <div class="col">
-            <input type="text"
-                   class="form-control form-control-plaintext hidden-controls"
-                   id="id"
-                   name="id"
-                   ngModel
-                   readonly
-                   hidden
-                   #id
-            >
-            <div>{{ id.value }}</div>
         </div>
     </div>
 

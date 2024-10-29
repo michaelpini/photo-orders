@@ -37,6 +37,7 @@ export const PhotoOrdersStore = signalStore(
            patchState(store, setError(error));
         },
         setDirty(dirty: boolean = false) {
+            if (store.isDirty() === dirty) return;
             patchState(store, state => ({...state, isDirty: dirty}));
         },
         setActiveUser(activeUser: User | null) {

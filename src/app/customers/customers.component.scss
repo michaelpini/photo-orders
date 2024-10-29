@@ -7,14 +7,21 @@
     display: none;
 }
 
+.divider-v {
+    width: 1px;
+    background-color: var(--bs-border-color);
+    height: auto;
+    padding: 0;
+    margin: 0 0.9em;}
+
 
 @media (min-width: 767.98px) {
     .customer-detail {
-        width: 50%;
+        width: calc(50% - 1em);
     }
 
     .detail-selected {
         display: block;
-        width: 50%;
+        width: calc(50% - 1em);
     }
 }

@@ -6,7 +6,7 @@ import {ModalService} from "../modals/modal.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCircleUser as faUserSolid, faMoon} from "@fortawesome/free-solid-svg-icons";
 import {faCircleUser as faUserOutline, faSun} from "@fortawesome/free-regular-svg-icons";
-import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 import {faCircleHalfStroke} from "@fortawesome/free-solid-svg-icons/faCircleHalfStroke";
 
 type Theme = 'light' | 'dark' | 'auto';
@@ -22,7 +22,8 @@ type Theme = 'light' | 'dark' | 'auto';
         NgbDropdown,
         NgbDropdownMenu,
         NgbDropdownItem,
-        NgbDropdownToggle
+        NgbDropdownToggle,
+        NgbTooltip
     ],
     templateUrl: './nav.component.html',
     styleUrl: './nav.component.scss'

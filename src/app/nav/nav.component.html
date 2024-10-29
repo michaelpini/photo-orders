@@ -32,17 +32,17 @@
         <div class="navbar-expand navbar-nav d-flex flex-row ms-auto">
             @if (store.activeUser()) {
                 <a class="nav-item nav-link mx-1" role="button" routerLink="/account" routerLinkActive="active">
-                    <fa-icon [icon]="faUserSolid" class="fa-xl"></fa-icon>
+                    <fa-icon [icon]="faUserSolid" class="fa-xl" ngbTooltip="Kundenkonto"></fa-icon>
                 </a>
             } @else {
-                <button class="nav-item nav-link mx-1" role="button" (click)="onSignIn()" title="Login">
-                    <fa-icon [icon]="faUserOutline" class="fa-xl"></fa-icon>
+                <button class="nav-item nav-link mx-1" role="button" (click)="onSignIn()">
+                    <fa-icon [icon]="faUserOutline" class="fa-xl" ngbTooltip="Login"></fa-icon>
                 </button>
             }
 
             <div ngbDropdown class="d-inline-block">
-                <button type="button" class="btn nav-item nav-link mx-1" ngbDropdownToggle>
-                    <fa-icon [icon]="themeIcon()" class="fa-lg"></fa-icon>
+                <button type="button" class="btn nav-item nav-link mx-1">
+                    <fa-icon [icon]="themeIcon()" class="fa-lg" ngbDropdownToggle ngbTooltip="Hell/Dunkel Modus"></fa-icon>
                 </button>
                 <div ngbDropdownMenu class="dropdown-menu-end position-absolute">
                     <button ngbDropdownItem (click)="setTheme('light')"><fa-icon [icon]="themeIcons.light" class="me-2"></fa-icon>Heller Modus</button>
@@ -52,7 +52,6 @@
             </div>
 
         </div>
-
 
     </div>
 </nav>

@@ -14,6 +14,7 @@
         <div class="customer-list" [ngClass]="{'detail-selected': showDetail()}">
             <customer-list></customer-list>
         </div>
+        <div class="divider-v"></div>
         <div class="customer-detail">
             <router-outlet
                     (activate)="showDetail.set(true)"
