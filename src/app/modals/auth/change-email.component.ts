@@ -45,13 +45,13 @@ export class ChangeEmailComponent implements OnInit {
             await this.authService.signInEmail(firebaseAuth.currentUser?.email || '', password);
             await delay(2000);
             await this.authService.changeEmail(newEmail, password);
-            const data: User = {
-                id: this.activeUser?.id || '',
-                userName: newEmail,
-                emailVerified: false,
+            if (update2ndEmail) {
+                const data: User = {
+                    id: this.activeUser?.id || '',
+                    email: newEmail,
+                }
+                await this.store.updateUser(data);
             }
-            if (update2ndEmail) data.email = newEmail;
-            await this.store.updateUser(data);
             this.toastService.showSuccess('Email changed successfully.');
             this.store.setIdle();
             this.modal.close('changed email');

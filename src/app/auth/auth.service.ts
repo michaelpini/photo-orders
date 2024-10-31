@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {firebaseAuth} from "../../main";
 import {PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FirebaseError} from "firebase/app"
-import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential, User as AuthUser, updatePassword, updateEmail, sendEmailVerification} from 'firebase/auth';
+import {createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential, User as FirebaseAuthUser, updatePassword, updateEmail, sendEmailVerification} from 'firebase/auth';
 import {delay} from "../shared/util";
 
 type Lang = 'de' | 'en'
@@ -38,11 +38,7 @@ export class AuthService {
 
     constructor() {
         firebaseAuth.onAuthStateChanged(authState => {
-            if (authState == null) {
-                this.store.setActiveUserFromAuthUser(null);
-            } else if (this.store.activeUser() == null) {
-                this.store.setActiveUserFromAuthUser(authState);     // Only update if logged out (skip during signup)
-            }
+            this.store.setAuthUserAndActiveUser(authState?.uid);
             console.info(authState ? 'User login:' + authState.email : 'User logout');
         });
     }
@@ -55,7 +51,7 @@ export class AuthService {
         }
     }
 
-    async signUpEmail(email: string, password: string): Promise<AuthUser> {
+    async signUpEmail(email: string, password: string): Promise<FirebaseAuthUser> {
         if (!email || !password) throw getError('auth/missing-app-credential');
         try {
             const userCredential: UserCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);

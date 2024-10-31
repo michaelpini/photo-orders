@@ -2,12 +2,12 @@ import {computed, inject} from "@angular/core";
 import {patchState, signalStore, type, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
 import {removeEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/entities";
 import {FirebaseService} from "../persistance/firebase.service";
-import {User as AuthUser} from "firebase/auth";
-import {Auth, User} from "../customers/user.model";
+import {User} from "../customers/user.model";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {map, pipe, tap} from "rxjs";
 import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
 import {ToastService} from "../shared/toasts/toast.service";
+import {AuthType, AuthUser} from "../auth/authUser.model";
 
 export type State = {
     authUser: AuthUser | null;
@@ -24,8 +24,11 @@ const initialState: State = {
 export const PhotoOrdersStore = signalStore(
     {providedIn: 'root'},
     withState(initialState),
+
     withLoadingState(),
+
     withEntities({entity: type<User>(), collection: 'users'}),
+
     withMethods((store, firebaseService = inject(FirebaseService), toastService = inject(ToastService)) => ({
         setBusy() {
             patchState(store, setBusy());
@@ -40,31 +43,53 @@ export const PhotoOrdersStore = signalStore(
             if (store.isDirty() === dirty) return;
             patchState(store, state => ({...state, isDirty: dirty}));
         },
-        setActiveUser(activeUser: User | null) {
-            patchState(store, state => ({...state, activeUser}));
+
+        // AuthUser
+        async getAuth(): Promise<AuthType | null> {
+            return new Promise(resolve => {
+                const rx = rxMethod<AuthUser | null | undefined>(pipe(
+                    tap(authUser => {
+                        if (authUser === undefined) return;
+                        resolve(authUser?.authType || null);
+                        rx.unsubscribe();
+                    })
+                ))(store.authUser);
+            })
         },
-        async setActiveUserFromAuthUser(authUser: AuthUser | null = null): Promise<void> {
+        async setAuthUserAndActiveUser(uid?: string): Promise<void> {
             try {
                 patchState(store, setBusy());
-                let activeUser: User | null | undefined;
-                if (authUser) activeUser = await firebaseService.getUserByUid(authUser.uid);
-                patchState(store, state => ({...state, authUser, activeUser: activeUser || null}), setIdle());
+                let authUser = await firebaseService.getAuthUser(uid);
+                let activeUser = await firebaseService.getUser(authUser?.userId);
+                patchState(store, state => ({...state, authUser, activeUser}), setIdle());
             } catch (error) {
                 this.setError((error as Error).message);
                 throw error;
             }
         },
+
+        // ActiveUser
+        setActiveUser(activeUser: User | null) {
+            patchState(store, state => ({...state, activeUser}));
+        },
+
         // Users
         getUser(id = ''): User | null {
             const userMap = store.usersEntityMap();
             return userMap[id] || null;
         },
-        async loadUsers(user: User | null | undefined): Promise<User[]>{
+        getAllUsers(): User[] {
+            return store.usersEntities();
+        },
+        async loadUsers(authUser: AuthUser | null | undefined): Promise<User[]>{
             patchState(store, setBusy());
             let users: User[] = [];
-            if (user?.auth === 'user') users = [user];
             try {
-                if (user?.auth === 'admin') {users = await firebaseService.getAllUsers();}
+                if (authUser?.authType === 'admin') {
+                    users = await firebaseService.getAllUsers();
+                } else if (store.activeUser()) {
+                    users =  [store.activeUser() as User];
+                }
                 patchState(store, setAllEntities(users, {collection: 'users'}), setIdle());
                 return users;
             } catch (error) {
@@ -103,28 +128,19 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
-        async getAuth(): Promise<Auth | null> {
-            return new Promise(resolve => {
-                const rx = rxMethod<User | null | undefined>(pipe(
-                    tap(user => {
-                        if (user === undefined) return
-                        if (user === null) resolve(null)
-                        else if (typeof user === 'object') resolve(user.auth || null)
-                        rx.unsubscribe();
-                    })
-                ))(store.activeUser);
-            })
-        }
+
 
     })),
+
     withComputed((store) => ({
-        isAdmin: computed(() => store.activeUser()?.auth === 'admin'),
+        isAdmin: computed(() => store.authUser()?.authType === 'admin'),
     })),
+
     withHooks({
         async onInit(store) {
-            rxMethod<User | null | undefined>(pipe(
-                map(user => store.loadUsers(user))
-            ))(store.activeUser);
+            rxMethod<AuthUser | null | undefined>(pipe(
+                map(authUser => store.loadUsers(authUser))
+            ))(store.authUser);
         }
 
     }),

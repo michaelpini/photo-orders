@@ -5,7 +5,7 @@
         <div class="col">
             <label class="form-label" for="userName">User Name</label>
             <div class="input-group">
-                @if (data()?.userName) {
+                @if (authUser()?.userName) {
                     <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
                 } @else {
                     <button type=button class="input-group-text btn btn-outline-primary"
@@ -19,7 +19,7 @@
                        class="form-control"
                        id="userName"
                        name="userName"
-                       ngModel
+                       [value]="authUser()?.userName || ''"
                        disabled
                 >
             </div>
@@ -29,14 +29,7 @@
         <!-- Auth-->
             <div class="auth">
                 <label for="auth" class="form-label">Auth *</label>
-                <select class="form-select"
-                        [ngClass]="{'is-invalid': !auth.valid && auth.touched}"
-                        id="auth"
-                        name="auth"
-                        ngModel
-                        required
-                        #auth="ngModel"
-                >
+                <select class="form-select" id="auth" name="auth" [value]="authUser()?.authType" (change)="authChanged(auth.value)" #auth>
                     <option value="admin">admin</option>
                     <option value="user">user</option>
                 </select>

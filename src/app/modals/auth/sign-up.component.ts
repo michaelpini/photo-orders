@@ -5,10 +5,10 @@ import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {PasswordFormFieldComponent} from "../../custom-form-fields/password-formfield.component";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgClass} from "@angular/common";
-import {User} from "../../customers/user.model";
 import {FirebaseService} from "../../persistance/firebase.service";
 import {Router} from "@angular/router";
-import {User as AuthUser} from "firebase/auth"
+import {User as FirebaseAuthUser} from "firebase/auth"
+import {AuthUser} from "../../auth/authUser.model";
 
 @Component({
     selector: 'sign-up',
@@ -36,14 +36,14 @@ export class SignUpComponent{
     async signUp(email: string, password: string) {
         try {
             this.store.setBusy();
-            const authUser: AuthUser = await this.authService.signUpEmail(email, password);
-            const userPartial: User = {
-                id: this.id,
-                uid: authUser.uid,
-                userName: authUser.email,
+            const authUser: FirebaseAuthUser = await this.authService.signUpEmail(email, password);
+            const authUserPartial: AuthUser = {
+                id: authUser.uid,
+                userName: email,
+                userId: this.id,
             }
-            const updatedUser: User = await this.firebaseService.updateUser(userPartial);
-            this.store.setUser(updatedUser);
+            const updatedAuthUser: AuthUser = await this.firebaseService.updateAuthUser(authUserPartial);
+            this.store.setAuthUserAndActiveUser(updatedAuthUser.id);
             this.store.setIdle();
             await this.router.navigate(['/account/']);
             this.modal.close('saved new user');

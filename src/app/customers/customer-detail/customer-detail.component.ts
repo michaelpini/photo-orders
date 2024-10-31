@@ -12,6 +12,10 @@ import {ModalService} from "../../modals/modal.service";
 import {faUser, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
+import {AuthType, AuthUser} from "../../auth/authUser.model";
+import {FirebaseService} from "../../persistance/firebase.service";
+import {firebaseAuth} from "../../../main";
+import {ToastService} from "../../shared/toasts/toast.service";
 
 @Component({
     selector: 'customer-detail',
@@ -28,6 +32,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     private formInitializing = false;
 
     @ViewChild('form', {static: true}) form: NgForm | undefined;
+    authUser = signal<AuthUser | null>(null);
     data = signal<User | null>(null);
     id = model('');  // Will be populated by router :id when customers/:id
     editOwnAccount = input(false, {
@@ -38,21 +43,30 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private firebaseService: FirebaseService,
+        private toastService: ToastService,
         ) {
-        effect(() => {
+        effect(async () => {
             if (!this.editOwnAccount()) {
                 const selectedUser = this.store.getUser(this.id())
                 if (selectedUser) {
                     setTimeout(() => this.setFormData(selectedUser));
                 }
+                const authUsers = await this.firebaseService.queryAuthUserByUserId(this.id());
+                this.authUser.set(authUsers?.[0] || null);
             }
         });
         effect(() => {
             if (this.editOwnAccount()) {
                 const activeUser = this.store.activeUser();
                 if (activeUser) {
-                    setTimeout(() => this.setFormData(activeUser));
+                    setTimeout(() => {
+                        const authUser: AuthUser = this.store.authUser()!;
+                        authUser.emailVerified = firebaseAuth.currentUser?.emailVerified || false;
+                        this.authUser.set(authUser);
+                        this.setFormData(activeUser);
+                    });
                 }
             }
         })
@@ -77,7 +91,6 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         if (this.editOwnAccount()) {
             const data: User = this.data() as User;
             data.id = this.id();
-            delete data.auth;
             const activeUser = await this.store.updateUser(data);
             this.store.setActiveUser(activeUser);
         } else {
@@ -115,6 +128,18 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         const linkEl = document.createElement('a');
         linkEl.href = `mailto:${email}?subject=${subject}&body=${body}`;
         linkEl.click();
+    }
+
+    async authChanged(authType: string) {
+        this.authUser.update(value => ({...value, authType} as AuthUser));
+        try {
+            this.store.setBusy();
+            await this.firebaseService.updateAuthUser(this.authUser()!);
+            this.toastService.showSuccess('Auth Berechtigung geändert');
+            this.store.setIdle();
+        } catch (error) {
+            this.store.setError('Fehler beim Ändern der Auth Berechtigung');
+        }
     }
 
     ngOnInit(): void {

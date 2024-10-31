@@ -16,7 +16,7 @@
                     <a class="nav-link" role="button" routerLink="/home" routerLinkActive="active"
                     >Home</a>
                 </li>
-                @if (store.activeUser()?.auth === 'admin') {
+                @if (store.authUser()?.authType === 'admin') {
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" routerLink="/customers" routerLinkActive="active"
                         >Kunden</a>

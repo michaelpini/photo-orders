@@ -26,7 +26,7 @@
     <div class="container-fluid w-max-lg">
         <h1 class="mt-4">Konto Informationen</h1>
         <customer-detail
-                [id]="store.authUser()?.uid || ''"
+                [id]="store.authUser()?.userId || ''"
                 [editOwnAccount]="true"
         ></customer-detail>
     </div>
