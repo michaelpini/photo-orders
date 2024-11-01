@@ -50,9 +50,9 @@ export class ModalService {
         return modalRef.result;
     }
 
-    signUp(id: string): Promise<void> {
+    signUp(userId: string): Promise<void> {
         const modalRef = this.ngbModal.open(SignUpComponent);
-        modalRef.componentInstance.id = id;
+        modalRef.componentInstance.userId = userId;
         return modalRef.result;
     }
 

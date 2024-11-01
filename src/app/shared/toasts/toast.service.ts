@@ -2,6 +2,7 @@ import { Injectable, TemplateRef } from '@angular/core';
 import {signal} from "@angular/core";
 
 export interface Toast {
+    autohide?: boolean;
     header?: string;
     template?: TemplateRef<any>;
     message?: string;

@@ -3,7 +3,7 @@
     <!--User name-->
     <div class="row mb-3 g-2">
         <div class="col">
-            <label class="form-label" for="userName">User Name</label>
+            <label class="form-label" for="userName">Benutzername</label>
             <div class="input-group">
                 @if (authUser()?.userName) {
                     <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
@@ -21,11 +21,12 @@
                        name="userName"
                        [value]="authUser()?.userName || ''"
                        disabled
+                       placeholder="Kein Benutzerkonto vorhanden"
                 >
             </div>
         </div>
 
-        @if (!editOwnAccount()) {
+        @if (!editOwnAccount() && authUser()) {
         <!-- Auth-->
             <div class="auth">
                 <label for="auth" class="form-label">Auth *</label>

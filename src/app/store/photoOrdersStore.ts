@@ -10,13 +10,15 @@ import {ToastService} from "../shared/toasts/toast.service";
 import {AuthType, AuthUser} from "../auth/authUser.model";
 
 export type State = {
-    authUser: AuthUser | null;
+    authInitializingNewUser: boolean;
+    authUser: AuthUser | null | undefined;
     activeUser: User | null | undefined;
     isDirty: boolean;
 }
 
 const initialState: State = {
-    authUser: null,
+    authInitializingNewUser: false,
+    authUser: undefined,
     activeUser:  undefined,
     isDirty: false,
 }
@@ -33,18 +35,25 @@ export const PhotoOrdersStore = signalStore(
         setBusy() {
             patchState(store, setBusy());
         },
+
         setIdle() {
             patchState(store, setIdle())
         },
+
         setError(error: string) {
            patchState(store, setError(error));
         },
+
         setDirty(dirty: boolean = false) {
             if (store.isDirty() === dirty) return;
-            patchState(store, state => ({...state, isDirty: dirty}));
+            patchState(store, {isDirty: dirty});
         },
 
         // AuthUser
+        setAuthInitializingNewUser(initializing: boolean) {
+           patchState(store, {authInitializingNewUser: initializing});
+        },
+
         async getAuth(): Promise<AuthType | null> {
             return new Promise(resolve => {
                 const rx = rxMethod<AuthUser | null | undefined>(pipe(
@@ -56,21 +65,23 @@ export const PhotoOrdersStore = signalStore(
                 ))(store.authUser);
             })
         },
-        async setAuthUserAndActiveUser(uid?: string): Promise<void> {
+
+        async setAuthUserAndActiveUser(uid: string | undefined): Promise<void> {
             try {
                 patchState(store, setBusy());
-                let authUser = await firebaseService.getAuthUser(uid);
-                let activeUser = await firebaseService.getUser(authUser?.userId);
-                patchState(store, state => ({...state, authUser, activeUser}), setIdle());
+                let authUser = uid ? await firebaseService.getAuthUser(uid) : null;
+                let activeUser = authUser ? await firebaseService.getUser(authUser.userId) : null;
+                patchState(store, {authUser, activeUser}, setIdle());
             } catch (error) {
                 this.setError((error as Error).message);
                 throw error;
             }
         },
 
+
         // ActiveUser
         setActiveUser(activeUser: User | null) {
-            patchState(store, state => ({...state, activeUser}));
+            patchState(store, {activeUser});
         },
 
         // Users
@@ -78,9 +89,11 @@ export const PhotoOrdersStore = signalStore(
             const userMap = store.usersEntityMap();
             return userMap[id] || null;
         },
+
         getAllUsers(): User[] {
             return store.usersEntities();
         },
+
         async loadUsers(authUser: AuthUser | null | undefined): Promise<User[]>{
             patchState(store, setBusy());
             let users: User[] = [];
@@ -97,6 +110,7 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
+
         async setUser(user: User): Promise<void> {
             try {
                 await firebaseService.setUser(user);
@@ -106,11 +120,12 @@ export const PhotoOrdersStore = signalStore(
                 this.setError((error as Error).message);
             }
         },
+
         async updateUser(user: User): Promise<User> {
             try {
                 patchState(store, setBusy());
                 const updatedUser = await firebaseService.updateUser(user);
-                patchState(store, state => ({...state, activeUser: updatedUser}), setIdle());
+                patchState(store, {activeUser: updatedUser}, setIdle());
                 toastService.showSuccess('User wurde gespeichert');
                 return updatedUser;
             } catch (error) {
@@ -118,6 +133,7 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
+
         async removeUser(id: string = ''): Promise<void> {
             try {
                 await firebaseService.removeUser(id);
@@ -142,7 +158,6 @@ export const PhotoOrdersStore = signalStore(
                 map(authUser => store.loadUsers(authUser))
             ))(store.authUser);
         }
-
     }),
 )
 

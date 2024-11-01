@@ -8,7 +8,7 @@ import {ModalService} from "../modals/modal.service";
     template: `
         <h1>Konto Erstellen</h1>
         @if(maybeValid()) {
-            <p>Für Kunden Id: {{id()}}</p>
+            <p>Für Kunden Id: {{userId()}}</p>
         } @else {
             <h4 class="text-danger">Ungültige ID!</h4>
         }
@@ -16,15 +16,15 @@ import {ModalService} from "../modals/modal.service";
     standalone: true,
 })
 export class AccountSignupComponent implements AfterViewInit {
-    id = input('');
-    maybeValid = computed<boolean>(() => this.id().length >= 20)
+    userId = input('');  // Will be set by router: /signup/:userId
+    maybeValid = computed<boolean>(() => this.userId().length >= 20)
 
     constructor(private authService: AuthService, private firebaseService: FirebaseService, private modalService: ModalService) {
 
     }
     ngAfterViewInit(): void {
         if (this.maybeValid()) {
-            this.modalService.signUp(this.id())
+            this.modalService.signUp(this.userId())
         }
     }
 }

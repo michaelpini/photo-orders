@@ -79,8 +79,18 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
         background-color: white
     }
 }
+
 [data-bs-theme="dark"] {
     .form-control, .form-control:focus, .form-select {
         background-color: #383838
     }
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.form-floating > .form-control:focus ~ label::after{
+    background-color: unset;
+}
+.form-floating > .form-control:focus ~ label, .form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-control-plaintext ~ label, .form-floating > .form-select ~ label {
+    transform: scale(0.85) translateY(-0.8rem) translateX(0.15rem);
 }

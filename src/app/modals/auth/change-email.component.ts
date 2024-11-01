@@ -46,10 +46,8 @@ export class ChangeEmailComponent implements OnInit {
             await delay(2000);
             await this.authService.changeEmail(newEmail, password);
             if (update2ndEmail) {
-                const data: User = {
-                    id: this.activeUser?.id || '',
-                    email: newEmail,
-                }
+                const id = this.activeUser?.id || ''
+                const data: User = {id , email: newEmail}
                 await this.store.updateUser(data);
             }
             this.toastService.showSuccess('Email changed successfully.');

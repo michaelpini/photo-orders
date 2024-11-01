@@ -12,5 +12,6 @@ export type User = {
     plz?: string | null;
     remarks?: string;
     streetAndNumber?: string | null;
+    userId?: string;     // same as id, but needed for security rules
 }
 

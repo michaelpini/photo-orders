@@ -19,7 +19,7 @@ import {AuthUser} from "../../auth/authUser.model";
 export class SignUpComponent{
     protected readonly store = inject(PhotoOrdersStore);
     @ViewChild('form', {static: false}) authForm!: NgForm;
-    id: string = '';    // Will be set by router: /signup/:id
+    userId: string = '';
 
     constructor(
         public modal: NgbActiveModal,
@@ -36,13 +36,15 @@ export class SignUpComponent{
     async signUp(email: string, password: string) {
         try {
             this.store.setBusy();
+            this.store.setAuthInitializingNewUser(true);
             const authUser: FirebaseAuthUser = await this.authService.signUpEmail(email, password);
             const authUserPartial: AuthUser = {
                 id: authUser.uid,
+                userId: this.userId,
                 userName: email,
-                userId: this.id,
             }
-            const updatedAuthUser: AuthUser = await this.firebaseService.updateAuthUser(authUserPartial);
+            const updatedAuthUser: AuthUser = await this.firebaseService.setAuthUser(authUserPartial);
+            this.store.setAuthInitializingNewUser(false);
             this.store.setAuthUserAndActiveUser(updatedAuthUser.id);
             this.store.setIdle();
             await this.router.navigate(['/account/']);

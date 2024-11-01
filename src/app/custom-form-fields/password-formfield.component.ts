@@ -44,7 +44,6 @@ export class PasswordFormFieldComponent implements ControlValueAccessor, Validat
     isInvalid = false;
 
     onInput(ev: any) {
-        console.log(ev)
         const val = ev.target.value as string;
         this.value.set(val);
         this.onChange(val);

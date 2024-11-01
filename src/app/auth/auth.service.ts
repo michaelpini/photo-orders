@@ -38,6 +38,7 @@ export class AuthService {
 
     constructor() {
         firebaseAuth.onAuthStateChanged(authState => {
+            if (this.store.authInitializingNewUser()) return;
             this.store.setAuthUserAndActiveUser(authState?.uid);
             console.info(authState ? 'User login:' + authState.email : 'User logout');
         });
@@ -76,8 +77,10 @@ export class AuthService {
     async changePassword(oldPassword: string, newPassword: string) {
         const user = firebaseAuth.currentUser;
         if (!user || !user.email) throw new Error('No user or user email!');
+        this.store.setAuthInitializingNewUser(true);
         await signInWithEmailAndPassword(firebaseAuth, user.email, oldPassword);
-        await delay(3000);
+        await delay(1000);
+        this.store.setAuthInitializingNewUser(false);
         await updatePassword(user, newPassword);
     }
 

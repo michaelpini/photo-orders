@@ -19,7 +19,7 @@ export const routes: Routes = [
     {path: '404',
         loadComponent: () => import('../nav/not-found-404.component').then(m => m.NotFoundComponent),
     },
-    {path: 'signup/:id',
+    {path: 'signup/:userId',
         loadComponent: () => import('../account/account-signup.component').then(m => m.AccountSignupComponent),
     },
     {path: '**', redirectTo: '404', pathMatch: 'full'},

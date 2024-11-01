@@ -20,8 +20,9 @@ export class CustomersComponent {
 
     async createUser() {
         try {
+            const template = {firstName: '<NEUER>', lastName:'<KUNDE>'};
             this.store.setBusy();
-            const newUser: User = await this.firebaseService.addUser();
+            const newUser: User = await this.firebaseService.addUser(template);
             this.store.setUser(newUser);
             this.store.setIdle();
             await this.router.navigate(['/customers/' + newUser.id]);
