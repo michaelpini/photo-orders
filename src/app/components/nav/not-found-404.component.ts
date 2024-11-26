@@ -5,7 +5,7 @@ import {Component} from "@angular/core";
     standalone: true,
     template: `
         <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
-            <img src="404-page-not-found.svg" class="w-50">
+            <img src="404-page-not-found.svg" class="w-50" alt="404 Page not found">
             <h1>Hier gibt's nichts zu sehen.</h1>
         </div>
     `,

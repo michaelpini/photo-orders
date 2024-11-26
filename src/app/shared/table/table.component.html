@@ -60,7 +60,7 @@
                                         <td class="text-center">
                                             @if (row[colDef.field]) {
                                                 <fa-icon [icon]="faCheck"></fa-icon>
-                                            } @else if (!row[colDef.field] == undefined) {
+                                            } @else if (row[colDef.field] !== undefined) {
                                                 <fa-icon [icon]="faXmark" class="text-danger"></fa-icon>
                                             }
                                         </td>
