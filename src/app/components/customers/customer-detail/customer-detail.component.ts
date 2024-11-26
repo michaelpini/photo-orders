@@ -1,21 +1,20 @@
 import {
-    Component, effect, inject, input, model, OnDestroy, OnInit, output, signal, ViewChild, WritableSignal
+    Component, effect, inject, input, model, OnDestroy, OnInit, output, signal, ViewChild
 } from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {NgClass} from "@angular/common";
-import {PhotoOrdersStore} from "../../store/photoOrdersStore";
+import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../user.model"
-import {removeNullishObjectKeys} from "../../shared/util";
-import {debounceTime, map, Subscription, take} from "rxjs";
-import {ModalService} from "../../modals/modal.service";
+import {Subscription} from "rxjs";
+import {ModalService} from "../../../modals/modal.service";
 import {faUser, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {AuthType, AuthUser} from "../../auth/authUser.model";
-import {FirebaseService} from "../../persistance/firebase.service";
-import {firebaseAuth} from "../../../main";
-import {ToastService} from "../../shared/toasts/toast.service";
+import {AuthUser} from "../../../auth/authUser.model";
+import {FirebaseService} from "../../../persistance/firebase.service";
+import {firebaseAuth} from "../../../../main";
+import {ToastService} from "../../../shared/toasts/toast.service";
 
 @Component({
     selector: 'customer-detail',

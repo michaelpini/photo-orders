@@ -1,15 +1,16 @@
 import {Injectable} from "@angular/core";
 import {firebaseStore as db} from "../../main";
-import {collection, doc, getDocs, getDoc, setDoc, QuerySnapshot, DocumentData, deleteDoc, updateDoc, DocumentReference, query, where, WithFieldValue, WhereFilterOp} from "firebase/firestore";
-import {User} from "../customers/user.model";
+import {collection, doc, getDocs, getDoc, setDoc, QuerySnapshot, DocumentData, deleteDoc, updateDoc, DocumentReference, query, where, WhereFilterOp} from "firebase/firestore";
+import {User} from "../components/customers/user.model";
 import {AuthUser} from "../auth/authUser.model";
+import {Project} from "../components/projects/project.model";
 
 @Injectable({
     providedIn: 'root',
 })
 export class FirebaseService {
 
-    private toArray(querySnapshot: QuerySnapshot<DocumentData>) {
+    private toArray(querySnapshot: QuerySnapshot) {
         const data: DocumentData[] = []
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
@@ -32,7 +33,7 @@ export class FirebaseService {
         return this.set<AuthUser>('authUsers', authUser, 'AuthUser');
     }
 
-    updateAuthUser(authUser: AuthUser) {
+    updateAuthUser(authUser: Partial<AuthUser>) {
         return this.update<AuthUser>('authUsers', authUser, 'AuthUser');
     }
 
@@ -48,21 +49,53 @@ export class FirebaseService {
         return this.getAll<User>('users', 'User');
     }
 
-    addUser(user?: Partial<User>) {
-        return this.add<User>('users', user, 'User', true);
+    addUser(data?: Partial<User>) {
+        return this.add<User>('users', data, 'User', true);
     }
 
-    setUser(user: User) {
-        return this.set<User>('users', user, 'User');
+    setUser(data: User) {
+        return this.set<User>('users', data, 'User');
     }
 
-    updateUser(user: User) {
-        return this.update<User>('users', user, 'User');
+    updateUser(data: User) {
+        return this.update<User>('users', data, 'User');
     }
 
     removeUser(id: string) {
         return this.remove('users', id);
     }
+
+    /**
+     * Projects
+     */
+    getProject(id?: string) {
+        return this.get<Project>('projects', id, 'Projekte');
+    }
+
+    getAllProjects() {
+        return this.getAll<Project>('projects', 'Projekt');
+    }
+
+    queryProjectsByUserId(userId: string = '') {
+        return this.query<Project>('projects', 'userId', "==", userId);
+    }
+
+    addProject(data?: Partial<Project>) {
+        return this.add<Project>('projects', data, 'Projekt', true);
+    }
+
+    setProject(data: Project) {
+        return this.set<Project>('projects', data, 'Projekt');
+    }
+
+    updateProject(data: Project) {
+        return this.update<Project>('projects', data, 'Projekt');
+    }
+
+    removeProject(id: string) {
+        return this.remove('projects', id);
+    }
+
 
 
     // Generic functions
@@ -144,6 +177,5 @@ export class FirebaseService {
             throw new Error(message);
         }
     }
-
 
 }

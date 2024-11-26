@@ -1,5 +1,5 @@
 import { CanActivateFn } from '@angular/router';
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {inject} from "@angular/core";
 
 export const allowIfAdminGuard: CanActivateFn = async (route, state) => {

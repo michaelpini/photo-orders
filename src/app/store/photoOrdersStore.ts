@@ -1,19 +1,21 @@
 import {computed, inject} from "@angular/core";
 import {patchState, signalStore, type, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
-import {removeEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/entities";
+import {removeEntity, setAllEntities, setEntity, updateEntity, withEntities} from "@ngrx/signals/entities";
 import {FirebaseService} from "../persistance/firebase.service";
-import {User} from "../customers/user.model";
+import {User} from "../components/customers/user.model";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {map, pipe, tap} from "rxjs";
+import {pipe, tap} from "rxjs";
 import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
 import {ToastService} from "../shared/toasts/toast.service";
 import {AuthType, AuthUser} from "../auth/authUser.model";
+import {Project} from "../components/projects/project.model";
 
 export type State = {
     authInitializingNewUser: boolean;
     authUser: AuthUser | null | undefined;
     activeUser: User | null | undefined;
     isDirty: boolean;
+    isInitialized: boolean;
 }
 
 const initialState: State = {
@@ -21,6 +23,7 @@ const initialState: State = {
     authUser: undefined,
     activeUser:  undefined,
     isDirty: false,
+    isInitialized: false,
 }
 
 export const PhotoOrdersStore = signalStore(
@@ -30,6 +33,7 @@ export const PhotoOrdersStore = signalStore(
     withLoadingState(),
 
     withEntities({entity: type<User>(), collection: 'users'}),
+    withEntities({entity: type<Project>(), collection: 'projects'}),
 
     withMethods((store, firebaseService = inject(FirebaseService), toastService = inject(ToastService)) => ({
         setBusy() {
@@ -52,6 +56,10 @@ export const PhotoOrdersStore = signalStore(
         // AuthUser
         setAuthInitializingNewUser(initializing: boolean) {
            patchState(store, {authInitializingNewUser: initializing});
+        },
+
+        setAuthUser(authUser: AuthUser) {
+            patchState(store, {authUser: authUser})
         },
 
         async getAuth(): Promise<AuthType | null> {
@@ -125,7 +133,10 @@ export const PhotoOrdersStore = signalStore(
             try {
                 patchState(store, setBusy());
                 const updatedUser = await firebaseService.updateUser(user);
-                patchState(store, {activeUser: updatedUser}, setIdle());
+                patchState(store,
+                    updateEntity({id: updatedUser.id, changes: updatedUser}, {collection: 'users'}),
+                    setIdle()
+                );
                 toastService.showSuccess('User wurde gespeichert');
                 return updatedUser;
             } catch (error) {
@@ -145,6 +156,71 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
+        // Projects
+        getProject(id = ''): Project | null {
+            const projectMap = store.projectsEntityMap();
+            return projectMap[id] || null;
+        },
+
+        getAllProjects(): Project[] {
+            return store.projectsEntities();
+        },
+
+        async loadProjects(authUser: AuthUser | null | undefined): Promise<Project[]>{
+            patchState(store, setBusy());
+            let projects: Project[] = [];
+            try {
+                if (authUser?.authType === 'admin') {
+                    projects = await firebaseService.getAllProjects();
+                } else if (authUser?.userId) {
+                    projects = await firebaseService.queryProjectsByUserId(authUser.userId) || [];
+                }
+                patchState(store, setAllEntities(projects, {collection: 'projects'}), setIdle());
+                return projects;
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+
+        async setProject(project: Project): Promise<void> {
+            try {
+                await firebaseService.setProject(project);
+                patchState(store, setEntity(project, {collection: 'projects'}));
+                toastService.showSuccess('Projekt wurde gespeichert');
+            } catch (error) {
+                this.setError((error as Error).message);
+            }
+        },
+
+        async updateProject(project: Project): Promise<Project> {
+            try {
+                patchState(store, setBusy());
+                const updatedProject = await firebaseService.updateProject(project);
+                patchState(store,
+                    updateEntity({id: updatedProject.id, changes: updatedProject}, {collection: 'projects'}),
+                    setIdle()
+                );
+                toastService.showSuccess('Projekt wurde gespeichert');
+                return updatedProject;
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+
+        async removeProject(id: string = ''): Promise<void> {
+            try {
+                await firebaseService.removeProject(id);
+                patchState(store, removeEntity(id, {collection: 'projects'}));
+                toastService.showSuccess('Projekt wurde gelöscht.');
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+
+
 
     })),
 
@@ -154,8 +230,19 @@ export const PhotoOrdersStore = signalStore(
 
     withHooks({
         async onInit(store) {
-            rxMethod<AuthUser | null | undefined>(pipe(
-                map(authUser => store.loadUsers(authUser))
+            const subscription = rxMethod<AuthUser | null | undefined>(pipe(
+                tap(async authUser =>  {
+                    setBusy();
+                    await Promise.all([
+                        store.loadUsers(authUser),
+                        store.loadProjects(authUser)
+                        ])
+                    setIdle();
+                    if (authUser) {
+                        patchState(store, {isInitialized: true});
+                        subscription.unsubscribe();
+                    }
+                })
             ))(store.authUser);
         }
     }),

@@ -1,5 +1,6 @@
 export type Primitive = string | number | boolean | Date | null | undefined
-export type Obj = {[key: string]: Primitive};
+export type ObjFlat = {[key: string]: Primitive};
+export type ObjAny = {[key: string]: any};
 
 
 
@@ -107,11 +108,11 @@ function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' =
  *
  */
 function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
-    const lower = filter.toLowerCase();
+    const filterLowerCase = filter.toLowerCase();
     return array.filter(row => {
         const keys = fields || Object.keys(row);
         for (const key of keys) {
-            if (String(row[key]).toLowerCase().includes(filter)) return true;
+            if (String(row[key]).toLowerCase().includes(filterLowerCase)) return true;
         }
         return false
     })
@@ -209,9 +210,10 @@ async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (er
  * }
  */
 function delay(delayMillis: number): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => resolve(), delayMillis);
     })
 }
+
 
 export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage, safeAwait, delay };

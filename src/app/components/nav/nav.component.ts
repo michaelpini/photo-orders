@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, computed, effect, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {JsonPipe} from "@angular/common";
-import {ModalService} from "../modals/modal.service";
+import {ModalService} from "../../modals/modal.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCircleUser as faUserSolid, faMoon} from "@fortawesome/free-solid-svg-icons";
 import {faCircleUser as faUserOutline, faSun} from "@fortawesome/free-regular-svg-icons";
@@ -56,7 +56,7 @@ export class NavComponent implements AfterViewInit{
         })
     }
 
-    onDocumentClick = (ev: MouseEvent) => {
+    onDocumentClick = () => {
         this.collapsed.set(true);
     }
 

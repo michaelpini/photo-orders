@@ -1,0 +1,40 @@
+.form {
+    container-name: form-container;
+    container-type: inline-size;
+}
+.form-control {
+    text-overflow: ellipsis;
+
+    &:disabled {
+        background-color: transparent;
+    }
+}
+.auth {
+    width: 7.5rem;
+}
+.phone {
+    min-width: 10rem;
+}
+.address-label {
+    width: 6.2rem;
+    padding-right: 0;
+}
+.plz {
+    width: 5rem;
+}
+.hidden-controls {
+    color: rgba(40,40,40, 10%)
+}
+@container form-container (width < 500px) {
+    .country {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .country-label {
+        width: 6.2rem;
+    }
+
+}
+
+
+

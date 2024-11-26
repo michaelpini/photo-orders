@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, computed, input} from "@angular/core";
-import {FirebaseService} from "../persistance/firebase.service";
-import {AuthService} from "../auth/auth.service";
-import {ModalService} from "../modals/modal.service";
+import {FirebaseService} from "../../persistance/firebase.service";
+import {AuthService} from "../../auth/auth.service";
+import {ModalService} from "../../modals/modal.service";
 
 @Component({
     selector: "app",

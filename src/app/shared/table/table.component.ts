@@ -1,11 +1,10 @@
 import {formatCurrency, formatDate, formatNumber, NgClass,} from '@angular/common';
 import {Component, computed, input, model, output, Signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {Primitive, quickFilter, sortArr} from "../util";
+import {ObjAny, ObjFlat, Primitive, quickFilter, sortArr} from "../util";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faCheck, faChevronRight, faFilter, faFilterCircleXmark, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faChevronRight, faFilterCircleXmark, faXmark} from "@fortawesome/free-solid-svg-icons";
 
-export type Obj = {[key: string]: Primitive};
 export type SortOrder = 'asc' | 'desc' | '';
 export type ValueFormatter = ((value: Primitive) => string);
 export interface ColDef {
@@ -18,9 +17,6 @@ export interface ColDef {
     hidden?: boolean;
     excludeFromQuickFilter?: boolean;
 }
-// interface tableOptions {
-//     filterOnlyVisibleColumns?: boolean;
-// }
 export interface TableState {
     filter: string;
     sortColumn: string;
@@ -43,13 +39,13 @@ const rotateSort: {[key: string]: SortOrder} = {'': 'asc', asc: 'desc', desc: ''
 })
 export class TableComponent {
     colDefs = input<ColDef[]>([]);
-    rowData = input<Obj[]>([]);
+    rowData = input<ObjAny[]>([]);
     hideFilter = input(false, {transform: (val: string | boolean) => typeof val === 'boolean' ? val : true});
     showChevron = input(false, {transform: (val: string | boolean) => typeof val === 'boolean' ? val : true});
     locale = input('de-CH');
     state = model<TableState>(getTableState('', '', ''));
     selectedId = model<string>('');
-    selected = output<Obj>();
+    selected = output<ObjAny>();
 
     colDefsMap: Signal<{[field: string]: ColDef}> = computed(() => {
         return this.colDefs().reduce((acc: {[field: string]: ColDef}, val: ColDef) => {
@@ -57,10 +53,13 @@ export class TableComponent {
             return acc;
         }, {})
     })
-    rowDataFilteredSorted: Signal<Obj[]> = computed(() => {
+    rowDataFlat: Signal<ObjFlat[]> = computed(() => {
+        return this.getFlatRowData(this.rowData(), this.colDefs());
+    })
+    rowDataFilteredSorted: Signal<ObjAny[]> = computed(() => {
         const filterFieldsArray = this.colDefs().filter(x => !x.excludeFromQuickFilter).map(x => x.field);
         const {filter, sortColumn, sortOrder} = this.state();
-        const filtered = quickFilter((this.rowData()), filter, filterFieldsArray)
+        const filtered = quickFilter((this.rowDataFlat()), filter, filterFieldsArray)
         return sortArr(filtered, sortColumn, sortOrder)
     })
     countInfo: Signal<string> = computed(() => {
@@ -105,7 +104,7 @@ export class TableComponent {
         this.state.update(val => ({...val, filter: ''}));
     }
 
-    onSelected(obj: Obj) {
+    onSelected(obj: ObjAny) {
         this.selectedId.set(String(obj['id']) || '')
         this.selected.emit(obj);
     }
@@ -132,11 +131,32 @@ export class TableComponent {
         }
     }
 
+    getFlatRowData(rows: ObjAny[], colDefs: ColDef[]): ObjFlat[] {
+        let rowsFlat: ObjFlat[] = [];
+        for (let row of rows) {
+            let obj: ObjFlat = {};
+            for (let colDef of colDefs) {
+                obj[colDef.field] = this.getFieldValue(row, colDef.field);
+            }
+            rowsFlat.push(obj)
+        }
+        return rowsFlat;
+    }
+
+    getFieldValue(row: ObjAny = {}, field: string = '') {
+        if (field in row) return row[field];
+        if (field.includes('.')) {
+            return field.split('.').reduce((obj, prop) => {
+                return obj && obj[prop] || undefined;
+            }, row)
+        }
+        return undefined
+    }
+
 
     protected readonly faCheck = faCheck;
     protected readonly faXmark = faXmark;
     protected readonly faChevronRight = faChevronRight;
-    protected readonly faFilter = faFilter;
     protected readonly faFilterCircleXmark = faFilterCircleXmark;
 }
 

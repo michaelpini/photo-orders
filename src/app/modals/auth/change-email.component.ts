@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {AuthService} from "../../auth/auth.service";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
@@ -8,7 +8,9 @@ import {NgClass} from "@angular/common";
 import {ToastService} from "../../shared/toasts/toast.service";
 import {firebaseAuth} from "../../../main";
 import {delay} from "../../shared/util";
-import {User} from "../../customers/user.model";
+import {User} from "../../components/customers/user.model";
+import {AuthUser} from "../../auth/authUser.model";
+import {FirebaseService} from "../../persistance/firebase.service";
 
 
 @Component({
@@ -26,6 +28,7 @@ export class ChangeEmailComponent implements OnInit {
         public modal: NgbActiveModal,
         private authService: AuthService,
         private toastService: ToastService,
+        private firebaseService: FirebaseService,
     ) { }
 
     ngOnInit(): void {
@@ -39,16 +42,22 @@ export class ChangeEmailComponent implements OnInit {
     }
 
     async submit(form: NgForm) {
-        const {newEmail, password, update2ndEmail} = form.value;
+        const {newEmail, password, update2ndEmail} = form.value as {[key: string] : string};
         try {
             this.store.setBusy();
             await this.authService.signInEmail(firebaseAuth.currentUser?.email || '', password);
             await delay(2000);
             await this.authService.changeEmail(newEmail, password);
+            const updatedAuthUser: AuthUser = await this.firebaseService.updateAuthUser({
+                userName: newEmail,
+                emailVerified: false
+            });
+            this.store.setAuthUser(updatedAuthUser);
             if (update2ndEmail) {
                 const id = this.activeUser?.id || ''
                 const data: User = {id , email: newEmail}
-                await this.store.updateUser(data);
+                const updatedUser = await this.store.updateUser(data);
+                this.store.setActiveUser(updatedUser);
             }
             this.toastService.showSuccess('Email changed successfully.');
             this.store.setIdle();

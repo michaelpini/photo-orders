@@ -1,0 +1,95 @@
+<form class="form" #form="ngForm">
+
+    <div class="row mb-3">
+        <div class="col">
+            <label for="projectName" class="form-label">Projekt Name *</label>
+            <input type="email"
+                   class="form-control"
+                   [ngClass]="{'is-invalid': !projectName.valid && projectName.touched}"
+                   id="projectName"
+                   name="projectName"
+                   ngModel
+                   required
+                   #projectName="ngModel"
+            >
+        </div>
+    </div>
+
+    <div class="row mb-3">
+       <div class="col">
+           <label for="userId">Kunde</label>
+           <div class="col-auto">
+               <select class="form-select"
+                       id="userId"
+                       name="userId"
+                       ngModel
+               >
+                   @for (user of store.getAllUsers(); track user.id) {
+                       <option value="{{user.id}}">{{ user.firstName }} {{user.lastName}}</option>
+                   }
+               </select>
+           </div>
+       </div>
+       <div class="col">
+           <label for="status">Status</label>
+           <div class="col-auto">
+               <select class="form-select"
+                       id="status"
+                       name="status"
+                       ngModel
+               >
+                   @for (entry of Object.entries(statusMapDe); track entry[0]) {
+                       <option value="{{entry[0]}}">{{ entry[1] }}</option>
+                   }
+               </select>
+           </div>
+       </div>
+   </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            <label for="eventDate">Event Datum</label>
+            <input type="datetime-local"
+                   class="form-control"
+                   id="eventDate"
+                   name="eventDate"
+                   ngModel
+            >
+        </div>
+        <div class="col">
+            <label for="eventLocation">Event Location</label>
+            <input type="text"
+                   class="form-control"
+                   id="eventLocation"
+                   name="eventLocation"
+                   ngModel
+            >
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label" for="description">Beschreibung</label>
+            <textarea id="description"
+                      class="form-control"
+                      rows="3"
+                      name="description"
+                      ngModel
+            ></textarea>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label" for="remarks">Bemerkungen</label>
+            <textarea id="remarks"
+                      class="form-control"
+                      rows="3"
+                      name="remarks"
+                      ngModel
+            ></textarea>
+        </div>
+    </div>
+
+</form>

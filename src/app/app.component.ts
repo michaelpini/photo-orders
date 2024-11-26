@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 // import {registerLocaleData} from '@angular/common';
 // import * as deCH from '@angular/common/locales/de-CH';
-import {NavComponent} from './nav/nav.component';
+import {NavComponent} from './components/nav/nav.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {SpinnerComponent} from "./shared/spinner/spinner.component";
 import {PhotoOrdersStore} from "./store/photoOrdersStore";

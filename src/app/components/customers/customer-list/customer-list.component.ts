@@ -1,9 +1,10 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {ColDef, Obj, TableComponent, TableState} from "../../shared/table/table.component";
+import {ColDef, TableComponent, TableState} from "../../../shared/table/table.component";
 import {patchState} from "@ngrx/signals";
-import {PhotoOrdersStore} from "../../store/photoOrdersStore";
-import {tableState as storedTableState} from "../../store/tableState";
+import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
+import {tableState as storedTableState} from "../../../store/tableState";
 import {NavigationEnd, Router} from "@angular/router";
+import {ObjAny} from "../../../shared/util";
 
 @Component({
     selector: 'customer-list',
@@ -47,7 +48,7 @@ export class CustomerListComponent implements OnInit, OnDestroy{
         patchState(storedTableState, old => ({...old, users: this.tableState()}))
     }
     
-    onSelect(obj: Obj) {
+    onSelect(obj: ObjAny) {
         const id = obj['id'];
         this.router.navigate([`/customers/${id}`]);
     }

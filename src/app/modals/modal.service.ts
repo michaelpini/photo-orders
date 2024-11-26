@@ -10,6 +10,22 @@ import {ChangeEmailComponent} from "./auth/change-email.component";
 export class ModalService {
     protected ngbModal = inject(NgbModal);
 
+    // Confirmation dialogs
+    confirm(config: ModalConfirmConfig = {message: 'Weiter?'}): Promise<string> {
+        const modalRef = this.ngbModal.open(ModalConfirm);
+        modalRef.componentInstance.configure(config);
+        return modalRef.result;
+    }
+
+    confirmDiscardChanges(): Promise<string> {
+        const config: ModalConfirmConfig = {
+            title: 'Nicht gespeicherte Änderung',
+            html: `<div>Es gibt nicht gespeicherte Änderungen<br>Änderungen verwerfen und weiterfahren?</div>`,
+            btnOkText: 'Weiter',
+        }
+        return this.confirm(config);
+    }
+
     confirmDeleteUser(firstName: string, lastName: string): Promise<string> {
         const config: ModalConfirmConfig = {
             title: 'User Löschen?',
@@ -20,11 +36,12 @@ export class ModalService {
         return this.confirm(config);
     }
 
-    confirmDiscardChanges(): Promise<string> {
+    confirmDeleteProject(name: string): Promise<string> {
         const config: ModalConfirmConfig = {
-            title: 'Nicht gespeicherte Änderung',
-            html: `<div>Es gibt nicht gespeicherte Änderungen<br>Änderungen verwerfen und weiterfahren?</div>`,
-            btnOkText: 'Weiter',
+            title: 'Projekt Löschen?',
+            html: `<div>Projekt ${name || ''} wirklich löschen?<br> Dies kann nicht rückgängig gemacht werden!</div>`,
+            btnOkText: 'Löschen',
+            btnClass: 'btn-danger',
         }
         return this.confirm(config);
     }
@@ -39,12 +56,7 @@ export class ModalService {
         return this.confirm(config);
     }
 
-    confirm(config: ModalConfirmConfig = {message: 'Weiter?'}): Promise<string> {
-        const modalRef = this.ngbModal.open(ModalConfirm);
-        modalRef.componentInstance.configure(config);
-        return modalRef.result;
-    }
-
+    // Auth
     signIn(): Promise<void> {
         const modalRef = this.ngbModal.open(SignInComponent);
         return modalRef.result;
@@ -65,5 +77,4 @@ export class ModalService {
         const modalRef = this.ngbModal.open(ChangeEmailComponent);
         return modalRef.result;
     }
-
 }

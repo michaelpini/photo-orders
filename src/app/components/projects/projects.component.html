@@ -1,0 +1,24 @@
+<div class="row m-0">
+    <div class="row pe-0 mb-3 align-items-center">
+        <div class="col">
+            <h1 class="">Projekte</h1>
+        </div>
+        <div class="col-auto float-end pe-0">
+            <button class="btn btn-primary"
+                    (click)="createProject()"
+            >Neues Projekt
+            </button>
+        </div>
+    </div>
+
+    <div class="project-list" [ngClass]="{'project-selected': showDetail()}">
+        <project-list></project-list>
+    </div>
+    <div class="divider-v"></div>
+    <div class="project-detail">
+        <router-outlet
+                (activate)="showDetail.set(true)"
+                (deactivate)="showDetail.set(false)"
+        ></router-outlet>
+    </div>
+</div>

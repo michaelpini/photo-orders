@@ -3,6 +3,7 @@ import {signalState} from "@ngrx/signals";
 
 type TableStates = {
     users: TableState;
+    projects: TableState;
 }
 
 const getTableState = (filter = '', sortColumn = '', sortOrder: SortOrder = ''): TableState => {
@@ -10,5 +11,8 @@ const getTableState = (filter = '', sortColumn = '', sortOrder: SortOrder = ''):
 }
 
 export const tableState = signalState<TableStates>(
-    {users: getTableState('', 'firstName', 'asc')}
+    {
+        users: getTableState('', 'firstName', 'asc'),
+        projects: getTableState('', 'eventDate', 'asc')
+    }
 )

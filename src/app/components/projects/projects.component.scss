@@ -1,0 +1,27 @@
+.project-list,
+.project-detail {
+    width: 100%;
+}
+
+.project-selected {
+    display: none;
+}
+
+.divider-v {
+    width: 1px;
+    background-color: var(--bs-border-color);
+    height: auto;
+    padding: 0;
+    margin: 0 0.9em;}
+
+
+@media (min-width: 767.98px) {
+    .project-detail {
+        width: calc(50% - 1em);
+    }
+
+    .project-selected {
+        display: block;
+        width: calc(50% - 1em);
+    }
+}

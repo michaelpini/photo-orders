@@ -1,10 +1,10 @@
 import {Component, inject} from '@angular/core';
-import {AuthService} from "../auth/auth.service";
+import {AuthService} from "../../auth/auth.service";
 import {Router} from "@angular/router";
-import {ModalService} from "../modals/modal.service";
+import {ModalService} from "../../modals/modal.service";
 import {CustomerDetailComponent} from "../customers/customer-detail/customer-detail.component";
-import {firebaseAuth} from "../../main";
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
+import {firebaseAuth} from "../../../main";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 
 @Component({
     selector: 'app-account',

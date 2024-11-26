@@ -1,0 +1,7 @@
+<app-table
+        [rowData]="store.projectsEntities()"
+        [colDefs]="colDefs"
+        [selectedId]="selectedId()"
+        [(state)]="tableState"
+        (selected)="onSelect($event)"
+></app-table>

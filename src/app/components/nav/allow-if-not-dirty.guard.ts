@@ -1,7 +1,7 @@
 import {inject} from "@angular/core";
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
-import {ModalService} from "../modals/modal.service";
-import {safeAwait} from "../shared/util";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
+import {ModalService} from "../../modals/modal.service";
+import {safeAwait} from "../../shared/util";
 
 export const allowIfNotDirtyGuard: () => Promise<boolean> = async () => {
     const store = inject(PhotoOrdersStore);

@@ -1,0 +1,15 @@
+.form {
+    container-name: form-container;
+    container-type: inline-size;
+}
+.form-control {
+    text-overflow: ellipsis;
+
+    &:disabled {
+        background-color: transparent;
+    }
+}
+.hours-label {
+    width: 6.2rem;
+    padding-right: 0;
+}

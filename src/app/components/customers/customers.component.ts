@@ -4,8 +4,8 @@ import {CustomerDetailComponent} from "./customer-detail/customer-detail.compone
 import {NgClass} from "@angular/common";
 import {Router, RouterOutlet} from "@angular/router";
 import {User} from "./user.model";
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
-import {FirebaseService} from "../persistance/firebase.service";
+import {PhotoOrdersStore} from "../../store/photoOrdersStore";
+import {FirebaseService} from "../../persistance/firebase.service";
 
 @Component({
     selector: 'app-customers',
