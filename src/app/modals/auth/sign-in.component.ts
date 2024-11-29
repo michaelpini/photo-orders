@@ -9,9 +9,8 @@ import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'sign-in',
-    standalone: true,
     imports: [FormsModule, NgClass, PasswordFormFieldComponent],
-    templateUrl: './sign-in.component.html',
+    templateUrl: './sign-in.component.html'
 })
 export class SignInComponent implements AfterViewInit{
     protected readonly store = inject(PhotoOrdersStore);

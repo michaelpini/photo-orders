@@ -15,9 +15,8 @@ import {FirebaseService} from "../../persistance/firebase.service";
 
 @Component({
     selector: 'change-email',
-    standalone: true,
     imports: [FormsModule, NgClass, PasswordFormFieldComponent],
-    templateUrl: './change-email.component.html',
+    templateUrl: './change-email.component.html'
 })
 export class ChangeEmailComponent implements OnInit {
     protected readonly store = inject(PhotoOrdersStore);

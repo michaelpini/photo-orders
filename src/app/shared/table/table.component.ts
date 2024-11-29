@@ -31,11 +31,9 @@ const rotateSort: {[key: string]: SortOrder} = {'': 'asc', asc: 'desc', desc: ''
 
 @Component({
     selector: 'app-table',
-    standalone: true,
     imports: [FormsModule, NgClass, FaIconComponent,],
     templateUrl: './table.component.html',
-    styleUrl: './table.component.scss',
-
+    styleUrl: './table.component.scss'
 })
 export class TableComponent {
     colDefs = input<ColDef[]>([]);

@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import {HomeComponent} from "../components/home/home.component";
 import {allowIfAdminGuard} from "../components/nav/allow-if-admin.guard";
 import {allowIfNotDirtyGuard} from "../components/nav/allow-if-not-dirty.guard";
+import {allowIfAuthenticatedGuard} from "../components/nav/allow-if-authenticated.guard";
 
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -13,7 +14,7 @@ export const routes: Routes = [
         loadComponent: () => import('../components/customers/customers.component').then(m => m.CustomersComponent),
         loadChildren: () => import('./customer-routes').then(m => m.costumerRoutes),
     },
-    {path: 'projects', canActivate: [allowIfAdminGuard],
+    {path: 'projects', canActivate: [allowIfAuthenticatedGuard],
         loadComponent: () => import('../components/projects/projects.component').then(m => m.ProjectsComponent),
         loadChildren: () => import('./project-routes').then(m => m.projectRoutes),
     },

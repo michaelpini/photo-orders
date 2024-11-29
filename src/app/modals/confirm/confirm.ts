@@ -22,7 +22,6 @@ const defaultConfig: ModalConfirmConfig = {
 
 @Component({
     selector: 'modal-confirm',
-    standalone: true,
     templateUrl: './confirm.html',
     imports: [SafeHtmlPipe]
 })

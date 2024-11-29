@@ -10,7 +10,6 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'change-pw',
-    standalone: true,
     imports: [FormsModule, NgClass, PasswordFormFieldComponent],
     templateUrl: './change-pw.component.html',
     styles: `

@@ -5,7 +5,6 @@ import {ToastService} from "./toast.service";
 
 @Component({
     selector: 'app-toasts',
-    standalone: true,
     imports: [NgbToastModule, NgTemplateOutlet],
     template: `
         <div class="toast-container position-fixed bottom-center p-3">
@@ -84,7 +83,7 @@ import {ToastService} from "./toast.service";
         .toast-close:hover {
             transform: scale(1.1);
         }
-    `,
+    `
 })
 export class ToastsContainer {
     toastService = inject(ToastService);

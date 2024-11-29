@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, computed, effect, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
-import {JsonPipe} from "@angular/common";
 import {ModalService} from "../../modals/modal.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCircleUser as faUserSolid, faMoon} from "@fortawesome/free-solid-svg-icons";
@@ -13,11 +12,9 @@ type Theme = 'light' | 'dark' | 'auto';
 
 @Component({
     selector: 'app-header',
-    standalone: true,
     imports: [
         RouterLink,
         RouterLinkActive,
-        JsonPipe,
         FaIconComponent,
         NgbDropdown,
         NgbDropdownMenu,

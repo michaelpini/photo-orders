@@ -3,9 +3,10 @@
     <div class="row mb-3">
         <div class="col">
             <label for="projectName" class="form-label">Projekt Name *</label>
-            <input type="email"
+            <input type="text"
                    class="form-control"
                    [ngClass]="{'is-invalid': !projectName.valid && projectName.touched}"
+                   [disabled]="!store.isAdmin()"
                    id="projectName"
                    name="projectName"
                    ngModel
@@ -15,11 +16,12 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-       <div class="col">
-           <label for="userId">Kunde</label>
+    <div class="row">
+       <div class="col-csm mb-3">
+           <label for="userId" class="form-label">Kunde</label>
            <div class="col-auto">
                <select class="form-select"
+                       [disabled]="!store.isAdmin()"
                        id="userId"
                        name="userId"
                        ngModel
@@ -30,10 +32,11 @@
                </select>
            </div>
        </div>
-       <div class="col">
-           <label for="status">Status</label>
+       <div class="col-csm mb-3">
+           <label for="status" class="form-label">Status</label>
            <div class="col-auto">
                <select class="form-select"
+                       [disabled]="!store.isAdmin()"
                        id="status"
                        name="status"
                        ngModel
@@ -46,20 +49,22 @@
        </div>
    </div>
 
-    <div class="row mb-3">
-        <div class="col">
-            <label for="eventDate">Event Datum</label>
+    <div class="row">
+        <div class="col-csm mb-3">
+            <label for="eventDate" class="form-label">Event Datum</label>
             <input type="datetime-local"
                    class="form-control"
+                   [disabled]="!store.isAdmin()"
                    id="eventDate"
                    name="eventDate"
                    ngModel
             >
         </div>
-        <div class="col">
-            <label for="eventLocation">Event Location</label>
+        <div class="col-csm mb-3">
+            <label for="eventLocation" class="form-label">Event Location</label>
             <input type="text"
                    class="form-control"
+                   [disabled]="!store.isAdmin()"
                    id="eventLocation"
                    name="eventLocation"
                    ngModel
@@ -73,7 +78,8 @@
             <label class="form-label" for="description">Beschreibung</label>
             <textarea id="description"
                       class="form-control"
-                      rows="3"
+                      [disabled]="!store.isAdmin()"
+                      rows="4"
                       name="description"
                       ngModel
             ></textarea>
@@ -82,10 +88,81 @@
 
     <div class="row mb-3">
         <div class="col">
+            <label for="equipment" class="form-label">Equipment</label>
+            <input type="text"
+                   class="form-control"
+                   [disabled]="!store.isAdmin()"
+                   id="equipment"
+                   name="equipment"
+                   ngModel
+            >
+        </div>
+    </div>
+
+    <h3 class="mt-5 mb-3">Lieferumfang</h3>
+
+    <div class="grid-2-col mb-5">
+        <label for="numberOfPhotos" class="col col-form-label">Anzahl Fotos</label>
+        <input type="number"
+               class="form-control inline-input"
+               [disabled]="!store.isAdmin()"
+               id="numberOfPhotos"
+               name="numberOfPhotos"
+               ngModel
+        >
+
+        <label for="resolutionAndType" class="col col-form-label">Auflösung und Format</label>
+        <input class="form-control inline-input"
+               list="datalistOptionsResolution"
+               [disabled]="!store.isAdmin()"
+               id="resolutionAndType"
+               placeholder="z.B. 24.5MP JPEG..."
+               name="resolutionAndType"
+               ngModel
+        >
+        <datalist id="datalistOptionsResolution">
+            <option value="24.5MP JPG">
+            <option value="4k JPG">
+            <option value="FullHD JPG">
+            <option value="6048 x 4024 JPG">
+            <option value="1980 x 1080 JPG">
+        </datalist>
+
+        <label for="editingOptions" class="col col-form-label">Bildbearbeitung</label>
+        <input class="form-control inline-input"
+               [disabled]="!store.isAdmin()"
+               list="datalistOptionsEditing"
+               id="editingOptions"
+               placeholder="z.B. Unbearbeitet..."
+               name="editingOptions"
+               ngModel
+        >
+        <datalist id="datalistOptionsEditing">
+            <option value="Einfach (Helligkeit, Farbton)">
+            <option value="Mittel (inkl. Detailkorrekturen)">
+            <option value="Aufwendig (inkl. Hintergrund, etc)">
+            <option value="Kundenwunsch: (Filter?)">
+            <option value="Unbearbeitet (Kamera JPG)">
+        </datalist>
+
+        <label for="deadline" class="col col-form-label">Abgabe Termin</label>
+        <input type="date"
+               class="form-control inline-input"
+               [disabled]="!store.isAdmin()"
+               id="deadline"
+               name="deadline"
+               ngModel
+        >
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col">
             <label class="form-label" for="remarks">Bemerkungen</label>
             <textarea id="remarks"
                       class="form-control"
-                      rows="3"
+                      [disabled]="!store.isAdmin()"
+                      rows="5"
                       name="remarks"
                       ngModel
             ></textarea>

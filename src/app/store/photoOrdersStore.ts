@@ -67,7 +67,7 @@ export const PhotoOrdersStore = signalStore(
                 const rx = rxMethod<AuthUser | null | undefined>(pipe(
                     tap(authUser => {
                         if (authUser === undefined) return;
-                        resolve(authUser?.authType || null);
+                        resolve(authUser ? authUser?.authType || 'user' : null);
                         rx.unsubscribe();
                     })
                 ))(store.authUser);

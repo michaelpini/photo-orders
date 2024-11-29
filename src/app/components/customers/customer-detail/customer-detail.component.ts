@@ -18,7 +18,6 @@ import {ToastService} from "../../../shared/toasts/toast.service";
 
 @Component({
     selector: 'customer-detail',
-    standalone: true,
     imports: [FormsModule, NgClass, FaIconComponent, NgbTooltip],
     templateUrl: './customer-detail.component.html',
     styleUrl: './customer-detail.component.scss'
@@ -47,8 +46,9 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         private toastService: ToastService,
         ) {
         effect(async () => {
+            const id = this.id();
             if (!this.editOwnAccount()) {
-                const selectedUser = this.store.getUser(this.id())
+                const selectedUser = this.store.getUser(id)
                 if (selectedUser) {
                     setTimeout(() => this.setFormData(selectedUser));
                 }

@@ -8,8 +8,7 @@ import {ObjAny} from "../../../shared/util";
 
 @Component({
     selector: 'customer-list',
-    standalone: true,
-    imports: [ TableComponent ],
+    imports: [TableComponent],
     templateUrl: './customer-list.component.html',
     styleUrl: './customer-list.component.scss'
 })

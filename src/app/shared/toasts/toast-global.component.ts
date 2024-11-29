@@ -5,7 +5,6 @@ import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 
 @Component({
     selector: 'ngbd-toast-global',
-    standalone: true,
     imports: [ToastsContainer],
     template: `
         <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>`

@@ -1,6 +1,5 @@
 import {Component, inject, signal} from '@angular/core';
 import {CustomerListComponent} from "./customer-list/customer-list.component";
-import {CustomerDetailComponent} from "./customer-detail/customer-detail.component";
 import {NgClass} from "@angular/common";
 import {Router, RouterOutlet} from "@angular/router";
 import {User} from "./user.model";
@@ -9,7 +8,7 @@ import {FirebaseService} from "../../persistance/firebase.service";
 
 @Component({
     selector: 'app-customers',
-    standalone: true, imports: [CustomerListComponent, CustomerDetailComponent, RouterOutlet, NgClass],
+    imports: [CustomerListComponent, RouterOutlet, NgClass],
     templateUrl: './customers.component.html',
     styleUrl: './customers.component.scss'
 })

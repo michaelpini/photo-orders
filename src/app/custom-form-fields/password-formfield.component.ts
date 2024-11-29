@@ -20,15 +20,14 @@ type Validated = {
 }
 
 @Component({
-    standalone: true,
     selector: "password-formfield",
     templateUrl: 'password-formfield.component.html',
     styleUrl: './password-formfield.component.scss',
     imports: [FaIconComponent, NgClass, FormsModule],
     providers: [
-        {provide: NG_VALUE_ACCESSOR, multi:true, useExisting: PasswordFormFieldComponent},
-        {provide: NG_VALIDATORS, multi:true, useExisting: PasswordFormFieldComponent},
-    ],
+        { provide: NG_VALUE_ACCESSOR, multi: true, useExisting: PasswordFormFieldComponent },
+        { provide: NG_VALIDATORS, multi: true, useExisting: PasswordFormFieldComponent },
+    ]
 })
 export class PasswordFormFieldComponent implements ControlValueAccessor, Validator  {
     protected readonly faEyeSlash = faEyeSlash;

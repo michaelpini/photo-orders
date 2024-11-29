@@ -13,7 +13,6 @@ import {NgbdToastGlobal} from "./shared/toasts/toast-global.component";
 
 @Component({
     selector: 'app-root',
-    standalone: true,
     imports: [RouterOutlet, NavComponent, FontAwesomeModule, SpinnerComponent, NgbdToastGlobal],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'

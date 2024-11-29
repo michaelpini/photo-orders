@@ -21,6 +21,8 @@
                         <a class="nav-link" role="button" routerLink="/customers" routerLinkActive="active"
                         >Kunden</a>
                     </li>
+                }
+                @if (store.authUser()) {
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" routerLink="/projects" routerLinkActive="active"
                         >Projekte</a>

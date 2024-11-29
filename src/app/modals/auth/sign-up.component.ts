@@ -12,9 +12,8 @@ import {AuthUser} from "../../auth/authUser.model";
 
 @Component({
     selector: 'sign-up',
-    standalone: true,
     imports: [FormsModule, NgClass, PasswordFormFieldComponent],
-    templateUrl: './sign-up.component.html',
+    templateUrl: './sign-up.component.html'
 })
 export class SignUpComponent{
     protected readonly store = inject(PhotoOrdersStore);

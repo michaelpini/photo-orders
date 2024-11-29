@@ -8,7 +8,6 @@ import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 
 @Component({
     selector: 'app-account',
-    standalone: true,
     templateUrl: './account.component.html',
     imports: [CustomerDetailComponent],
     styles: `.w-max-lg {max-width: 768px;}`

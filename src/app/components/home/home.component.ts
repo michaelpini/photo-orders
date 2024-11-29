@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import {Toast, ToastService} from "../../shared/toasts/toast.service";
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+    selector: 'app-home',
+    imports: [],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss'
 })
 export class HomeComponent {
     constructor(private toastService: ToastService) {

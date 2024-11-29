@@ -9,8 +9,7 @@ import {ObjAny} from "../../../shared/util";
 
 @Component({
     selector: 'project-list',
-    standalone: true,
-    imports: [ TableComponent ],
+    imports: [TableComponent],
     templateUrl: './project-list.component.html',
     styleUrl: './project-list.component.scss'
 })

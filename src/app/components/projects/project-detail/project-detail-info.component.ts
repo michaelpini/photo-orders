@@ -7,7 +7,6 @@ import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
 
 @Component({
     selector: 'project-detail-info',
-    standalone: true,
     imports: [FormsModule, NgClass],
     templateUrl: './project-detail-info.component.html',
     styleUrl: './project-detail-info.component.scss'

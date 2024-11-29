@@ -1,5 +1,10 @@
+<div class="row">
+    <div class="col mb-4 display-6">
+        {{data()?.projectName}}
+    </div>
+</div>
 
-<ul ngbNav #nav="ngbNav" class="nav-tabs">
+<ul ngbNav #nav="ngbNav" class="nav-tabs mb-5">
     <li ngbNavItem [destroyOnHide]="false">
         <button ngbNavLink>Projekt Info</button>
         <ng-template ngbNavContent>
@@ -14,6 +19,7 @@
         <button ngbNavLink>Offerte</button>
         <ng-template ngbNavContent>
             <project-detail-cost
+                    quoteOrInvoice="quote"
                     [dataInput]="dataLoaded()?.quote || null"
                     (dataOutput)="onChangeQuote($event)"
             ></project-detail-cost>
@@ -24,30 +30,29 @@
         <button ngbNavLink>Rechnung</button>
         <ng-template ngbNavContent>
             <project-detail-cost
+                    quoteOrInvoice="invoice"
                     [dataInput]="dataLoaded()?.invoice || null"
-                    (dataOutput)="onChangeQuote($event)"
+                    (dataOutput)="onChangeInvoice($event)"
             ></project-detail-cost>
         </ng-template>
     </li>
 
     <li ngbNavItem>
         <button ngbNavLink>Fotos</button>
-        <ng-template ngbNavContent>Photos</ng-template>
+        <ng-template ngbNavContent>
+            <project-photos
+
+            ></project-photos>
+        </ng-template>
     </li>
 </ul>
-
-<div class="row">
-    <div class="col mt-4 mb-4 display-6">
-        {{data()?.projectName}}
-    </div>
-</div>
 
 <div [ngbNavOutlet]="nav"></div>
 
 
 <!-- Button Ok / Cancel / Delete -->
     @if (store.isAdmin()) {
-        <div class="row">
+        <div class="row mt-5 mb-4">
             <div class="col d-flex justify-content-center">
                 <button type="button"
                         class="btn btn-primary col"

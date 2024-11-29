@@ -7,11 +7,10 @@ import {ProjectListComponent} from "./project-list/project-list.component";
 import {Project} from "./project.model";
 
 @Component({
-  selector: 'app-projects',
-  standalone: true,
-  imports: [RouterOutlet, NgClass, ProjectListComponent],
-  templateUrl: './projects.component.html',
-  styleUrl: './projects.component.scss'
+    selector: 'app-projects',
+    imports: [RouterOutlet, NgClass, ProjectListComponent],
+    templateUrl: './projects.component.html',
+    styleUrl: './projects.component.scss'
 })
 export class ProjectsComponent {
   protected store = inject(PhotoOrdersStore);
@@ -20,7 +19,11 @@ export class ProjectsComponent {
 
   async createProject() {
     try {
-      const template = {projectName: '<NEUES PROJEKT>'};
+      const template: Partial<Project> = {
+          projectName: '<NEUES PROJEKT>',
+          quote: {},
+          invoice: {}
+      };
       this.store.setBusy();
       const newProject: Project = await this.firebaseService.addProject(template);
       this.store.setProject(newProject);

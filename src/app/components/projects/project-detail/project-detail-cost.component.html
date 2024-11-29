@@ -1,18 +1,107 @@
 <form class="form" #form="ngForm">
 
-    <!-- Project Name-->
 
-    <div class="row mb-2 align-items-center">
-        <div class="hours-label">
-            <label class="form-label" for="travelHours">Anfahrt</label>
-        </div>
+    <div class="grid-2-col mb-3">
+        <label class="col col-form-label" for="preparationHours">Vorbereitung</label>
+        <input type="number"
+               class="form-control w-md"
+               [disabled]="!store.isAdmin()"
+               id="preparationHours"
+               name="preparationHours"
+               ngModel
+        >
+        <label>h</label>
+
+        <label class="col col-form-label" for="travelHours">Anfahrt</label>
+        <input type="number"
+               class="form-control w-md"
+               [disabled]="!store.isAdmin()"
+               id="travelHours"
+               name="travelHours"
+               ngModel
+        >
+        <label>h</label>
+
+        <label class="col col-form-label" for="photoShootingHours">Foto Shooting</label>
         <div class="col">
             <input type="number"
-                   class="form-control"
-                   id="travelHours"
-                   name="travelHours"
+                   class="form-control w-md"
+                   [disabled]="!store.isAdmin()"
+                   id="photoShootingHours"
+                   name="photoShootingHours"
                    ngModel
             >
+        </div>
+        <label>h</label>
+
+        <label class="col col-form-label" for="postProductionHours">Bearbeitung</label>
+        <input type="number"
+               class="form-control w-md"
+               [disabled]="!store.isAdmin()"
+               id="postProductionHours"
+               name="postProductionHours"
+               ngModel
+        >
+        <label>h</label>
+
+        <label class="col col-form-label">Total</label>
+        <div class="form-control text-only">
+            {{data()?.totalHours}} h
+        </div>
+        <label></label>
+
+        <label class="col col-form-label" for="hourlyRateCHF">Stundenansatz</label>
+        <input type="number"
+               class="form-control w-md"
+               [disabled]="!store.isAdmin()"
+               id="hourlyRateCHF"
+               name="hourlyRateCHF"
+               ngModel
+        >
+        <label>CHF</label>
+
+        <div class="cost-total">Total</div>
+        <div class="cost-total grid-2-span-2">
+            CHF {{data()?.totalCHF}}
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col">
+            <label class="col col-form-label" for="issueDate">{{quoteOrInvoice() === "quote" ? "Offert" : "Rechnungs"}}datum</label>
+            <input type="date"
+                   class="form-control"
+                   [disabled]="!store.isAdmin()"
+                   id="issueDate"
+                   name="issueDate"
+                   ngModel
+            >
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            @if (quoteOrInvoice() === "quote") {
+                <label class="col col-form-label" for="poDate">Auftragsbestätigung am</label>
+                <input type="date"
+                       class="form-control"
+                       [disabled]="!store.isAdmin()"
+                       id="poDate"
+                       name="poDate"
+                       ngModel
+                >
+            }
+            @else {
+                <label class="col col-form-label" for="paidDate">Bezahlt am</label>
+                <input type="date"
+                       class="form-control"
+                       [disabled]="!store.isAdmin()"
+                       id="paidDate"
+                       name="paidDate"
+                       ngModel
+                >
+            }
         </div>
     </div>
 
@@ -22,7 +111,8 @@
             <label class="form-label" for="remarks">Bemerkungen</label>
             <textarea id="remarks"
                       class="form-control"
-                      rows="3"
+                      [disabled]="!store.isAdmin()"
+                      rows="5"
                       name="remarks"
                       ngModel
             ></textarea>

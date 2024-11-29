@@ -15,12 +15,14 @@ export class SpinnerComponent {
      */
     constructor() {
         effect(() => {
-            const dialog: HTMLDialogElement = this.dialogRef.nativeElement;
-            if (this.open()) {
-                dialog.showModal();
-            } else {
-                dialog.close();
-            }
+            setTimeout(() => {
+                const dialog: HTMLDialogElement = this.dialogRef.nativeElement;
+                if (this.open()) {
+                    dialog.showModal();
+                } else {
+                    dialog.close();
+                }
+            })
         });
     }
 
@@ -41,4 +43,5 @@ export class SpinnerComponent {
         const dialog: HTMLDialogElement = this.dialogRef.nativeElement;
         dialog.close();
     }
+
 }
