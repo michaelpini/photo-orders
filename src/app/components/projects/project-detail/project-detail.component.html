@@ -4,7 +4,7 @@
     </div>
 </div>
 
-<ul ngbNav #nav="ngbNav" class="nav-tabs mb-5">
+<ul ngbNav #nav="ngbNav" class="nav-tabs mb-4">
     <li ngbNavItem [destroyOnHide]="false">
         <button ngbNavLink>Projekt Info</button>
         <ng-template ngbNavContent>
@@ -41,7 +41,7 @@
         <button ngbNavLink>Fotos</button>
         <ng-template ngbNavContent>
             <project-photos
-
+                [projectInfo]="data() || {}"
             ></project-photos>
         </ng-template>
     </li>

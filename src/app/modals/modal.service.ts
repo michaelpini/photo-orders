@@ -1,14 +1,16 @@
 import {inject, Injectable} from "@angular/core";
 import {ModalConfirm, ModalConfirmConfig} from "./confirm/confirm";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbModalConfig} from "@ng-bootstrap/ng-bootstrap";
 import {SignInComponent} from "./auth/sign-in.component";
 import {SignUpComponent} from "./auth/sign-up.component";
 import {ChangePwComponent} from "./auth/change-pw.component";
 import {ChangeEmailComponent} from "./auth/change-email.component";
+import {FileUploadComponent, ModalUploadConfig} from "../shared/file-upload/file-upload.component";
 
 @Injectable({providedIn: "root"})
 export class ModalService {
     protected ngbModal = inject(NgbModal);
+    protected modalConfig: NgbModalConfig = inject(NgbModalConfig);
 
     // Confirmation dialogs
     confirm(config: ModalConfirmConfig = {message: 'Weiter?'}): Promise<string> {
@@ -75,6 +77,25 @@ export class ModalService {
 
     changeEmail(): Promise<void> {
         const modalRef = this.ngbModal.open(ChangeEmailComponent);
+        return modalRef.result;
+    }
+
+    // File Upload
+    uploadPhotos(projectId: string, userId: string) {
+        const config: ModalUploadConfig = {
+            path: `images/projects/${projectId}/`,
+            metadata: {
+                customMetadata: {
+                    userId,
+                    projectId,
+                    resolution: 'full'}
+            },
+            title: 'Photos hochladen',
+            message: 'Es können Photos bis zu 10MB hochgeladen werden (jpeg, png, webp)',
+        }
+        this.modalConfig.backdrop = 'static';
+        const modalRef = this.ngbModal.open(FileUploadComponent);
+        modalRef.componentInstance.configure(config);
         return modalRef.result;
     }
 }

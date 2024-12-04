@@ -1,3 +1,17 @@
-<p>project-photos works!</p>
+<div class="row">
+    <div class="col">
+        <button type="button"
+                class="btn btn-secondary"
+                (click)="uploadPhotos()">Photos hochladen
+        </button>
+    </div>
+</div>
 
-<img src="https://firebasestorage.googleapis.com/v0/b/photo-orders-12b89.firebasestorage.app/o/Michael%20Pini-2.jpg?alt=media" alt="pini">
+
+<div class="photo-grid">
+    @for (item of projectImages(); track $index) {
+        <img src="{{item.urlMedium}}" alt="{{item.name}}" loading="lazy" class="img">
+    }
+</div>
+
+

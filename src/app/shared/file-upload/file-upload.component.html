@@ -1,0 +1,57 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ config().title }}</h4>
+    <button type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="onCancel()"
+    ></button>
+</div>
+
+<div class="modal-body">
+    <div class="row my-1">
+        <div class="col">{{config().message}}</div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="button"
+                    class="btn btn-secondary"
+                    (click)="selectFiles()"
+            >Dateien auswählen</button>
+        </div>
+        <div class="col">
+            {{uploadFiles().length}} Fotos ({{sizeTotalQueued() | fileSize}})
+        </div>
+    </div>
+    <div class="progress-bar-container">
+        <ngb-progressbar-stacked>
+            <ngb-progressbar type="primary" [value]="progressUploaded()" height=".3rem"></ngb-progressbar>
+            <ngb-progressbar type="danger" [value]="progressFailed()" height=".3rem"></ngb-progressbar>
+        </ngb-progressbar-stacked>
+    </div>
+
+    <div class="mt-3 mb-3">
+        @for (file of uploadFiles(); track $index) {
+            <div class="row">
+                <upload-item
+                        [file]="file"
+                        [path]="config().path"
+                        [metadata]="config().metadata"
+                        [triggerUpload]="statusArray[$index]['triggerUpload']()"
+                        (statusChanged)="onItemStatusChanged($event, $index)"
+                        (sizeUploadedChanged)="onItemSizeUploadedChanged($event, $index)"
+                ></upload-item>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button"
+            class="btn btn-primary"
+            (click)="onUploadOrResume()"
+    >{{ btnOkText() }}</button>
+    <button type="button"
+            class="btn btn-outline-secondary"
+            (click)="onCancelOrPause()"
+    >{{ btnCancelText() }}</button>
+</div>

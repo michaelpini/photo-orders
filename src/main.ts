@@ -5,6 +5,7 @@ import {AppComponent} from './app/app.component';
 import {initializeApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
+import {getStorage} from "firebase/storage";
 import {registerLocaleData} from "@angular/common";
 import * as deCH from '@angular/common/locales/de-CH';
 
@@ -13,7 +14,7 @@ const firebaseConfig = {
     authDomain: "photo-orders-12b89.firebaseapp.com",
     databaseURL: "https://photo-orders-12b89-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "photo-orders-12b89",
-    storageBucket: "photo-orders-12b89.appspot.com",
+    storageBucket: "photo-orders-12b89.firebasestorage.app",
     messagingSenderId: "646564049650",
     appId: "1:646564049650:web:616098cf801c24ab8b566b",
     measurementId: "G-1JR2G8H2H9"
@@ -21,6 +22,7 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth = getAuth();
 export const firebaseStore = getFirestore();
+export const storage = getStorage(firebaseApp);
 
 
 bootstrapApplication(AppComponent, appConfig)
