@@ -1,9 +1,10 @@
 .photo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.3rem;
 }
 
-.img {
-    width: 100%
+.photo-item {
+    width: 100%;
 }
+

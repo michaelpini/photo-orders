@@ -1,11 +1,11 @@
-import {Component, computed, input, OnDestroy, signal, WritableSignal} from '@angular/core';
+import {Component, computed, OnDestroy, output, signal, WritableSignal} from '@angular/core';
 import {NgbActiveModal, NgbModalConfig, NgbProgressbar, NgbProgressbarStacked} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadItem} from "./file-upload-item";
-import {UploadMetadata} from "firebase/storage";
+import {TaskState, UploadMetadata} from "firebase/storage";
 import {FileSizePipe} from "../file-size.pipe";
-import {config} from "rxjs";
+import {UploadState} from "../../persistance/firebase.service";
 
-export type UploadStatus = 'queued' | 'uploading' | 'paused' | 'complete' | 'failed';
+export type ExtendedTaskState = 'queued' | TaskState
 export interface ModalUploadConfig {
     title?: string;
     message?: string;
@@ -15,7 +15,7 @@ export interface ModalUploadConfig {
     btnPauseText?: string;
     btnCloseText?: string;
     btnClass?: string;
-    path: string;
+    path: string
     metadata: UploadMetadata
     maxConcurrentUploads?: number;
 }
@@ -23,8 +23,13 @@ interface Status {
     filename: string;
     sizeUploaded: number;
     sizeTotal: number;
-    status: UploadStatus;
+    state: ExtendedTaskState;
     triggerUpload: WritableSignal<boolean>;
+}
+
+export interface FileUploadSuccess {
+    file: File;
+    state: UploadState;
 }
 
 const defaultConfig: ModalUploadConfig = {
@@ -50,11 +55,11 @@ const defaultConfig: ModalUploadConfig = {
 export class FileUploadComponent implements OnDestroy {
     config = signal<ModalUploadConfig>(defaultConfig);
     uploadFiles = signal<File[]>([]);
-    isUploading = signal(false);
-    isCompleted = signal(false);
+    isStarted = signal(false);
+    isRunning = signal(false);
+    isDone = signal(false);
     progressUploaded = signal(0);
     progressFailed = signal(0);
-    progressPercentage = signal(0);
 
     sizeTotalQueued = computed(() => {
         return this.uploadFiles().reduce((acc, file) => {
@@ -63,15 +68,17 @@ export class FileUploadComponent implements OnDestroy {
         }, 0)
     })
     btnOkText = computed<string>(() => {
-        if (this.isUploading()) return 'Hochladen...';
-        if (this.progressPercentage() > 0 && !this.isCompleted()) return 'Fortfahren';
+        if (this.isRunning()) return 'Hochladen...';
+        if (this.isStarted()) return 'Fortfahren';
         return 'Hochladen'
     })
     btnCancelText = computed<string>(() => {
-        if (this.isUploading()) return 'Pause';
-        if (this.isCompleted()) return 'Schliessen';
+        if (this.isRunning()) return 'Pause';
+        if (this.isDone()) return 'Schliessen';
         return 'Abbrechen';
     })
+
+    fileUploaded = output<FileUploadSuccess>();
 
     statusArray: Status[] = [];
 
@@ -90,19 +97,23 @@ export class FileUploadComponent implements OnDestroy {
         input.onchange = _ => {
             let files: File[] = Array.from(input.files || []);
             this.uploadFiles.set(files);
-            this.statusArray = files.map((file: File) => ({
-                filename: file.name,
-                sizeTotal: file.size,
-                sizeUploaded: 0,
-                status: 'queued',
-                triggerUpload: signal(false)
-            }))
+            this.statusArray = files.map((file: File) => {
+                console.log(file);
+                // getImageMeta(file);
+                return {
+                    filename: file.name,
+                    sizeTotal: file.size,
+                    sizeUploaded: 0,
+                    state: 'queued',
+                    triggerUpload: signal(false)
+                }
+            })
         };
         input.click();
     }
 
-    onItemStatusChanged(status: UploadStatus, index: number) {
-        this.statusArray[index].status = status;
+    onItemStatusChanged(status: ExtendedTaskState, index: number) {
+        this.statusArray[index].state = status;
         this.updateStatus();
     }
 
@@ -117,24 +128,24 @@ export class FileUploadComponent implements OnDestroy {
         let filesUploaded = 0;
         let filesFailed = 0
         for (let status of this.statusArray) {
-            switch (status.status) {
-                case 'uploading':
+            switch (status.state) {
+                case 'running':
                 case 'paused':
                     sizeUploaded += status.sizeUploaded;
                     break;
-                case 'complete':
+                case 'success':
                     sizeUploaded += status.sizeTotal;
                     filesUploaded += 1;
                     break;
-                case 'failed':
+                case 'error':
                     sizeFailed += status.sizeTotal;
                     filesFailed += 1;
                     break;
             }
         }
         if (filesUploaded + filesFailed === this.statusArray.length) {
-            this.isUploading.set(false);
-            this.isCompleted.set(true);
+            this.isRunning.set(false);
+            this.isDone.set(true);
         }
         this.progressUploaded.set(sizeUploaded / this.sizeTotalQueued() * 100);
         this.progressFailed.set(sizeFailed / this.sizeTotalQueued() * 100);
@@ -145,25 +156,28 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     onCancelOrPause() {
-        if (this.isUploading()) {
+        if (this.isRunning()) {
             this.pauseUploads();
-        } else if (this.isCompleted()) {
-            this.modal.close('Success');
         } else {
             this.modal.dismiss('Cancel');
         }
     }
 
+    onClose() {
+        this.modal.dismiss('Success');
+    }
+
     onUploadOrResume() {
-        this.isUploading.set(true);
+        this.isStarted.set(true);
+        this.isRunning.set(true);
         this.dispatchUploads();
     }
 
     dispatchUploads() {
-        const uploading = this.statusArray.filter(item => item.status === 'uploading');
-        const paused = this.statusArray.filter(item => item.status === 'paused');
-        const queued = this.statusArray.filter(item => item.status === 'queued');
-        let available = this.config().maxConcurrentUploads! - uploading.length;
+        const running = this.statusArray.filter(item => item.state === 'running');
+        const paused = this.statusArray.filter(item => item.state === 'paused');
+        const queued = this.statusArray.filter(item => item.state === 'queued');
+        let available = this.config().maxConcurrentUploads! - running.length;
         for (let item of [...paused, ...queued]) {
             if (available > 0) {
                 item.triggerUpload.set(true);
@@ -173,10 +187,14 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     pauseUploads() {
-        this.isUploading.set(false);
+        this.isRunning.set(false);
         for (let item of this.statusArray) {
             item.triggerUpload.set(false);
         }
+    }
+
+    onSuccess(state: UploadState, index: number) {
+        this.fileUploaded.emit({file: this.uploadFiles()[index], state});
     }
 
     ngOnDestroy(): void {

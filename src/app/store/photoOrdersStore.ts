@@ -9,6 +9,8 @@ import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
 import {ToastService} from "../shared/toasts/toast.service";
 import {AuthType, AuthUser} from "../auth/authUser.model";
 import {Project} from "../components/projects/project.model";
+import {Photo} from "../modals/modal.service";
+import {delay} from "../shared/util";
 
 export type State = {
     authInitializingNewUser: boolean;
@@ -16,6 +18,12 @@ export type State = {
     activeUser: User | null | undefined;
     isDirty: boolean;
     isInitialized: boolean;
+}
+
+export interface PhotoExtended extends Photo {
+    urlMedium: string;
+    urlLarge: string;
+    urlFull: string;
 }
 
 const initialState: State = {
@@ -26,6 +34,26 @@ const initialState: State = {
     isInitialized: false,
 }
 
+function addThumbnails(photos: Photo[], projectId: string): PhotoExtended[] {
+    if (photos.length > 0) {
+        const image1Link = photos[0].downloadUrl;
+        const base = image1Link.split('/images')[0] + '/';
+        const result: PhotoExtended[] = photos.map((photo) => {
+            const filename = photo.fileName;
+            const extension = photo.fileExtension;
+            const urlBase = `images/projects/${projectId}`;
+            const urlThumbBase = `${urlBase}/thumbnails/${filename}`;
+            const urlMedium = base + encodeURIComponent(`${urlThumbBase}_600x600.${extension}`) + '?alt=media';
+            const urlLarge = base + encodeURIComponent(`${urlThumbBase}_2000x2000.${extension}`) + '?alt=media';
+            const urlFull = base + encodeURIComponent(`${urlBase}/${photo.fullName}`) + '?alt=media';
+            return {...photo, urlMedium, urlLarge, urlFull}
+        });
+        console.log(result);
+        return result;
+    }
+    return [];
+}
+
 export const PhotoOrdersStore = signalStore(
     {providedIn: 'root'},
     withState(initialState),
@@ -34,6 +62,7 @@ export const PhotoOrdersStore = signalStore(
 
     withEntities({entity: type<User>(), collection: 'users'}),
     withEntities({entity: type<Project>(), collection: 'projects'}),
+    withEntities({entity: type<PhotoExtended>(), collection: 'photos'}),
 
     withMethods((store, firebaseService = inject(FirebaseService), toastService = inject(ToastService)) => ({
         setBusy() {
@@ -220,6 +249,42 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
+        // Photos
+        async loadPhotos(projectId: string): Promise<PhotoExtended[]>{
+            let photos: Photo[] = [];
+            try {
+                photos = await firebaseService.getAllProjectPhotos(projectId);
+                const photosExtended = addThumbnails(photos, projectId);
+                patchState(store, setAllEntities(photosExtended, {collection: 'photos'}));
+                return photosExtended;
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+
+        async addPhoto(projectId: string, photo: Photo): Promise<void> {
+            try {
+                await firebaseService.addProjectPhoto(projectId, photo);
+                const photoExtended = addThumbnails([photo], projectId)[0];
+                await delay(5000);  // Allow some time for the firestore extension to create thumbnails
+                patchState(store, setEntity(photoExtended, {collection: `photos`}));
+            } catch (error) {
+                this.setError((error as Error).message);
+            }
+        },
+
+        async updatePhoto(projectId: string, photo: PhotoExtended): Promise<void> {
+            try {
+                await firebaseService.updateProjectPhoto(projectId, photo);
+                //const photoExtended = addThumbnails([photo], projectId)[0];
+                // await delay(5000);  // Allow some time for the firestore extension to create thumbnails
+                patchState(store, setEntity(photo, {collection: `photos`}));
+            } catch (error) {
+                this.setError((error as Error).message);
+            }
+
+        }
 
 
     })),

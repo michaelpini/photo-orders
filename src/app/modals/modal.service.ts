@@ -5,12 +5,17 @@ import {SignInComponent} from "./auth/sign-in.component";
 import {SignUpComponent} from "./auth/sign-up.component";
 import {ChangePwComponent} from "./auth/change-pw.component";
 import {ChangeEmailComponent} from "./auth/change-email.component";
-import {FileUploadComponent, ModalUploadConfig} from "../shared/file-upload/file-upload.component";
+import {FileUploadComponent, FileUploadSuccess, ModalUploadConfig} from "../shared/file-upload/file-upload.component";
+import {getImageMeta, ImageFileMetaData} from "../shared/util";
+import {PhotoOrdersStore} from "../store/photoOrdersStore";
+
+export interface Photo extends ImageFileMetaData {id: string, downloadUrl: string, liked?: boolean, tag?: string}
 
 @Injectable({providedIn: "root"})
 export class ModalService {
     protected ngbModal = inject(NgbModal);
     protected modalConfig: NgbModalConfig = inject(NgbModalConfig);
+    protected store = inject(PhotoOrdersStore);
 
     // Confirmation dialogs
     confirm(config: ModalConfirmConfig = {message: 'Weiter?'}): Promise<string> {
@@ -91,10 +96,15 @@ export class ModalService {
                     resolution: 'full'}
             },
             title: 'Photos hochladen',
-            message: 'Es können Photos bis zu 10MB hochgeladen werden (jpeg, png, webp)',
+            message: 'Es können Photos bis zu 10MB hochgeladen werden (jpg, png, webp)',
         }
         this.modalConfig.backdrop = 'static';
         const modalRef = this.ngbModal.open(FileUploadComponent);
+        modalRef.componentInstance.fileUploaded.subscribe(async (p: FileUploadSuccess) => {
+            const imageMeta = await getImageMeta(p.file)
+            const photo: Photo = {...imageMeta, id: imageMeta.fullName, downloadUrl: p.state.downloadUrl || ''};
+            this.store.addPhoto(projectId, photo);
+        });
         modalRef.componentInstance.configure(config);
         return modalRef.result;
     }

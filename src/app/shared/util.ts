@@ -1,7 +1,16 @@
 export type Primitive = string | number | boolean | Date | null | undefined
 export type ObjFlat = {[key: string]: Primitive};
 export type ObjAny = {[key: string]: any};
-
+export interface ImageFileMetaData {
+    fullName: string;
+    fileName: string,
+    fileExtension: string,
+    size: number,
+    type: string,
+    lastModified: number,
+    width: number,
+    height: number,
+}
 
 
 /**
@@ -20,7 +29,7 @@ export type ObjAny = {[key: string]: any};
  * waitForIt();
  * setTimeout(() => deferred.resolve(), 1000);
  */
-class Deferred<T> {
+export class Deferred<T> {
     promise: Promise<T>;
     // @ts-ignore  // resolve will be assigned by new promise
     resolve: (value: T) => void;
@@ -43,7 +52,7 @@ class Deferred<T> {
  * const id = getRandomId();  // "895964fc-31d6-2daf-7603-4f651a90200d"
  * @returns {string}
  */
-function getRandomId(): string {
+export function getRandomId(): string {
     try {
         return crypto.randomUUID();
     }
@@ -80,7 +89,7 @@ const compare = (a: Primitive , b: Primitive) => {
  * sortArr(arr, 'name');
  * @example Returns the ***the original array***, sorted by age in descending order
  * const sortedOriginal = sortArr(arr, 'age', 'desc', false); */
-function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' = 'asc', clone = true): any[] {
+export function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' = 'asc', clone = true): any[] {
     const arr = clone ? [...array] : array;
     if (sortBy === '' || direction === '') return arr;
     return arr.sort((a, b) => {
@@ -107,7 +116,7 @@ function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' =
  * // Returns row 2 (only lastName is checked)
  *
  */
-function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
+export function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
     const filterLowerCase = filter.toLowerCase();
     return array.filter(row => {
         const keys = fields || Object.keys(row);
@@ -127,7 +136,7 @@ function quickFilter(array: any[], filter: string, fields?: string[],): any[] {
  * const cleaned = removeNullishObjectKeys(obj1);
  * // Returns {a: 'yes', b: ''}
  */
-function removeNullishObjectKeys(obj: object): object {
+export function removeNullishObjectKeys(obj: object): object {
     const cleaned: any = {};
     for (let key in obj) {
         let objKey = key as keyof typeof obj;
@@ -145,7 +154,7 @@ function removeNullishObjectKeys(obj: object): object {
  * saveToFile(data, 'membersList');
  * // %userprofile%\downloads\membersList.json
  */
-function saveToFile (obj: object, filename: string) {
+export function saveJsonToFile (obj: object, filename: string) {
     const blob = new Blob([JSON.stringify(obj, null, 2)], {
         type: 'application/json',
     });
@@ -158,6 +167,26 @@ function saveToFile (obj: object, filename: string) {
 }
 
 /**
+ * Saves a downloaded BLOB to a file. The file is downloaded by the browser to the default download location.
+ * @param blob {Blob} The blob to save
+ * @param filename {string} filename
+ * @example
+ * const storageRef = ref(storage, 'images/passport.jpg');
+ * const blob = await getBlob(storageRef);
+ * saveToFile(blob, 'passport.jpg');
+ * // %userprofile%\downloads\passport.jpg
+ */
+export function saveBlobToFile (blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+
+/**
  * Sets the src property of an \<img> tag to a placeholder image if the src is broken. <br>
  * The brokenImg is hardcoded, update as needed
  * @param {ErrorEvent} e
@@ -165,7 +194,7 @@ function saveToFile (obj: object, filename: string) {
  * <img src="???" onerror="setBrokenImage(event)" />   (vanilla.js)
  * <img src="???" (error)="setBrokenImage($event)" />  (Angular)
  */
-function setBrokenImage(e: ErrorEvent) {
+export function setBrokenImage(e: ErrorEvent) {
     const brokenImg =  '/assets/broken_img.jpg';
     const target = e.target as HTMLImageElement;
     if (!target.src.includes(brokenImg)) target.src = brokenImg;
@@ -188,7 +217,7 @@ function setBrokenImage(e: ErrorEvent) {
  * return response; // Return response if successful
  *
  */
-async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (error: any) => any): Promise<[error: any, data: T | null]> {
+export async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (error: any) => any): Promise<[error: any, data: T | null]> {
     try {
         const data = await promise;
         return [null, data]; // Success: No error, return the data
@@ -209,11 +238,38 @@ async function safeAwait<T = any>(promise: Promise<T | null>, errorHandler?: (er
  *     await updateUser();
  * }
  */
-function delay(delayMillis: number): Promise<void> {
+export function delay(delayMillis: number): Promise<void> {
     return new Promise((resolve) => {
         setTimeout(() => resolve(), delayMillis);
     })
 }
 
+/**
+ * Function takes single image file, and returns width, height, fileSize, fileName, fileExtension, type and lastModified date
+ */
+export const getImageMeta = async (file: File): Promise<ImageFileMetaData> => {
+    const fileNameArr = file.name.split('.');
+    const fileExtension = fileNameArr.pop() || '';
+    const fileName = fileNameArr.join('.');
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Promise((resolve, reject) => {
+        reader.onload = async (e: any) => {
+            const image = new Image();
+            image.src = e.target.result;
+            await image.decode();
+            const imageMeta = {
+                fileName,
+                fileExtension,
+                fullName: file.name,
+                size: file.size,
+                type: file.type,
+                lastModified: file.lastModified,
+                width: image.width,
+                height: image.height,
+            }
+            resolve(imageMeta);
+        }
+    })
+}
 
-export { Deferred, removeNullishObjectKeys, getRandomId, sortArr, quickFilter, saveToFile, setBrokenImage, safeAwait, delay };

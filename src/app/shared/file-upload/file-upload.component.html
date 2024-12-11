@@ -39,6 +39,7 @@
                         [triggerUpload]="statusArray[$index]['triggerUpload']()"
                         (statusChanged)="onItemStatusChanged($event, $index)"
                         (sizeUploadedChanged)="onItemSizeUploadedChanged($event, $index)"
+                        (success)="onSuccess($event, $index)"
                 ></upload-item>
             </div>
         }
@@ -46,12 +47,26 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button"
-            class="btn btn-primary"
-            (click)="onUploadOrResume()"
-    >{{ btnOkText() }}</button>
-    <button type="button"
-            class="btn btn-outline-secondary"
-            (click)="onCancelOrPause()"
-    >{{ btnCancelText() }}</button>
+    @if (isRunning()) {
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    }
+    @if (isDone()) {
+        <button type="button"
+                class="btn btn-primary"
+                (click)="onClose()"
+        >Schliessen</button>
+    }
+    @else {
+        <button type="button"
+                class="btn btn-primary"
+                [disabled]="uploadFiles().length === 0 || isRunning()"
+                (click)="onUploadOrResume()"
+        >{{ btnOkText() }}</button>
+        <button type="button"
+                class="btn btn-outline-secondary"
+                (click)="onCancelOrPause()"
+        >{{ btnCancelText() }}</button>
+    }
 </div>

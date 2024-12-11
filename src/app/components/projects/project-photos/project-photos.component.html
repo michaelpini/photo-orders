@@ -9,8 +9,15 @@
 
 
 <div class="photo-grid">
-    @for (item of projectImages(); track $index) {
-        <img src="{{item.urlMedium}}" alt="{{item.name}}" loading="lazy" class="img">
+    @for (item of store.photosEntities(); track $index) {
+        <photo-item
+                class="photo-item"
+                [photo]="item"
+                [index]="$index"
+                (selected)="onSelect($event, item )"
+                (liked)="onLiked($event, item)"
+                (download)="onDownload($event)"
+        ></photo-item>
     }
 </div>
 

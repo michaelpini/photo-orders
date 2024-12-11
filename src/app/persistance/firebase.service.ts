@@ -1,9 +1,29 @@
 import {Injectable} from "@angular/core";
-import {firebaseStore as db} from "../../main";
+import {firebaseStore as db, storage} from "../../main";
 import {collection, doc, getDocs, getDoc, setDoc, QuerySnapshot, DocumentData, deleteDoc, updateDoc, DocumentReference, query, where, WhereFilterOp} from "firebase/firestore";
 import {User} from "../components/customers/user.model";
 import {AuthUser} from "../auth/authUser.model";
 import {Project} from "../components/projects/project.model";
+import {
+    getBlob,
+    getDownloadURL,
+    ref,
+    StorageError,
+    TaskState,
+    uploadBytesResumable,
+    UploadMetadata,
+} from "firebase/storage";
+import {Subject} from "rxjs";
+import {Photo} from "../modals/modal.service";
+import {saveBlobToFile} from "../shared/util";
+
+export interface UploadState {
+    state: TaskState;
+    bytesTransferred?: number;
+    progressPercentage?: number;
+    downloadUrl?: string;
+    error?: StorageError;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -36,7 +56,6 @@ export class FirebaseService {
     updateAuthUser(authUser: Partial<AuthUser>) {
         return this.update<AuthUser>('authUsers', authUser, 'AuthUser');
     }
-
 
     /**
      * Users
@@ -94,6 +113,65 @@ export class FirebaseService {
 
     removeProject(id: string) {
         return this.remove('projects', id);
+    }
+
+
+    /**
+     * Project Photos
+     */
+    getAllProjectPhotos(projectId: string) {
+        return this.getAll<Photo>(`projects/${projectId}/photos`, 'Fotos');
+    }
+
+    addProjectPhoto(projectId: string = '', photo: Photo ) {
+        return this.set<Photo>(`projects/${projectId}/photos`, photo, 'Photo');
+    }
+
+    updateProjectPhoto(projectId: string = '', photo: Photo) {
+        return this.update<Photo>(`projects/${projectId}/photos`, photo, 'Foto');
+    }
+
+    removeProjectPhoto(projectId: string = '') {
+        return this.remove(`projects/${projectId}/photos`, projectId);
+    }
+
+
+
+    /**
+     * Photos Storage
+     */
+    uploadImage(file: File, path: string, metadata?: UploadMetadata) {
+        if (!path.endsWith('/')) path += '/';
+        const storageRef = ref(storage, path + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+        const uploadStatus = new Subject<UploadState>();
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const { state, bytesTransferred, totalBytes } = snapshot;
+                const progressPercentage = (bytesTransferred / totalBytes) * 100;
+                uploadStatus.next({state, bytesTransferred, progressPercentage});
+            },
+            (error: StorageError) => {
+                uploadStatus.next({state: 'error', error})
+                uploadStatus.error(error);
+            },
+            async () => {
+                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                uploadStatus.next({state: 'success', progressPercentage: 100, bytesTransferred: file.size, downloadUrl});
+                uploadStatus.complete();
+            }
+        )
+        return {uploadTask, uploadStatus};
+    }
+
+    async downloadImage(fileName: string, path = '', toDisk = true) {
+        if (!path.endsWith('/')) path += '/';
+        const storageRef = ref(storage, path + fileName);
+        const blob = await getBlob(storageRef);
+        if (toDisk) {
+            saveBlobToFile(blob, fileName);
+        }
+        return blob;
     }
 
 

@@ -45,6 +45,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.dataLoaded.set(selectedProject);
         this.data.set(selectedProject);
         this.store.setDirty(false);
+        this.store.loadPhotos(id);
     }
 
     onChangeInfo(data: ProjectInfo) {
