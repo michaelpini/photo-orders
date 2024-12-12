@@ -10,7 +10,7 @@
 
     &:hover, &:focus, &:focus-within {
         transform: scale(1.03);
-        z-index: 1000;
+        z-index: 2;
 
         .img-check, .heart-container, .download-svg, .filename {
             opacity: 1;

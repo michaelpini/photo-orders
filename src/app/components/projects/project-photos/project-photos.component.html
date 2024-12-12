@@ -1,24 +1,56 @@
-<div class="row">
-    <div class="col">
-        <button type="button"
-                class="btn btn-secondary"
-                (click)="uploadPhotos()">Photos hochladen
-        </button>
+<div class="photo-container">
+    <div class="row mb-3">
+        <div class="col-auto">
+            <button type="button"
+                    class="btn btn-secondary"
+                    (click)="uploadPhotos()">Photos hochladen
+            </button>
+        </div>
+
+        <div class="col d-flex justify-content-end">
+            <div ngbDropdown class="d-inline-block align-items-end">
+                <button type="button" class="btn btn-outline-primary" id="dropdownPhotoTools" ngbDropdownToggle>
+                    Menu
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownPhotoTools">
+                    <button ngbDropdownItem>Alle selektieren</button>
+                    <button ngbDropdownItem>Alle deselektieren</button>
+                    <div class="dropdown-divider"></div>
+                    <button ngbDropdownItem>Filter: Selektierte</button>
+                    <button ngbDropdownItem>Filter: Favoriten</button>
+                    <div class="dropdown-divider"></div>
+                    <button ngbDropdownItem>Selektierte löschen</button>
+                    <button ngbDropdownItem>Selektierte herunterladen</button>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
 
 
-<div class="photo-grid">
-    @for (item of store.photosEntities(); track $index) {
-        <photo-item
-                class="photo-item"
-                [photo]="item"
-                [index]="$index"
-                (selected)="onSelect($event, item )"
-                (liked)="onLiked($event, item)"
-                (download)="onDownload($event)"
-        ></photo-item>
-    }
+    <div class="photo-grid">
+        @for (photo of store.photosEntities(); track $index) {
+            <photo-item
+                    class="photo-item"
+                    [photo]="photo"
+                    [index]="$index"
+                    (selected)="onSelect($event, photo )"
+                    (liked)="onLiked(photo, $event)"
+                    (download)="onDownload($event)"
+                    (dblclick)="openCarousel(photo)"
+            ></photo-item>
+        }
+    </div>
+
 </div>
+
+@if (showCarousel() !== null) {
+    <photo-carousel
+            [photos]="filteredPhotos()"
+            [showWithPhoto]="showCarousel()"
+            (close)="hideCarousel()"
+            (liked)="onLiked($event)"
+    ></photo-carousel>
+}
 
 

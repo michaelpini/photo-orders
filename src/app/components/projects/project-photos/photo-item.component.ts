@@ -1,7 +1,6 @@
 import {Component, computed, ElementRef, input, output, signal} from "@angular/core";
 import {PhotoExtended} from "../../../store/photoOrdersStore";
 import {FormsModule} from "@angular/forms";
-import {Photo} from "../../../modals/modal.service";
 
 
 @Component({
@@ -17,7 +16,9 @@ export class PhotoItemComponent {
     index = input<number>();
     selected = output<boolean>();
     liked = output<boolean>();
-    download = output<Photo>()
+    dblClicked = output<PhotoExtended>();
+    download = output<PhotoExtended>();
+
     width = signal(300);
 
     constructor(private elementRef: ElementRef) {
@@ -42,4 +43,7 @@ export class PhotoItemComponent {
         this.download.emit(this.photo()!);
     }
 
+    onDblClick() {
+        this.dblClicked.emit(this.photo()!);
+    }
 }

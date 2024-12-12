@@ -1,3 +1,9 @@
+
+.photo-container {
+    container-name: photo-container;
+    container-type: inline-size;
+}
+
 .photo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -8,3 +14,9 @@
     width: 100%;
 }
 
+
+@container photo-container (width > 600px) {
+    .photo-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}

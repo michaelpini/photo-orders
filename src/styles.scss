@@ -94,3 +94,42 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .form-floating > .form-control-plaintext ~ label, .form-floating > .form-select ~ label {
     transform: scale(0.85) translateY(-0.8rem) translateX(0.15rem);
 }
+
+.carousel,
+.carousel-inner,
+.carousel-item,
+.picsum-img-wrapper {
+    height: 100%;
+}
+
+.picsum-img-wrapper {
+    display: flex;
+    place-content: center;
+}
+
+.carousel-indicators {
+    color: white;
+
+    .active {
+        opacity: 1;
+        transform: scale(1, 1.5);
+    }
+}
+[data-bs-theme=dark] .carousel .carousel-indicators [data-bs-target],
+[data-bs-theme=dark].carousel .carousel-indicators [data-bs-target] {
+    background-color: white;
+}
+
+[data-bs-theme=dark] .carousel .carousel-control-prev-icon,
+[data-bs-theme=dark] .carousel .carousel-control-next-icon,
+[data-bs-theme=dark].carousel .carousel-control-prev-icon,
+[data-bs-theme=dark].carousel .carousel-control-next-icon {
+    filter: none;
+}
+.carousel-control-prev:hover,
+.carousel-control-prev:focus,
+.carousel-control-next:hover,
+.carousel-control-next:focus {
+    background: #ffffff21;
+}
+

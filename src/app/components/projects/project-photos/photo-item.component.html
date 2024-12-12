@@ -1,5 +1,12 @@
 <div class="tile" [tabIndex]="index()! * 4 + 1">
-    <img src="{{photo()!.urlMedium}}" alt="{{photo()!.fileName}}" loading="lazy" class="img" [width]="width()" [height]="height()">
+    <img src="{{photo()!.urlMedium}}"
+         alt="{{photo()!.fileName}}"
+         loading="lazy"
+         class="img"
+         [width]="width()"
+         [height]="height()"
+         (dblclick)="onDblClick()"
+    >
 
     <div class="selection">
         <input type="checkbox"
