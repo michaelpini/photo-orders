@@ -8,12 +8,13 @@ import {FirebaseService} from "../../../persistance/firebase.service";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 import {PhotoCarouselComponent} from "./photo-carousel.component";
 import {transformSize} from "../../../shared/util";
+import {UnitsPipe} from "../../../shared/units.pipe";
 
 type FilterKey = 'liked' | 'selected' | null;
 
 @Component({
     selector: 'project-photos',
-    imports: [FormsModule, PhotoItemComponent, NgbDropdown, NgbDropdownMenu, NgbDropdownItem, NgbDropdownToggle, PhotoCarouselComponent, NgbTooltip],
+    imports: [FormsModule, PhotoItemComponent, NgbDropdown, NgbDropdownMenu, NgbDropdownItem, NgbDropdownToggle, PhotoCarouselComponent, NgbTooltip, UnitsPipe],
     templateUrl: './project-photos.component.html',
     styleUrl: './project-photos.component.scss'
 })
@@ -84,8 +85,14 @@ export class ProjectPhotosComponent {
         this.store.removePhotos(this.projectInfo().id!, this.selectedPhotos());
     }
 
-    async onDownloadMultiple(photos: Photo[]) {
+    async onDownloadMultiplex(photos: Photo[]) {
         const {id: projectId} = this.projectInfo();
+        if (!projectId || photos.length === 0) return;
+        const result = await this.modalService.downloadPhotos(projectId, photos);
+    }
+    async onDownloadMultiple(photos?: Photo[]) {
+        const {id: projectId} = this.projectInfo();
+        if (!photos) photos = this.selectedPhotos().length > 0 ? this.selectedPhotos(): this.store.photosEntities();
         if (!projectId || photos.length === 0) return;
         const result = await this.modalService.downloadPhotos(projectId, photos);
     }

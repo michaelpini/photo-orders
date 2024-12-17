@@ -303,3 +303,22 @@ export function transformSize(bytes: number = 0, precision?: number): string {
     return `${Number.parseFloat(bytes.toFixed(precision))} ${unit}`;
 }
 
+/**
+ * Converts a number to an expression with units.
+ * @param value {number | null | undefined} the number to be labeled
+ * @param zero {string} the expression returned if number is 0
+ * @param one {string} the unit to be added if number is 1 or -1
+ * @param more {string} the unit to be added for all other numbers
+ * @return {string | undefined}  The formatted expression or undefined if value is undefined or null
+ * @example
+ * transformUnits(0, 'none', 'man', 'men');  // none
+ * transformUnits(1, 'none', 'man', 'men');  // 1 man
+ * transformUnits(2, 'none', 'man', 'men');  // 2 men
+ * */
+export function transformUnits(value: number | null | undefined, zero = 'none', one = 'unit', more = 'units'): string | undefined {
+    if (value == undefined) return undefined;
+    if (value === 0) return zero;
+    if (value === 1 || value === -1) return `${value} ${one}`;
+    return `${value} ${more}`;
+}
+
