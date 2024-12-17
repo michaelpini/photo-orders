@@ -12,7 +12,7 @@ import {FileSizePipe} from "../../../shared/file-size.pipe";
 export class PhotoCarouselComponent implements OnDestroy{
     photos = input<PhotoExtended[]>();
     showWithPhoto = input<PhotoExtended | null>();
-    currentFilename = signal<string>('');
+    currentGuid = signal<string>('');
     close = output<boolean>();
     liked = output<PhotoExtended>();
     @ViewChild('carousel') carousel!: NgbCarousel;
@@ -45,7 +45,7 @@ export class PhotoCarouselComponent implements OnDestroy{
                 this.carousel.select(this.photos()![this.photos()!.length - 1].fileName);
                 break;
             case ' ':
-                const photo = this.photos()!.find(photo => photo.fileName === this.currentFilename())!;
+                const photo = this.photos()!.find(photo => photo.guid === this.currentGuid())!;
                 photo.liked = !photo.liked;
                 this.liked.emit(photo);
                 break;
@@ -63,6 +63,7 @@ export class PhotoCarouselComponent implements OnDestroy{
     }
 
     onSlide(ev: NgbSlideEvent) {
-        this.currentFilename.set(ev.current);
+        this.currentGuid.set(ev.current);
     }
+
 }

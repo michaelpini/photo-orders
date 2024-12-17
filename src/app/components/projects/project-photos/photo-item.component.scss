@@ -86,7 +86,6 @@
 }
 
 
-
 // Heart
 
 .heart-container {
@@ -96,7 +95,6 @@
     width: var(--container-size);
     height: var(--container-size);
     border-radius: var(--container-size);
-    //transition: .3s;
     opacity: 0;
 
     &:has(.checkbox:checked){
@@ -154,4 +152,5 @@
         filter: brightness(1);
     }
 }
+
 

@@ -2,7 +2,6 @@ import {Component, computed, ElementRef, input, output, signal} from "@angular/c
 import {PhotoExtended} from "../../../store/photoOrdersStore";
 import {FormsModule} from "@angular/forms";
 
-
 @Component({
     selector: 'photo-item',
     templateUrl: './photo-item.component.html',
@@ -12,31 +11,35 @@ import {FormsModule} from "@angular/forms";
     styleUrl: './photo-item.component.scss'
 })
 export class PhotoItemComponent {
-    photo = input<PhotoExtended>();
-    index = input<number>();
-    selected = output<boolean>();
-    liked = output<boolean>();
-    dblClicked = output<PhotoExtended>();
-    download = output<PhotoExtended>();
-
-    width = signal(300);
-
     constructor(private elementRef: ElementRef) {
         this.width.set(elementRef.nativeElement.getBoundingClientRect().width);
     }
+    photo = input<PhotoExtended>();
+    index = input<number>();
+
+    selected = output<PhotoExtended>();
+    liked = output<PhotoExtended>();
+    viewInCarousel = output<PhotoExtended>();
+    download = output<PhotoExtended>();
+
+    width = signal(300);
 
     height = computed(() => {
         const {width, height} = this.photo() || {width: 400, height: 300};
         const ratio= width / height;
         return this.width() * ratio;
     })
-    onSelectedChanged(selected: boolean) {
-        this.selected.emit(selected);
+
+    onSelectedChanged(ev: Event) {
+        const selected = (ev.target as HTMLInputElement).checked;
+        const updatedPhoto = {...this.photo()!, selected};
+        this.selected.emit(updatedPhoto);
     }
 
     onLikedChanged(ev: Event) {
-        let liked = (ev.target as HTMLInputElement).checked;
-        this.liked.emit(liked);
+        const liked = (ev.target as HTMLInputElement).checked;
+        const updatedPhoto = {...this.photo()!, liked};
+        this.liked.emit(updatedPhoto);
     }
 
     onDownload() {
@@ -44,6 +47,25 @@ export class PhotoItemComponent {
     }
 
     onDblClick() {
-        this.dblClicked.emit(this.photo()!);
+        this.viewInCarousel.emit(this.photo()!);
+    }
+
+    onKeydown(event: KeyboardEvent) {
+        let photo = {...this.photo()!};
+        switch (event.key) {
+            case 'Enter':
+                this.viewInCarousel.emit(this.photo()!);
+                break;
+            case ' ':
+                event.preventDefault();
+                event.stopPropagation();
+                photo.selected = !photo.selected;
+                this.selected.emit(photo);
+                break;
+            case 'h':
+                photo.liked = !photo.liked;
+                this.selected.emit(photo);
+                break;
+        }
     }
 }

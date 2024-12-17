@@ -273,3 +273,33 @@ export const getImageMeta = async (file: File): Promise<ImageFileMetaData> => {
     })
 }
 
+/**
+ * Convert bytes into largest possible unit. <br>
+ * Takes a precision argument as number.  <br>
+ @param bytes {number} size in Bytes
+ @param precision {number} optional decimal precision, if undefined it is figured out on the fly
+ * @example
+ * // returns 2.3 KB
+ * transformSize(2300)
+ * @example
+ * // returns 12.3 GB
+ * transformSize(12340000000)
+ * @example with fixed precision
+ * // returns 12.345 KB
+ * transformSize(12345, 3)
+ *
+ */
+export function transformSize(bytes: number = 0, precision?: number): string {
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+    let index = 0;
+    while (bytes >= 900) {
+        bytes /= 1000;
+        index++;
+    }
+    const unit = units[index];
+    if (precision === undefined) {
+        precision = 3 - bytes.toFixed().length;
+    }
+    return `${Number.parseFloat(bytes.toFixed(precision))} ${unit}`;
+}
+

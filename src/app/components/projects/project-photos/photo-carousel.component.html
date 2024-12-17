@@ -8,12 +8,12 @@
         </button>
 
         @if (photos()) {
-            <ngb-carousel [activeId]="showWithPhoto()?.fileName || ''"
+            <ngb-carousel [activeId]="showWithPhoto()?.guid || ''"
                           (keyup)="onKeyUp($event)"
                           (slide)="onSlide($event)"
                           #carousel>
                 @for(photo of photos(); track photo.id) {
-                    <ng-template ngbSlide id="{{photo.fileName}}">
+                    <ng-template ngbSlide id="{{photo.guid}}">
                         <div class="picsum-img-wrapper">
                             <img [src]="photo.urlLarge"
                                  alt="{{$index}}: {{photo.fileName}}"
@@ -39,7 +39,6 @@
                         </div>
                     </ng-template>
                 }
-
             </ngb-carousel>
         }
 </div>

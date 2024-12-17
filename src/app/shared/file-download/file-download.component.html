@@ -1,0 +1,70 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ config().title }}</h4>
+    <button type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="onCancel()"
+    ></button>
+</div>
+
+<div class="modal-body">
+    <div class="row my-1 align-items-center">
+        <span class="col-auto fst-italic">Automatischer Download im Browser aktiviert?</span>
+        <button class="btn col-auto" placement="bottom" container="body"
+                ngbTooltip="Für das herunterladen von mehreren Dateien sollte der automatische Download im Browser aktiviert sein. Dazu muss folgende Option ausgeschaltet werden: 'Vor dem Download von Dateien nach dem Speicherort fragen'">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#666666">
+                <path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{config().photos.length}} Fotos ({{sizeTotalQueued() | fileSize}})
+        </div>
+    </div>
+    <div class="progress-bar-container">
+        <ngb-progressbar-stacked>
+            <ngb-progressbar type="primary" [value]="progressDownloaded()" height=".3rem"></ngb-progressbar>
+            <ngb-progressbar type="danger" [value]="progressFailed()" height=".3rem"></ngb-progressbar>
+        </ngb-progressbar-stacked>
+    </div>
+
+    <div class="mt-3 mb-3">
+        @for (photo of config().photos; track $index) {
+            <div class="row">
+                <download-item
+                        [photo]="photo"
+                        [path]="config().path"
+                        [triggerDownload]="statusArray[$index]['triggerDownload']()"
+                        (statusChanged)="onItemStatusChanged($event, $index)"
+                        (done)="onDone()"
+                ></download-item>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal-footer">
+    @if (isRunning()) {
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    }
+    @if (isDone()) {
+        <button type="button"
+                class="btn btn-primary"
+                (click)="onClose()"
+        >Schliessen</button>
+    }
+    @else {
+        <button type="button"
+                class="btn btn-primary"
+                [disabled]="config().photos.length === 0 || isRunning()"
+                (click)="onDownloadOrResume()"
+        >{{ btnOkText() }}</button>
+        <button type="button"
+                class="btn btn-outline-secondary"
+                (click)="onCancelOrPause()"
+        >{{ btnCancelText() }}</button>
+    }
+</div>

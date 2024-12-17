@@ -5,6 +5,7 @@ import {User} from "../components/customers/user.model";
 import {AuthUser} from "../auth/authUser.model";
 import {Project} from "../components/projects/project.model";
 import {
+    deleteObject,
     getBlob,
     getDownloadURL,
     ref,
@@ -16,6 +17,7 @@ import {
 import {Subject} from "rxjs";
 import {Photo} from "../modals/modal.service";
 import {saveBlobToFile} from "../shared/util";
+import {PhotoExtended} from "../store/photoOrdersStore";
 
 export interface UploadState {
     state: TaskState;
@@ -127,15 +129,14 @@ export class FirebaseService {
         return this.set<Photo>(`projects/${projectId}/photos`, photo, 'Photo');
     }
 
-    updateProjectPhoto(projectId: string = '', photo: Photo) {
-        return this.update<Photo>(`projects/${projectId}/photos`, photo, 'Foto');
+    updateProjectPhoto(projectId: string = '', photo: PhotoExtended) {
+        const {urlMedium, urlLarge, urlFull, selected, ...cleanedPhoto} = photo;
+        return this.update<Photo>(`projects/${projectId}/photos`, cleanedPhoto, 'Foto');
     }
 
-    removeProjectPhoto(projectId: string = '') {
-        return this.remove(`projects/${projectId}/photos`, projectId);
+    async removeProjectPhoto(projectId: string = '', photo: PhotoExtended) {
+        return this.remove(`projects/${projectId}/photos`, photo.id);
     }
-
-
 
     /**
      * Photos Storage
@@ -174,6 +175,15 @@ export class FirebaseService {
         return blob;
     }
 
+    async deletePhoto(projectId: string = '', photo: PhotoExtended) {
+        const thumbsBase = `images/projects/${projectId}/thumbnails/${photo.fileName}`;
+        const ext = photo.fileExtension;
+        return Promise.all([
+            deleteObject(ref(storage, `images/projects/${projectId}/${photo.id}`)),
+            deleteObject(ref(storage, `${thumbsBase}_600x600.${ext}`)),
+            deleteObject(ref(storage, `${thumbsBase}_2000x2000.${ext}`)),
+        ])
+    }
 
 
     // Generic functions

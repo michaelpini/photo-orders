@@ -15,6 +15,8 @@ import {Project} from "./project.model";
 export class ProjectsComponent {
   protected store = inject(PhotoOrdersStore);
   showDetail = signal(false);
+  hideListAndHeader = signal(false);
+
   constructor(private firebaseService: FirebaseService, private router: Router) {  }
 
   async createProject() {
@@ -34,4 +36,7 @@ export class ProjectsComponent {
     }
   }
 
+    toggleDetailsFullscreen() {
+        this.hideListAndHeader.update(value => !value);
+    }
 }

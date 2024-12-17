@@ -12,8 +12,12 @@
     background-color: var(--bs-border-color);
     height: auto;
     padding: 0;
-    margin: 0 0.9em;}
+    margin: 0 0.9em;
+}
 
+.hidden {
+    display: none;
+}
 
 @media (min-width: 767.98px) {
     .project-detail {

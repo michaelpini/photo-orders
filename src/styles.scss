@@ -115,21 +115,20 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
         transform: scale(1, 1.5);
     }
 }
-[data-bs-theme=dark] .carousel .carousel-indicators [data-bs-target],
-[data-bs-theme=dark].carousel .carousel-indicators [data-bs-target] {
-    background-color: white;
+
+[data-bs-theme=dark] .carousel {
+    .carousel-indicators [data-bs-target] {
+        background-color: white;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: none;
+
+        &:hover, &:focus {
+            transform: scale(1.3);
+        }
+    }
 }
 
-[data-bs-theme=dark] .carousel .carousel-control-prev-icon,
-[data-bs-theme=dark] .carousel .carousel-control-next-icon,
-[data-bs-theme=dark].carousel .carousel-control-prev-icon,
-[data-bs-theme=dark].carousel .carousel-control-next-icon {
-    filter: none;
-}
-.carousel-control-prev:hover,
-.carousel-control-prev:focus,
-.carousel-control-next:hover,
-.carousel-control-next:focus {
-    background: #ffffff21;
-}
 

@@ -21,9 +21,10 @@ export type State = {
 }
 
 export interface PhotoExtended extends Photo {
-    urlMedium: string;
-    urlLarge: string;
-    urlFull: string;
+    urlMedium?: string;
+    urlLarge?: string;
+    urlFull?: string;
+    selected?: boolean;
 }
 
 const initialState: State = {
@@ -263,6 +264,10 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
+        setAllPhotos(photos: PhotoExtended[]): void {
+            patchState(store, setAllEntities(photos, {collection: `photos`}));
+        },
+
         async addPhoto(projectId: string, photo: Photo): Promise<void> {
             try {
                 await firebaseService.addProjectPhoto(projectId, photo);
@@ -274,17 +279,32 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
-        async updatePhoto(projectId: string, photo: PhotoExtended): Promise<void> {
+        async updatePhoto(projectId: string | null, photo: PhotoExtended): Promise<void> {
             try {
-                await firebaseService.updateProjectPhoto(projectId, photo);
-                //const photoExtended = addThumbnails([photo], projectId)[0];
-                // await delay(5000);  // Allow some time for the firestore extension to create thumbnails
+                if (projectId) await firebaseService.updateProjectPhoto(projectId, photo);
                 patchState(store, setEntity(photo, {collection: `photos`}));
             } catch (error) {
                 this.setError((error as Error).message);
             }
 
-        }
+        },
+
+        async removePhotos(projectId: string, photos: PhotoExtended[]): Promise<void> {
+            try {
+                await Promise.all([
+                    photos.map(async photo => {
+                        await firebaseService.deletePhoto(projectId, photo);
+                        await firebaseService.removeProjectPhoto(projectId, photo);
+                        patchState(store, removeEntity(photo.id, {collection: 'photos'}));
+                    })
+                ])
+                toastService.showSuccess('Photo(s) wurden gelöscht.');
+            } catch (error) {
+                this.setError((error as Error).message);
+                throw error;
+            }
+        },
+
 
 
     })),

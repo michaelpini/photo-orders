@@ -194,6 +194,7 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     onSuccess(state: UploadState, index: number) {
+        this.dispatchUploads();
         this.fileUploaded.emit({file: this.uploadFiles()[index], state});
     }
 

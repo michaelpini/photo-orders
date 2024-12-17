@@ -1,0 +1,21 @@
+upload-item {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+
+ngb-progressbar-stacked,
+ngb-progressbar {
+    height: 0.3rem;
+}
+
+.modal-body {
+    min-height: 30vh;
+    max-height: calc(100vh - 12rem);
+    overflow: auto;
+}
+
+.progress-bar-container {
+    padding: 0.8rem 0;
+}
+
+

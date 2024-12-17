@@ -20,3 +20,24 @@
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
+
+.dropdown-icon {
+    fill: var(--bs-dropdown-link-color);
+}
+
+.dropdown-item.disabled > .dropdown-icon {
+    fill: var(--bs-dropdown-link-disabled-color);
+}
+
+.dropdown-toggle {
+    fill: #666666;
+
+    &:hover,
+    &:focus {
+        fill: #0D6EFDFF;
+    }
+
+    &::after {
+        display: none;
+    }
+}

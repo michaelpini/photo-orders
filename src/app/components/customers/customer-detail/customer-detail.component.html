@@ -8,7 +8,7 @@
                 @if (authUser()?.userName) {
                     <fa-icon [icon]="faUser" class="input-group-text"></fa-icon>
                 } @else {
-                    <button type=button class="input-group-text btn btn-outline-primary"
+                    <button type=button class="input-group-text btn btn-primary"
                             ngbTooltip="E-mail an Kunden senden zur Erstellung eines Kontos"
                             (click)="onSignUpUser(signUpBtn)"
                             #signUpBtn

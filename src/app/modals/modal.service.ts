@@ -6,10 +6,11 @@ import {SignUpComponent} from "./auth/sign-up.component";
 import {ChangePwComponent} from "./auth/change-pw.component";
 import {ChangeEmailComponent} from "./auth/change-email.component";
 import {FileUploadComponent, FileUploadSuccess, ModalUploadConfig} from "../shared/file-upload/file-upload.component";
-import {getImageMeta, ImageFileMetaData} from "../shared/util";
-import {PhotoOrdersStore} from "../store/photoOrdersStore";
+import {getImageMeta, getRandomId, ImageFileMetaData} from "../shared/util";
+import {PhotoExtended, PhotoOrdersStore} from "../store/photoOrdersStore";
+import {FileDownloadComponent, ModalDownloadConfig} from "../shared/file-download/file-download.component";
 
-export interface Photo extends ImageFileMetaData {id: string, downloadUrl: string, liked?: boolean, tag?: string}
+export interface Photo extends ImageFileMetaData {id: string, downloadUrl: string, liked?: boolean, tag?: string, guid?: string}
 
 @Injectable({providedIn: "root"})
 export class ModalService {
@@ -63,6 +64,18 @@ export class ModalService {
         return this.confirm(config);
     }
 
+    confirmDeletePhotos(photos: PhotoExtended[]) {
+        const count = photos.length;
+        const txt = count === 1 ? photos[0].fullName : `${count} Fotos`;
+        const config: ModalConfirmConfig = {
+            title: count === 1 ? '1 Foto löschen?' : `${count} Fotos löschen?`,
+            html: `<div>${txt} wirklich löschen?<br> Dies kann nicht rückgängig gemacht werden!</div>`,
+            btnOkText: 'Löschen',
+            btnClass: 'btn-danger',
+        }
+        return this.confirm(config);
+    }
+
     // Auth
     signIn(): Promise<void> {
         const modalRef = this.ngbModal.open(SignInComponent);
@@ -85,7 +98,7 @@ export class ModalService {
         return modalRef.result;
     }
 
-    // File Upload
+    // Photos
     uploadPhotos(projectId: string, userId: string) {
         const config: ModalUploadConfig = {
             path: `images/projects/${projectId}/`,
@@ -101,10 +114,25 @@ export class ModalService {
         this.modalConfig.backdrop = 'static';
         const modalRef = this.ngbModal.open(FileUploadComponent);
         modalRef.componentInstance.fileUploaded.subscribe(async (p: FileUploadSuccess) => {
-            const imageMeta = await getImageMeta(p.file)
-            const photo: Photo = {...imageMeta, id: imageMeta.fullName, downloadUrl: p.state.downloadUrl || ''};
+            const imageMeta = await getImageMeta(p.file);
+            const id = imageMeta.fullName;
+            const guid = getRandomId();
+            const downloadUrl = p.state.downloadUrl || ''
+            const photo: Photo = {...imageMeta, id, downloadUrl, guid};
             this.store.addPhoto(projectId, photo);
         });
+        modalRef.componentInstance.configure(config);
+        return modalRef.result;
+    }
+
+    downloadPhotos(projectId: string, photos: Photo[]) {
+        const config: ModalDownloadConfig = {
+            path: `images/projects/${projectId}/`,
+            photos,
+            title: 'Photos herunterladen',
+        }
+        this.modalConfig.backdrop = 'static';
+        const modalRef = this.ngbModal.open(FileDownloadComponent);
         modalRef.componentInstance.configure(config);
         return modalRef.result;
     }
