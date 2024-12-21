@@ -30,18 +30,20 @@
     </div>
 
     <div class="mt-3 mb-3">
-        @for (file of uploadFiles(); track $index) {
-            <div class="row">
-                <upload-item
-                        [file]="file"
-                        [path]="config().path"
-                        [metadata]="config().metadata"
-                        [triggerUpload]="statusArray[$index]['triggerUpload']()"
-                        (statusChanged)="onItemStatusChanged($event, $index)"
-                        (sizeUploadedChanged)="onItemSizeUploadedChanged($event, $index)"
-                        (success)="onSuccess($event, $index)"
-                ></upload-item>
-            </div>
+        @defer {
+            @for (file of uploadFiles(); track $index) {
+                <div class="row">
+                    <upload-item
+                            [file]="file"
+                            [path]="config().path"
+                            [metadata]="config().metadata"
+                            [triggerUpload]="statusArray[$index]['triggerUpload']()"
+                            (statusChanged)="onItemStatusChanged($event, $index)"
+                            (sizeUploadedChanged)="onItemSizeUploadedChanged($event, $index)"
+                            (success)="onSuccess($event, $index)"
+                    ></upload-item>
+                </div>
+            }
         }
     </div>
 </div>

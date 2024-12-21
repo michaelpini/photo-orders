@@ -68,7 +68,7 @@
 
 
     <div class="row mb-3">
-        <div class="col">
+        <div class="date">
             <label class="col col-form-label" for="issueDate">{{quoteOrInvoice() === "quote" ? "Offert" : "Rechnungs"}}datum</label>
             <input type="date"
                    class="form-control"
@@ -81,7 +81,7 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col">
+        <div class="date">
             @if (quoteOrInvoice() === "quote") {
                 <label class="col col-form-label" for="poDate">Auftragsbestätigung am</label>
                 <input type="date"

@@ -47,7 +47,7 @@ const defaultConfig: ModalDownloadConfig = {
     btnClass: 'btn-primary',
     path: '',
     photos: [],
-    maxConcurrentDownloads: 5
+    maxConcurrentDownloads: 3,
 }
 
 @Component({
@@ -174,7 +174,9 @@ export class FileDownloadComponent implements OnDestroy {
     }
 
     onDone() {
-        this.dispatchDownloads();
+        if (this.isRunning()) {
+            this.dispatchDownloads();
+        }
     }
 
     ngOnDestroy(): void {

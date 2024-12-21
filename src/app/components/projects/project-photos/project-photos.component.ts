@@ -85,11 +85,6 @@ export class ProjectPhotosComponent {
         this.store.removePhotos(this.projectInfo().id!, this.selectedPhotos());
     }
 
-    async onDownloadMultiplex(photos: Photo[]) {
-        const {id: projectId} = this.projectInfo();
-        if (!projectId || photos.length === 0) return;
-        const result = await this.modalService.downloadPhotos(projectId, photos);
-    }
     async onDownloadMultiple(photos?: Photo[]) {
         const {id: projectId} = this.projectInfo();
         if (!photos) photos = this.selectedPhotos().length > 0 ? this.selectedPhotos(): this.store.photosEntities();

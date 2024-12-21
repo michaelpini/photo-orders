@@ -1,0 +1,65 @@
+.spaced {
+    letter-spacing: 1vw;
+}
+.feature-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: .75rem;
+    font-size: 2rem;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+    background: linear-gradient(#e20000, #b40000);
+    transition: all 0.1s ease;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+.feature-icon-svg {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    fill: #eeeeee;
+}
+
+.icon-small {
+    width: 1em;
+    height: 1em;
+    fill: var(--bs-primary)
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2rem auto;
+    align-items: center;
+    gap: 2px;
+}
+
+.contact-text {
+    font-size: 1.1rem;
+}
+
+
+.portfolio {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+}
+
+.picture-item {
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .portfolio {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 992px) {
+    .portfolio {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+}

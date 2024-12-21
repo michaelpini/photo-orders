@@ -43,7 +43,7 @@ const defaultConfig: ModalUploadConfig = {
     btnClass: 'btn-primary',
     path: '',
     metadata: {customMetadata: {resolution: 'full', userId: ''}},
-    maxConcurrentUploads: 5
+    maxConcurrentUploads: 3,
 }
 
 @Component({

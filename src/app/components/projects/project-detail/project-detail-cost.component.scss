@@ -11,9 +11,13 @@
 }
 .grid-2-col {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: 8rem 7rem 1fr;
     gap: 0.5rem;
     align-items: center;
+}
+
+.date {
+    width: 17rem;
 }
 
 .form-control [disabled] {

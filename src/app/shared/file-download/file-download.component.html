@@ -29,19 +29,21 @@
         </ngb-progressbar-stacked>
     </div>
 
-    <div class="mt-3 mb-3">
-        @for (photo of config().photos; track $index) {
-            <div class="row">
-                <download-item
-                        [photo]="photo"
-                        [path]="config().path"
-                        [triggerDownload]="statusArray[$index]['triggerDownload']()"
-                        (statusChanged)="onItemStatusChanged($event, $index)"
-                        (done)="onDone()"
-                ></download-item>
-            </div>
-        }
-    </div>
+    @defer {
+        <div class="mt-3 mb-3">
+            @for (photo of config().photos; track $index) {
+                <div class="row">
+                    <download-item
+                            [photo]="photo"
+                            [path]="config().path"
+                            [triggerDownload]="statusArray[$index]['triggerDownload']()"
+                            (statusChanged)="onItemStatusChanged($event, $index)"
+                            (done)="onDone()"
+                    ></download-item>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 <div class="modal-footer">
