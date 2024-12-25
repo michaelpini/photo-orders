@@ -42,10 +42,6 @@ export class PhotoItemComponent {
         this.liked.emit(updatedPhoto);
     }
 
-    onDownload() {
-        this.download.emit(this.photo()!);
-    }
-
     onDblClick() {
         this.viewInCarousel.emit(this.photo()!);
     }

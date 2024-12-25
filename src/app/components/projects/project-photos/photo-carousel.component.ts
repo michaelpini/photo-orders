@@ -13,7 +13,7 @@ export class PhotoCarouselComponent implements OnDestroy{
     photos = input<PhotoExtended[]>();
     showWithPhoto = input<PhotoExtended | null>();
     currentGuid = signal<string>('');
-    close = output<boolean>();
+    close = output<string>();
     liked = output<PhotoExtended>();
     @ViewChild('carousel') carousel!: NgbCarousel;
 
@@ -54,7 +54,7 @@ export class PhotoCarouselComponent implements OnDestroy{
     }
 
     onClose() {
-        this.close.emit(true);
+        this.close.emit(this.currentGuid());
     }
 
     onLikedChanged(ev: Event, photo: PhotoExtended) {
@@ -64,6 +64,7 @@ export class PhotoCarouselComponent implements OnDestroy{
 
     onSlide(ev: NgbSlideEvent) {
         this.currentGuid.set(ev.current);
+
     }
 
 }

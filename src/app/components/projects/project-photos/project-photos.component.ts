@@ -9,23 +9,27 @@ import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbToo
 import {PhotoCarouselComponent} from "./photo-carousel.component";
 import {transformSize} from "../../../shared/util";
 import {UnitsPipe} from "../../../shared/units.pipe";
+import {NgClass} from "@angular/common";
 
 type FilterKey = 'liked' | 'selected' | null;
 
 @Component({
     selector: 'project-photos',
-    imports: [FormsModule, PhotoItemComponent, NgbDropdown, NgbDropdownMenu, NgbDropdownItem, NgbDropdownToggle, PhotoCarouselComponent, NgbTooltip, UnitsPipe],
+    imports: [FormsModule, PhotoItemComponent, NgbDropdown, NgbDropdownMenu, NgbDropdownItem, NgbDropdownToggle, PhotoCarouselComponent, NgbTooltip, UnitsPipe, NgClass],
     templateUrl: './project-photos.component.html',
     styleUrl: './project-photos.component.scss'
 })
 export class ProjectPhotosComponent {
     constructor(private modalService: ModalService, private firebaseService: FirebaseService) {
-
     }
+
     protected store = inject(PhotoOrdersStore);
     projectInfo = input<Partial<ProjectInfo>>({});
     showCarousel = signal<PhotoExtended | null>(null);
     filter = signal<FilterKey>(null);
+    fullScreen = signal<boolean>(false);
+    activePhotoGuid = signal<string>('');
+
 
     filteredPhotos = computed(() => {
         const key = this.filter();
@@ -60,8 +64,6 @@ export class ProjectPhotosComponent {
         if (liked) str += `, ${liked} ${liked === 1 ? ' Favorit' : ' Favoriten'}`;
         return str;
     })
-
-    lastFocusedTile: HTMLElement | null = null;
 
     onSelectChanged(photo: PhotoExtended) {
         this.store.updatePhoto(null, photo);
@@ -133,8 +135,14 @@ export class ProjectPhotosComponent {
             case 'Escape':
                 this.onSelectAll(false);
                 this.filter.set(null);
+                this.fullScreen.set(false);
                 break;
         }
+    }
+
+    onFocus(ev: FocusEvent) {
+        const tile: HTMLElement | null = (ev.target as HTMLElement).closest('.tile');
+        this.activePhotoGuid.set(tile?.dataset['guid'] || '');
     }
 
     focusNextTile(step = 1) {
@@ -154,14 +162,25 @@ export class ProjectPhotosComponent {
         lastPhotoItem.focus();
     }
 
+    focusActivePhoto() {
+        const selector = `[data-guid="${this.activePhotoGuid()}"]`;
+        const el: HTMLElement | null = document.querySelector(selector);
+        if (el) el.focus();
+    }
+
+    showFullScreen(value: boolean) {
+        this.fullScreen.set(value);
+        this.focusActivePhoto();
+    }
+
     openCarousel(photo: PhotoExtended) {
-        this.lastFocusedTile = document.querySelector('.tile:focus-within');
         this.showCarousel.set(photo);
     }
 
-    hideCarousel() {
+    hideCarousel(guid?: string) {
+        if (guid) this.activePhotoGuid.set(guid);
         this.showCarousel.set(null);
-        this.lastFocusedTile?.focus();
+        this.focusActivePhoto();
     }
 
 
