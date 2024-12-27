@@ -17,11 +17,11 @@
     height: 22px;
     float: left;
     margin-left: -22px;
+    filter: invert(0.6);
 }
 
 .desc:before {
     transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
 }
 
 .clear-filter {
@@ -30,6 +30,13 @@
     cursor: pointer;
     padding: 0.4rem;
     color: #757575;
+    border: none;
+}
+
+.icon {
+    height: 24px;
+    width: 24px;
+    fill: var(--bs-btn-color);
 }
 
 .no-data {
@@ -44,4 +51,6 @@
     border-radius: 3px;
     --bs-table-bg-state: rgba(45, 45, 45, 5%);
 }
+
+
 

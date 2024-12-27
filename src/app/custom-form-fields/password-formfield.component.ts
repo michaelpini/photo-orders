@@ -1,6 +1,4 @@
 import {Component, input, model, signal} from "@angular/core";
-import {faEye, faEyeSlash} from "@fortawesome/free-regular-svg-icons";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass} from "@angular/common";
 import {
     AbstractControl,
@@ -23,15 +21,13 @@ type Validated = {
     selector: "password-formfield",
     templateUrl: 'password-formfield.component.html',
     styleUrl: './password-formfield.component.scss',
-    imports: [FaIconComponent, NgClass, FormsModule],
+    imports: [NgClass, FormsModule],
     providers: [
         { provide: NG_VALUE_ACCESSOR, multi: true, useExisting: PasswordFormFieldComponent },
         { provide: NG_VALIDATORS, multi: true, useExisting: PasswordFormFieldComponent },
     ]
 })
 export class PasswordFormFieldComponent implements ControlValueAccessor, Validator  {
-    protected readonly faEyeSlash = faEyeSlash;
-    protected readonly faEye = faEye;
     enableValidation = input<boolean | string>(false);
     required = input<boolean | string>(false);
     disabled = model(false);

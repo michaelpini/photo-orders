@@ -19,3 +19,19 @@
     border-radius: 10px;
     z-index: 1200;
 }
+
+.icon {
+    height: 40px;
+    width: 40px;
+    fill: var(--bs-nav-link-color);
+    transition: fill 0.2s;
+    &:hover {
+        fill: var(--bs-nav-link-hover-color);
+    }
+}
+
+.icon-small {
+    height: 24px;
+    width: 24px;
+    margin-right: 8px;
+}

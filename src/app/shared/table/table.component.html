@@ -11,13 +11,11 @@
                    [value]="state().filter"
                    (input)="onFilter(search.value)"
             />
-            <fa-icon [icon]="faFilterCircleXmark"
-                     [hidden]="!search.value"
-                     (click)="onClearFilter()"
-                     class="clear-filter"
-                     size="lg"
-            ></fa-icon>
-
+            <button type="button" class="btn clear-filter" [hidden]="!search.value">
+                <svg class="icon" width="24" height="24" fill="transparent" (click)="onClearFilter()">
+                    <use href="#clearfilter"></use>
+                </svg>
+            </button>
         </div>
         <span class="col col-form-label ms-3">{{countInfo()}}</span>
     </div>
@@ -42,9 +40,6 @@
                         </th>
                     }
                 }
-                @if (showChevron()) {
-                    <th></th>
-                }
             </tr>
             </thead>
             <tbody>
@@ -59,9 +54,9 @@
                                     @case ('boolean') {
                                         <td class="text-center">
                                             @if (row[colDef.field]) {
-                                                <fa-icon [icon]="faCheck"></fa-icon>
+                                                <svg class="icon"><use href="#check"></use></svg>
                                             } @else if (row[colDef.field] !== undefined) {
-                                                <fa-icon [icon]="faXmark" class="text-danger"></fa-icon>
+                                                <svg class="icon"><use href="#cross"></use></svg>
                                             }
                                         </td>
                                     }
@@ -70,9 +65,6 @@
                                     }
                                 }
                             }
-                        }
-                        @if (showChevron()) {
-                            <td><fa-icon [icon]="faChevronRight" class="text-primary"></fa-icon></td>
                         }
                     </tr>
                 } @empty {
@@ -84,4 +76,16 @@
         </table>
     </div>
 </div>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="clearfilter" viewBox="0 -960 960 960">
+        <path d="m592-481-57-57 143-182H353l-80-80h487q25 0 36 22t-4 42L592-481ZM791-56 560-287v87q0 17-11.5 28.5T520-160h-80q-17 0-28.5-11.5T400-200v-247L56-791l56-57 736 736-57 56ZM535-538Z"/>
+    </symbol>
+    <symbol id="check" viewBox="0 -960 960 960">
+        <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+    </symbol>
+    <symbol id="cross" viewBox="0 -960 960 960" fill="red">
+        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+    </symbol>
+</svg>
 

@@ -8,8 +8,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../user.model"
 import {Subscription} from "rxjs";
 import {ModalService} from "../../../modals/modal.service";
-import {faUser, faUserPlus} from "@fortawesome/free-solid-svg-icons";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 import {AuthUser} from "../../../auth/authUser.model";
 import {FirebaseService} from "../../../persistance/firebase.service";
@@ -18,14 +16,12 @@ import {ToastService} from "../../../shared/toasts/toast.service";
 
 @Component({
     selector: 'customer-detail',
-    imports: [FormsModule, NgClass, FaIconComponent, NgbTooltip],
+    imports: [FormsModule, NgClass, NgbTooltip],
     templateUrl: './customer-detail.component.html',
     styleUrl: './customer-detail.component.scss'
 })
 export class CustomerDetailComponent implements OnInit, OnDestroy {
     protected readonly store = inject(PhotoOrdersStore);
-    protected readonly faUser = faUser;
-    protected readonly faUserPlus = faUserPlus;
     private valueChangesSubscription: Subscription | undefined;
     private formInitializing = false;
 

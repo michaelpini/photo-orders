@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {NavComponent} from './components/nav/nav.component';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {SpinnerComponent} from "./shared/spinner/spinner.component";
 import {PhotoOrdersStore} from "./store/photoOrdersStore";
 
@@ -11,7 +10,7 @@ import {NgbdToastGlobal} from "./shared/toasts/toast-global.component";
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, NavComponent, FontAwesomeModule, SpinnerComponent, NgbdToastGlobal],
+    imports: [RouterOutlet, NavComponent, SpinnerComponent, NgbdToastGlobal],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

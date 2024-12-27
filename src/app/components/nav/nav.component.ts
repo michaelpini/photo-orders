@@ -1,12 +1,8 @@
-import {AfterViewInit, Component, computed, effect, inject, signal} from '@angular/core';
+import {AfterViewInit, Component, effect, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {ModalService} from "../../modals/modal.service";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faCircleUser as faUserSolid, faMoon} from "@fortawesome/free-solid-svg-icons";
-import {faCircleUser as faUserOutline, faSun} from "@fortawesome/free-regular-svg-icons";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {faCircleHalfStroke} from "@fortawesome/free-solid-svg-icons/faCircleHalfStroke";
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -15,7 +11,6 @@ type Theme = 'light' | 'dark' | 'auto';
     imports: [
         RouterLink,
         RouterLinkActive,
-        FaIconComponent,
         NgbDropdown,
         NgbDropdownMenu,
         NgbDropdownItem,
@@ -26,18 +21,10 @@ type Theme = 'light' | 'dark' | 'auto';
     styleUrl: './nav.component.scss'
 })
 export class NavComponent implements AfterViewInit{
-    protected readonly faUserSolid = faUserSolid;
-    protected readonly faUserOutline = faUserOutline;
-    protected readonly themeIcons = {
-        'auto': faCircleHalfStroke,
-        'light': faSun,
-        'dark': faMoon
-    }
     readonly store = inject(PhotoOrdersStore);
     modalService = inject(ModalService);
     collapsed = signal(true);
     theme = signal<Theme>('auto');
-    themeIcon = computed(() => this.themeIcons[this.theme()]);
 
     constructor() {
         effect(() => {
