@@ -1,7 +1,7 @@
 .tile {
     width: 100%;
     position: relative;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
     border-radius: 3px;
 
     &:focus, &:focus-within {
@@ -9,14 +9,13 @@
     }
 
     &:hover, &:focus, &:focus-within {
-        transform: scale(1.03);
+        transform: scale(1.02);
         z-index: 2;
 
         .img-check, .heart-container, .download-svg, .filename {
             opacity: 1;
         }
     }
-
 }
 
 .selection {

@@ -46,6 +46,13 @@ export class PhotoItemComponent {
         this.viewInCarousel.emit(this.photo()!);
     }
 
+    onContextMenu(ev: MouseEvent | PointerEvent) {
+        if (ev instanceof PointerEvent && ev.pointerType === 'touch') {
+            ev.preventDefault();
+            this.viewInCarousel.emit(this.photo()!);
+        }
+    }
+
     onKeydown(event: KeyboardEvent) {
         let photo = {...this.photo()!};
         switch (event.key) {
@@ -64,4 +71,5 @@ export class PhotoItemComponent {
                 break;
         }
     }
+
 }

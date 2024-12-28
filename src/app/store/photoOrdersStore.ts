@@ -98,7 +98,7 @@ export const PhotoOrdersStore = signalStore(
                     tap(authUser => {
                         if (authUser === undefined) return;
                         resolve(authUser ? authUser?.authType || 'user' : null);
-                        rx.unsubscribe();
+                        rx.destroy();
                     })
                 ))(store.authUser);
             })
@@ -325,7 +325,7 @@ export const PhotoOrdersStore = signalStore(
                     setIdle();
                     if (authUser) {
                         patchState(store, {isInitialized: true});
-                        subscription.unsubscribe();
+                        subscription.destroy();
                     }
                 })
             ))(store.authUser);
