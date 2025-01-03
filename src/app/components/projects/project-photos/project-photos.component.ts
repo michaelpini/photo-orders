@@ -38,6 +38,17 @@ export class ProjectPhotosComponent {
         return entities.filter(photo => photo[key]);
     })
 
+    filteredPhotosLandscape = computed(() => {
+        return this.filteredPhotos().filter(photo => {
+            return photo.width > photo.height;
+        });
+    })
+    filteredPhotosPortrait = computed(() => {
+        return this.filteredPhotos().filter(photo => {
+            return photo.width < photo.height;
+        });
+    })
+
     selectedPhotos = computed(() => {
         return this.store.photosEntities().filter(photo => photo.selected);
     })

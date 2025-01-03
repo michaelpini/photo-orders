@@ -46,7 +46,7 @@
 
         <label class="col col-form-label">Total</label>
         <div class="form-control text-only">
-            {{data()?.totalHours}} h
+            {{ data()?.totalHours }} h
         </div>
         <label></label>
 
@@ -62,14 +62,15 @@
 
         <div class="cost-total">Total</div>
         <div class="cost-total grid-2-span-2">
-            CHF {{data()?.totalCHF}}
+            CHF {{ data()?.totalCHF }}
         </div>
     </div>
 
 
     <div class="row mb-3">
         <div class="date">
-            <label class="col col-form-label" for="issueDate">{{quoteOrInvoice() === "quote" ? "Offert" : "Rechnungs"}}datum</label>
+            <label class="col col-form-label"
+                   for="issueDate">{{ quoteOrInvoice() === "quote" ? "Offert" : "Rechnungs" }}datum</label>
             <input type="date"
                    class="form-control"
                    [disabled]="!store.isAdmin()"
@@ -91,8 +92,7 @@
                        name="poDate"
                        ngModel
                 >
-            }
-            @else {
+            } @else {
                 <label class="col col-form-label" for="paidDate">Bezahlt am</label>
                 <input type="date"
                        class="form-control"
@@ -116,6 +116,117 @@
                       name="remarks"
                       ngModel
             ></textarea>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            @if (store.isAdmin()) {
+                <button class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-3" (click)="onDocx()">
+                    <svg viewBox="0 0 32 32" width=40 height="40" xmlns="http://www.w3.org/2000/svg">
+                        <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="4.494" x2="13.832" y1="7.914" y2="24.086">
+                            <stop offset="0" stop-color="#2368c4"/>
+                            <stop offset=".5" stop-color="#1a5dbe"/>
+                            <stop offset="1" stop-color="#1146ac"/>
+                        </linearGradient>
+                        <path d="m28.806 3h-19.101a1.192 1.192 0 0 0 -1.193 1.191v5.309l11.069 3.25 10.419-3.25v-5.309a1.192 1.192 0 0 0 -1.194-1.191z"
+                              fill="#41a5ee"/>
+                        <path d="m30 9.5h-21.488v6.5l11.069 1.95 10.419-1.95z" fill="#2b7cd3"/>
+                        <path d="m8.512 16v6.5l10.418 1.3 11.07-1.3v-6.5z" fill="#185abd"/>
+                        <path d="m9.705 29h19.1a1.192 1.192 0 0 0 1.195-1.191v-5.309h-21.488v5.309a1.192 1.192 0 0 0 1.193 1.191z"
+                              fill="#103f91"/>
+                        <path d="m16.434 8.2h-7.922v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191v-13.868a1.2 1.2 0 0 0 -1.194-1.191z"
+                              opacity=".1"/>
+                        <path d="m15.783 8.85h-7.271v16.25h7.271a1.2 1.2 0 0 0 1.194-1.191v-13.868a1.2 1.2 0 0 0 -1.194-1.191z"
+                              opacity=".2"/>
+                        <path d="m15.783 8.85h-7.271v14.95h7.271a1.2 1.2 0 0 0 1.194-1.191v-12.568a1.2 1.2 0 0 0 -1.194-1.191z"
+                              opacity=".2"/>
+                        <path d="m15.132 8.85h-6.62v14.95h6.62a1.2 1.2 0 0 0 1.194-1.191v-12.568a1.2 1.2 0 0 0 -1.194-1.191z"
+                              opacity=".2"/>
+                        <path d="m3.194 8.85h11.938a1.193 1.193 0 0 1 1.194 1.191v11.918a1.193 1.193 0 0 1 -1.194 1.191h-11.938a1.192 1.192 0 0 1 -1.194-1.191v-11.918a1.192 1.192 0 0 1 1.194-1.191z"
+                              fill="#1146ac"/>
+                        <path d="m6.9 17.988c.023.184.039.344.046.481h.028c.01-.13.032-.287.065-.47s.062-.338.089-.465l1.255-5.407h1.624l1.3 5.326a7.761 7.761 0 0 1 .162 1h.022a7.6 7.6 0 0 1 .135-.975l1.039-5.358h1.477l-1.824 7.748h-1.727l-1.237-5.126q-.054-.222-.122-.578t-.084-.52h-.021q-.021.189-.084.561c-.042.249-.075.432-.1.552l-1.163 5.114h-1.756l-1.834-7.744h1.5l1.131 5.418a4.469 4.469 0 0 1 .079.443z"
+                              fill="#fff"/>
+                    </svg>
+                    {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }} erstellen
+                </button>
+                <button class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-3" (click)="onAttachPDF()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 1080 1080">
+                        <rect x="0" y="0" width="100%" height="100%" fill="transparent"></rect>
+                        <g transform="matrix(1 0 0 1 540 540)">
+                            <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
+                        </g>
+                        <g transform="matrix(1 0 0 1 540 540)">
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 539.24 389.55)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(220,223,225); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -32.37)" d="M 78.806 62.716 L 78.806 20.496 C 78.806 19.282 78.333 18.14 77.474 17.28 L 61.526 1.332 C 60.667 0.473 59.525 0 58.31 0 L 15.742 0 C 13.23 0 11.194 2.04 11.194 4.548 L 11.194 43.16 L 11.194 62.71 C 34.114 65.376 56.665 65.47 78.806 62.716 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 13.78 539.25 884.71)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(234,84,64); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -76.36)" d="M 11.194 62.716 L 11.194 73.946 L 11.194 85.452 C 11.194 87.96 13.23 90 15.742 90 L 74.259 90 C 76.767 90 78.807 87.96 78.807 85.452 L 78.807 62.716 L 11.194 62.716 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 830.27 333.61)"  >
+                            <polygon style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(196,203,210); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  points="-9.27,-9.24 9.27,9.23 9.19,-7.92 " />
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 822.71 123.29)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(171,178,184); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-68.9, -9.9)" d="M 77.474 17.28 L 61.526 1.332 C 60.85 0.656 59.997 0.23 59.073 0.074 L 59.073 15.456 C 59.073 17.814 60.992 19.733 63.35 19.733 L 78.732 19.733 C 78.576 18.81 78.15 17.956 77.474 17.28 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 307.94 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-32.32, -76.39)" d="M 33.092 68.321 L 28.718 68.321 C 28.028 68.321 27.468 68.881 27.468 69.571 L 27.468 77.66 L 27.468 83.20 C 27.468 83.89 28.028 84.45 28.718 84.45 C 29.408 84.45 29.968 83.89 29.968 83.20 L 29.968 78.92 L 33.092 78.91 C 35.346 78.91 37.18 77.08 37.18 74.824 L 37.18 72.41 C 37.18 70.155 35.346 68.321 33.092 68.321 z M 34.68 74.824 C 34.68 75.7 33.97 76.41 33.092 76.41 L 29.968 76.41 L 29.968 70.821 L 33.092 70.821 C 33.97 70.821 34.68 71.533 34.68 72.41 L 34.68 74.824 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 537.74 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-44.88, -76.39)" d="M 45.351 84.453 L 41.27 84.453 C 40.58 84.453 40.02 83.893 40.02 83.203 L 40.02 69.571 C 40.02 68.881 40.58 68.321 41.27 68.321 L 45.35 68.321 C 47.768 68.321 49.73 70.286 49.73 72.701 L 49.73 80.07 C 49.731 82.488 47.767 84.453 45.351 84.453 z M 42.52 81.953 L 45.35 81.953 C 46.389 81.953 47.23 81.11 47.23 80.072 L 47.23 72.7 C 47.23 71.665 46.38 70.82 45.35 70.82 L 42.52 70.82 L 42.52 81.953 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 772.06 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-57.68, -76.39)" d="M 61.282 68.321 L 54.07 68.321 C 53.38 68.321 52.82 68.881 52.82 69.571 L 52.82 83.203 C 52.82 83.893 53.38 84.453 54.07 84.453 C 54.76 84.453 55.32 83.893 55.32 83.203 L 55.32 77.637 L 58.793 77.637 C 59.483 77.637 60.043 77.077 60.043 76.387 C 60.043 75.697 59.483 75.137 58.793 75.137 L 55.32 75.137 L 55.32 70.822 L 61.282 70.822 C 61.97 70.822 62.532 70.262 62.532 69.572 C 62.532 68.882 61.973 68.321 61.282 68.321 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(4.48 -4.48 4.48 4.48 546.31 363.87)">
+                            <path style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(234,84,64); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-50, -48.46)" d="M 52.974 18.768 L 17.441 54.302 C 14.14 57.65 12.46 61.98 12.46 66.361 C 12.47 70.74 14.14 75.12 17.441 78.422 C 20.741 81.776 25.121 83.39 29.502 83.39 C 33.829 83.4 38.21 81.776 41.563 78.422 L 83.58 36.4 C 86.233 33.75 87.533 30.34 87.533 26.88 C 87.533 23.47 86.179 20.07 83.58 17.47 L 83.58 17.41 C 80.989 14.82 77.58 13.52 74.12 13.52 C 70.71 13.52 67.25 14.82 64.65 17.42 L 32.151 49.919 C 30.20 51.921 29.18 54.52 29.18 57.11 C 29.18 59.708 30.20 62.303 32.151 64.305 C 34.152 66.25 36.749 67.28 39.344 67.28 L 39.344 67.223 C 41.939 67.223 44.589 66.25 46.54 64.30 L 73.146 37.69 L 69.415 33.96 L 42.807 60.573 C 41.889 61.546 40.588 62.03 39.345 62.03 L 39.345 61.98 C 38.102 61.98 36.803 61.55 35.885 60.57 C 34.911 59.65 34.477 58.35 34.477 57.11 C 34.477 55.86 34.91 54.57 35.885 53.651 L 68.386 21.15 C 69.955 19.58 72.064 18.77 74.119 18.77 C 76.23 18.77 78.339 19.58 79.906 21.15 C 81.47 22.72 82.286 24.2 82.286 26.88 C 82.286 29 81.475 31.1 79.906 32.667 L 37.83 74.745 C 35.559 77.013 32.531 78.149 29.5 78.149 C 26.473 78.149 23.44 77.012 21.119 74.745 L 21.173 74.745 C 18.848 72.417 17.72 69.39 17.71 66.36 C 17.71 63.333 18.848 60.303 21.173 58.03 L 56.703 22.445 L 52.974 18.768 z" stroke-linecap="round" />
+                        </g>
+                    </svg>
+                    {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }} anhängen
+                </button>
+            }
+
+            @if (data()?.pdf) {
+                <button class="btn btn-light btn-light-dark mb-2 p-3" (click)="onDownloadPDF()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 1080 1080">
+                        <g transform="matrix(1 0 0 1 540 540)">
+                            <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
+                        </g>
+                        <g transform="matrix(1 0 0 1 540 540)">
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 539.24 389.55)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(220,223,225); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -32.37)" d="M 78.806 62.716 L 78.806 20.496 C 78.806 19.282 78.333 18.14 77.474 17.27 L 61.526 1.332 C 60.667 0.473 59.525 0 58.31 0 L 15.742 0 C 13.23 0 11.194 2.04 11.194 4.548 L 11.194 43.16 L 11.194 62.71 C 34.114 65.376 56.665 65.47 78.806 62.716 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 13.78 539.25 884.71)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(234,84,64); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -76.36)" d="M 11.194 62.716 L 11.194 73.946 L 11.194 85.452 C 11.194 87.96 13.23 90 15.742 90 L 74.259 90 C 76.767 90 78.807 87.96 78.807 85.452 L 78.807 62.716 L 11.194 62.716 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 830.27 333.61)"  >
+                            <polygon style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(196,203,210); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  points="-9.27,-9.24 9.27,9.23 9.19,-7.92 " />
+                        </g>
+                        <g transform="matrix(11.85 0 0 11.85 822.71 123.29)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(171,178,184); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-68.9, -9.9)" d="M 77.474 17.28 L 61.526 1.332 C 60.85 0.656 59.997 0.23 59.073 0.074 L 59.073 15.456 C 59.073 17.814 60.992 19.733 63.35 19.733 L 78.732 19.733 C 78.576 18.81 78.15 17.956 77.474 17.28 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 307.94 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-32.32, -76.39)" d="M 33.092 68.321 L 28.718 68.321 C 28.028 68.321 27.468 68.881 27.468 69.571 L 27.468 77.62 L 27.468 83.20 C 27.468 83.89 28.028 84.45 28.718 84.45 C 29.408 84.45 29.968 83.89 29.968 83.20 L 29.968 78.92 L 33.091 78.91 C 35.346 78.91 37.18 77.08 37.18 74.824 L 37.18 72.41 C 37.18 70.155 35.346 68.321 33.092 68.321 z M 34.68 74.824 C 34.68 75.7 33.97 76.41 33.092 76.41 L 29.968 76.41 L 29.968 70.821 L 33.092 70.821 C 33.97 70.821 34.68 71.533 34.68 72.41 L 34.68 74.824 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 537.74 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-44.88, -76.39)" d="M 45.351 84.453 L 41.27 84.453 C 40.58 84.453 40.02 83.893 40.02 83.203 L 40.02 69.571 C 40.02 68.881 40.58 68.321 41.27 68.321 L 45.35 68.321 C 47.768 68.321 49.73 70.286 49.73 72.701 L 49.73 80.072 C 49.731 82.488 47.767 84.453 45.351 84.453 z M 42.52 81.953 L 45.35 81.953 C 46.389 81.953 47.23 81.11 47.23 80.072 L 47.23 72.70 C 47.23 71.665 46.38 70.82 45.35 70.82 L 42.52 70.82 L 42.52 81.953 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(18.3 0 0 18.3 772.06 886.26)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-57.68, -76.39)" d="M 61.282 68.321 L 54.07 68.321 C 53.38 68.321 52.82 68.881 52.82 69.571 L 52.82 83.203 C 52.82 83.893 53.38 84.453 54.07 84.453 C 54.76 84.453 55.32 83.893 55.32 83.203 L 55.32 77.637 L 58.793 77.637 C 59.483 77.637 60.043 77.077 60.043 76.387 C 60.043 75.697 59.483 75.137 58.793 75.137 L 55.32 75.137 L 55.32 70.822 L 61.282 70.822 C 61.97 70.822 62.532 70.262 62.532 69.572 C 62.532 68.882 61.973 68.321 61.282 68.321 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 16.69 563.05 415.76)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(196,203,210); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-47, -40.11)" d="M 60.137 40.012 C 59.983 39.638 59.617 39.395 59.213 39.395 L 54.408 39.395 L 54.408 27.616 C 54.408 27.064 53.961 26.616 53.408 26.616 L 40.592 26.616 C 40.04 26.616 39.592 27.064 39.592 27.616 L 39.592 39.394 L 34.787 39.394 C 34.38 39.394 34.018 39.638 33.863 40.01 C 33.708 40.385 33.794 40.815 34.08 41.101 L 46.293 53.314 C 46.488 53.509 46.744 53.607 47 53.607 C 47.256 53.607 47.512 53.509 47.707 53.314 L 59.92 41.102 C 60.206 40.815 60.292 40.386 60.137 40.012 z" stroke-linecap="round" />
+                        </g>
+                        <g transform="matrix(11.85 0 0 16.69 539.34 382.36)"  >
+                            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(234,84,64); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -38.11)" d="M 58.137 38.012 C 57.983 37.638 57.617 37.395 57.213 37.395 L 52.408 37.395 L 52.408 25.616 C 52.408 25.064 51.961 24.616 51.408 24.616 L 38.592 24.616 C 38.04 24.616 37.592 25.064 37.592 25.616 L 37.592 37.394 L 32.787 37.394 C 32.38 37.394 32.018 37.638 31.863 38.01 C 31.708 38.385 31.794 38.815 32.08 39.101 L 44.293 51.314 C 44.488 51.509 44.744 51.607 45 51.607 C 45.256 51.607 45.512 51.509 45.707 51.314 L 57.92 39.102 C 58.206 38.815 58.292 38.386 58.137 38.012 z" stroke-linecap="round" />
+                        </g>
+                    </svg>
+                    {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }}
+                </button>
+            }
+
         </div>
     </div>
 

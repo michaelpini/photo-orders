@@ -8,6 +8,8 @@
 
 // ************* Modify existing bootstrap colors *************
 $body-bg: #f7f7f7;
+$cs-light: #ebebeb;
+$cs-dark: #5d5d5d;
 // ************************************************************
 
 @import "bootstrap/scss/variables";
@@ -17,6 +19,8 @@ $body-bg: #f7f7f7;
 $custom-colors: (
         "custom-pink": #ff51c6,
         "custom-purple": #b516f5,
+        "custom-light" : #ebebeb,
+        "custom-dark": #5d5d5d,
 );
 $theme-colors: map-merge($theme-colors, $custom-colors);
 // ************************************************************
@@ -63,6 +67,23 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
 // Utilities
 @import "bootstrap/scss/utilities/api";
+
+
+// ************ additional style to be used with btn-light (class=".btn btn-light btn-light-dark") ******************
+[data-bs-theme="dark"] {
+    .btn-light-dark {
+        --bs-btn-font-weight: 400;
+        --bs-btn-color: var(--bs-body-color);
+        --bs-btn-bg: var(--bs-custom-dark);
+        --bs-btn-border-color: var(--bs-custom-dark);
+        --bs-btn-hover-color: var(--bs-body-color);
+        --bs-btn-hover-bg: #{shade-color($cs-dark, 10%)};
+        --bs-btn-hover-border-color: #{shade-color($cs-dark, 10%)};
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #{shade-color($cs-dark, 20%)};
+        --bs-btn-active-border-color: #{shade-color($cs-dark, 20%)};
+    }
+}
 
 
 // ************ Form controls tuning ************************************

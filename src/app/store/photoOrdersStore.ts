@@ -21,8 +21,10 @@ export type State = {
 }
 
 export interface PhotoExtended extends Photo {
+    urlSmall?: string;
     urlMedium?: string;
     urlLarge?: string;
+    urlXLarge?: string;
     urlFull?: string;
     selected?: boolean;
 }
@@ -44,10 +46,12 @@ function addThumbnails(photos: Photo[], projectId: string): PhotoExtended[] {
             const extension = photo.fileExtension;
             const urlBase = `images/projects/${projectId}`;
             const urlThumbBase = `${urlBase}/thumbnails/${filename}`;
+            const urlSmall = base + encodeURIComponent(`${urlThumbBase}_300x300.${extension}`) + '?alt=media';
             const urlMedium = base + encodeURIComponent(`${urlThumbBase}_600x600.${extension}`) + '?alt=media';
-            const urlLarge = base + encodeURIComponent(`${urlThumbBase}_2000x2000.${extension}`) + '?alt=media';
+            const urlLarge = base + encodeURIComponent(`${urlThumbBase}_1200x1200.${extension}`) + '?alt=media';
+            const urlXLarge = base + encodeURIComponent(`${urlThumbBase}_2000x2000.${extension}`) + '?alt=media';
             const urlFull = base + encodeURIComponent(`${urlBase}/${photo.fullName}`) + '?alt=media';
-            return {...photo, urlMedium, urlLarge, urlFull}
+            return {...photo, urlSmall, urlMedium, urlLarge, urlXLarge, urlFull}
         });
         console.log(result);
         return result;

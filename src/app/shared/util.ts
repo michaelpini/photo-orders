@@ -1,6 +1,7 @@
 export type Primitive = string | number | boolean | Date | null | undefined
-export type ObjFlat = {[key: string]: Primitive};
-export type ObjAny = {[key: string]: any};
+export type ObjFlat = { [key: string]: Primitive };
+export type ObjAny = { [key: string]: any };
+
 export interface ImageFileMetaData {
     fullName: string;
     fileName: string,
@@ -55,10 +56,9 @@ export class Deferred<T> {
 export function getRandomId(): string {
     try {
         return crypto.randomUUID();
-    }
-    catch (error) {
+    } catch (error) {
         let [n1, n2, n3, n4, n5] = crypto.getRandomValues(new BigUint64Array(5));
-        const s1= n1.toString(16).slice(-8);
+        const s1 = n1.toString(16).slice(-8);
         const s2 = n2.toString(16).slice(-4);
         const s3 = n3.toString(16).slice(-4);
         const s4 = n4.toString(16).slice(-4);
@@ -67,11 +67,11 @@ export function getRandomId(): string {
     }
 }
 
-const compare = (a: Primitive , b: Primitive) => {
+const compare = (a: Primitive, b: Primitive) => {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
-    return  a < b ? -1 : a > b ? 1 : 0
+    return a < b ? -1 : a > b ? 1 : 0
 };
 
 /**
@@ -89,7 +89,7 @@ const compare = (a: Primitive , b: Primitive) => {
  * sortArr(arr, 'name');
  * @example Returns the ***the original array***, sorted by age in descending order
  * const sortedOriginal = sortArr(arr, 'age', 'desc', false); */
-export function sortArr( array: any[], sortBy: string, direction: 'asc' | 'desc' | '' = 'asc', clone = true): any[] {
+export function sortArr(array: any[], sortBy: string, direction: 'asc' | 'desc' | '' = 'asc', clone = true): any[] {
     const arr = clone ? [...array] : array;
     if (sortBy === '' || direction === '') return arr;
     return arr.sort((a, b) => {
@@ -154,7 +154,7 @@ export function removeNullishObjectKeys(obj: object): object {
  * saveToFile(data, 'membersList');
  * // %userprofile%\downloads\membersList.json
  */
-export function saveJsonToFile (obj: object, filename: string) {
+export function saveJsonToFile(obj: object, filename: string) {
     const blob = new Blob([JSON.stringify(obj, null, 2)], {
         type: 'application/json',
     });
@@ -176,7 +176,7 @@ export function saveJsonToFile (obj: object, filename: string) {
  * saveToFile(blob, 'passport.jpg');
  * // %userprofile%\downloads\passport.jpg
  */
-export function saveBlobToFile (blob: Blob, filename: string) {
+export function saveBlobToFile(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -195,7 +195,7 @@ export function saveBlobToFile (blob: Blob, filename: string) {
  * <img src="???" (error)="setBrokenImage($event)" />  (Angular)
  */
 export function setBrokenImage(e: ErrorEvent) {
-    const brokenImg =  '/assets/broken_img.jpg';
+    const brokenImg = '/assets/broken_img.jpg';
     const target = e.target as HTMLImageElement;
     if (!target.src.includes(brokenImg)) target.src = brokenImg;
 }
@@ -322,3 +322,45 @@ export function transformUnits(value: number | null | undefined, zero = 'none', 
     return `${value} ${more}`;
 }
 
+/**
+ * Converts a date to a formatted string according the  supplied formattingParameters
+ * @param {string | number | Date} value the date as string, number (ms) or Date
+ * @param {'dmy' | 'ymd' | 'mdy' | ''} formatDate format of the date: ```'dmy' | 'ymd' | 'mdy' | ''```
+ * @param {'hm' | 'hms' | ''} formatTime format of the time: ```'hm' | 'hms' | ''```
+ * @param {string} formatSpace the spacing string used between date and time
+ * @example Default (ymd hm)
+ * const str = transformDateTime('2024-12-30T18:30:40') // 2024-12-30 18:30
+ * @example Date only
+ * const myDate = new Date('2024-12-30T18:30:40');
+ * const str = transformDateTime(myDate, 'ymd', '') // 2024-12-30
+ * const str = transformDateTime(myDate, 'dmy', '') // 30.12.2024
+ * const str = transformDateTime(myDate, 'mdy', '') // 12/30/2024
+ * @example Time only
+ * const str = transformDateTime(myDate, '', 'hm') // 18:30
+ * const str = transformDateTime(myDate, '', 'hms') // 18:30:40
+ * @example Date and Time
+ * const str = transformDateTime(myDate, 'dmy', 'hm') // 30.12.2024 18:30
+ * const str = transformDateTime(myDate, 'dmy', 'hms', ', ') // 30.12.2024, 18:30:40
+ * */
+export function transformDateTime(value: string | number | Date | undefined | null, formatDate: 'dmy' | 'ymd' | 'mdy' | '' = 'ymd', formatTime: 'hm' | 'hms' | '' = '', formatSpace = ' ') {
+    if (!value) return '';
+    const date = new Date(value);
+    if (isNaN(date.valueOf())) return String(value);
+    const dd = String(date.getDate()).padStart(2, '0');
+    const MM = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = String(date.getFullYear());
+    const HH = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    const strDate =
+        formatDate === 'dmy' ? `${dd}.${MM}.${yyyy}` :
+        formatDate === 'ymd' ? `${yyyy}-${MM}-${dd}` :
+        formatDate === 'mdy' ? `${MM}/${dd}/${yyyy}` :
+        ''
+    const strTime =
+        formatTime === 'hm' ? `${HH}:${mm}` :
+        formatTime === 'hms' ? `${HH}:${mm}:${ss}` :
+        '';
+    const strSpace = (strDate && strTime) ? formatSpace : '';
+    return strDate + strSpace + strTime;
+}

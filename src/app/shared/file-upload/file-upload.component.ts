@@ -18,6 +18,8 @@ export interface ModalUploadConfig {
     path: string
     metadata: UploadMetadata
     maxConcurrentUploads?: number;
+    multiple?: boolean;
+    accept?: string;
 }
 interface Status {
     filename: string;
@@ -42,8 +44,10 @@ const defaultConfig: ModalUploadConfig = {
     btnPauseText: 'Pause',
     btnClass: 'btn-primary',
     path: '',
-    metadata: {customMetadata: {resolution: 'full', userId: ''}},
+    metadata: {customMetadata: {userId: ''}},
     maxConcurrentUploads: 3,
+    multiple: true,
+    accept: 'image/*',
 }
 
 @Component({
@@ -92,14 +96,13 @@ export class FileUploadComponent implements OnDestroy {
     selectFiles() {
         let input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/jpeg';
-        input.multiple = true;
+        input.accept = this.config().accept || 'image/*';
+        input.multiple = this.config().multiple || false;
         input.onchange = _ => {
             let files: File[] = Array.from(input.files || []);
             this.uploadFiles.set(files);
             this.statusArray = files.map((file: File) => {
                 console.log(file);
-                // getImageMeta(file);
                 return {
                     filename: file.name,
                     sizeTotal: file.size,

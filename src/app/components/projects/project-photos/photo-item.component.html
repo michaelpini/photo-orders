@@ -4,11 +4,13 @@
      (keydown)="onKeydown($event)"
 >
     <img src="{{photo()!.urlMedium}}"
+         srcset="{{photo()!.urlSmall}} 300w, {{photo()!.urlMedium}} 600w, {{photo()!.urlLarge}} 1200w, {{photo()!.urlXLarge}} 2000w"
+         sizes="33vw"
          alt="{{photo()!.fileName}}"
          loading="lazy"
          class="img"
-         [width]="width()"
-         [height]="height()"
+         width="280"
+         height="185"
          (dblclick)="onDblClick()"
          (contextmenu)="onContextMenu($event)"
 

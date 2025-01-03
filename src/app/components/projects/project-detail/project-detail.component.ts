@@ -1,7 +1,6 @@
 import {
-    Component, effect, inject, model, OnDestroy, OnInit, output, signal, ViewChild
+    Component, effect, inject, model, OnDestroy, OnInit, output, signal
 } from '@angular/core';
-import {NgForm} from "@angular/forms";
 import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ModalService} from "../../../modals/modal.service";
@@ -11,6 +10,9 @@ import {Project, ProjectInfo, ProjectInvoice, ProjectQuote} from "../project.mod
 import {ProjectDetailInfoComponent} from "./project-detail-info.component";
 import {ProjectDetailCostComponent} from "./project-detail-cost.component";
 import {ProjectPhotosComponent} from "../project-photos/project-photos.component";
+import {DocxTemplaterService} from "../../../shared/docxtemplater.service";
+import {FirebaseService} from "../../../persistance/firebase.service";
+import {UploadMetadata} from "firebase/storage";
 
 @Component({
     selector: 'project-detail',
@@ -20,7 +22,6 @@ import {ProjectPhotosComponent} from "../project-photos/project-photos.component
 })
 export class ProjectDetailComponent implements OnInit, OnDestroy {
     protected readonly store = inject(PhotoOrdersStore);
-    @ViewChild('form', {static: true}) form: NgForm | undefined;
     dataLoaded = signal<Project | null>(null);
     data = signal<Project | null>(null);
     id = model('');  // Will be populated by router :id when projects/:id
@@ -31,6 +32,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private modalService: ModalService,
         private toastService: ToastService,
+        private docxTemplaterService: DocxTemplaterService,
+        private firebaseService: FirebaseService,
         ) {
         effect(async () => {
             const id = this.id();
@@ -55,6 +58,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         })
         this.store.setDirty(true);
     }
+
     onChangeQuote(data: ProjectQuote) {
         this.data.update(value => {
             if (!value) return null;
@@ -62,6 +66,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         })
         this.store.setDirty(true);
     }
+
     onChangeInvoice(data: ProjectInvoice) {
         this.data.update(value => {
             if (!value) return null;
@@ -83,11 +88,52 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     async onDelete() {
-        const {projectName} = this.form!.value;
-        await this.modalService.confirmDeleteProject(projectName);
+        await this.modalService.confirmDeleteProject(this.data()?.projectName || 'Current project');
         this.store.removeProject(this.id());
         await this.router.navigate(['../'], {relativeTo: this.route});
     }
+
+    async onDocx(type: 'quote' | 'invoice') {
+        if (type === 'quote') {
+            await this.docxTemplaterService.generateQuote(this.data()!)
+            this.toastService.showSuccess('Offerte erstellt (im Download Verzeichnis gespeichert');
+        } else {
+            await this.docxTemplaterService.generateInvoice(this.data()!)
+            this.toastService.showSuccess('Rechnung erstellt (im Download Verzeichnis gespeichert');
+        }
+    }
+
+    onAttach(type: 'quote' | 'invoice') {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf';
+            input.multiple = false;
+            input.onchange = _ => {
+                let files: File[] = Array.from(input.files || []);
+                const file = files[0];
+                const path = `documents/projects/${this.data()?.id}/`;
+                const metadata: UploadMetadata = {customMetadata: {userId: this.data()!.userId!, projectId: this.id()}};
+                const upload = this.firebaseService.uploadFile(file, path, metadata);
+                upload.uploadStatus.subscribe(uploadState => {
+                    if (uploadState.state === 'success') {
+                        const data: Project = {id: this.id()!};
+                        if (type === 'quote') data['quote'] = {pdf: file.name};
+                        if (type === 'invoice') data['invoice'] = {pdf: file.name};
+                        this.store.updateProject(data);
+                    }
+                })
+            };
+            input.click();
+    }
+
+    onDownloadPDF(type: 'quote' | 'invoice') {
+        const filename = (type === 'quote') ? this.data()?.quote?.pdf : this.data()?.invoice?.pdf;
+        if (!filename) return;
+        const path = `documents/projects/${this.data()?.id}/${filename}`;
+        this.firebaseService.downloadFile(path);
+    }
+
+
 
     ngOnInit(): void {
         this.isRendered.emit(true);

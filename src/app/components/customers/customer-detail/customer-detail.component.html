@@ -97,6 +97,16 @@
                    ngModel
             >
         </div>
+
+        <div class="customerNumber">
+            <label for="customerNumber" class="form-label">Kundennummer</label>
+            <input type="text"
+                   class="form-control"
+                   id="customerNumber"
+                   name="customerNumber"
+                   ngModel
+            >
+        </div>
     </div>
 
 
@@ -210,7 +220,7 @@
             >Speichern</button>
             @if (!editOwnAccount()) {
                 <button type="button"
-                        class="btn btn-light col ms-3"
+                        class="btn btn-outline-secondary col ms-3"
                         (click)="onCancel()"
                 >Abbrechen</button>
             }

@@ -1,5 +1,5 @@
 <div class="photo-container" [ngClass]="{fullscreen: fullScreen()}">
-    <div class="row mb-3 align-items-center">
+    <div class="row align-items-center">
         <div class="col-auto">
             {{infoText()}}
         </div>
@@ -74,12 +74,33 @@
     </div>
 
 
-    <div class="photo-grid">
-        @for (photo of filteredPhotos(); track $index) {
+    @if (filteredPhotosLandscape().length > 0) {
+        <div class="mt-2 fw-lighter fst-italic">Landscape</div>
+    }
+    <div class="photo-grid-landscape">
+        @for (photo of filteredPhotosLandscape(); track $index) {
             <photo-item
                     class="photo-item"
                     [photo]="photo"
                     [index]="$index"
+                    (selected)="onSelectChanged($event )"
+                    (liked)="onLikedChanged($event)"
+                    (download)="onDownload($event)"
+                    (viewInCarousel)="openCarousel(photo)"
+                    (keydown)="onKeyDown($event)"
+                    (focusin)="onFocus($event)"
+            ></photo-item>
+        }
+    </div>
+    @if (filteredPhotosPortrait().length > 0) {
+        <div class="mt-2 fw-lighter fst-italic">Portrait</div>
+    }
+    <div class="photo-grid-portrait">
+        @for (photo of filteredPhotosPortrait(); track $index) {
+            <photo-item
+                    class="photo-item"
+                    [photo]="photo"
+                    [index]="filteredPhotosLandscape().length + $index"
                     (selected)="onSelectChanged($event )"
                     (liked)="onLikedChanged($event)"
                     (download)="onDownload($event)"

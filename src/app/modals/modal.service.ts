@@ -110,6 +110,8 @@ export class ModalService {
             },
             title: 'Photos hochladen',
             message: 'Es können Photos bis zu 10MB hochgeladen werden (jpg, png, webp)',
+            accept: 'image/jpeg, image/png, image/webp',
+            multiple: true,
         }
         this.modalConfig.backdrop = 'static';
         const modalRef = this.ngbModal.open(FileUploadComponent);
@@ -136,4 +138,5 @@ export class ModalService {
         modalRef.componentInstance.configure(config);
         return modalRef.result;
     }
+
 }

@@ -4,10 +4,14 @@
     container-type: inline-size;
 }
 
-.photo-grid {
+.photo-grid-landscape {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.3rem;
+}
+
+.photo-grid-portrait {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .photo-item {
@@ -25,8 +29,12 @@
 
 
 @container photo-container (width > 600px) {
-    .photo-grid {
+    .photo-grid-landscape {
         grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .photo-grid-portrait {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 

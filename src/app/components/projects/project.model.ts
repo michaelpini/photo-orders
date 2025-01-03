@@ -42,6 +42,7 @@ export interface ProjectInfo {
     resolutionAndType?: string;
     editingOptions?: string;
     deadline?: string;
+    remarks?: string;
 }
 
 interface ProjectCost {
@@ -54,6 +55,7 @@ interface ProjectCost {
     totalCHF?: number;
     issueDate?: string;
     remarks?: string;
+    pdf?: string;
 }
 
 export interface ProjectQuote extends ProjectCost {

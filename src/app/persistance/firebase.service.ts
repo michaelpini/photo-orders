@@ -130,7 +130,7 @@ export class FirebaseService {
     }
 
     updateProjectPhoto(projectId: string = '', photo: PhotoExtended) {
-        const {urlMedium, urlLarge, urlFull, selected, ...cleanedPhoto} = photo;
+        const {urlSmall, urlMedium, urlLarge, urlXLarge, urlFull, selected, ...cleanedPhoto} = photo;
         return this.update<Photo>(`projects/${projectId}/photos`, cleanedPhoto, 'Foto');
     }
 
@@ -184,6 +184,49 @@ export class FirebaseService {
             deleteObject(ref(storage, `${thumbsBase}_2000x2000.${ext}`)),
         ])
     }
+
+    /**
+     * Files Storage
+     */
+    uploadFile(file: File, path: string, metadata?: UploadMetadata, filename?: string) {
+        if (!path.endsWith('/')) path += '/';
+        const storageRef = ref(storage, path + (filename || file.name));
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+        const uploadStatus = new Subject<UploadState>();
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const { state, bytesTransferred, totalBytes } = snapshot;
+                const progressPercentage = (bytesTransferred / totalBytes) * 100;
+                uploadStatus.next({state, bytesTransferred, progressPercentage});
+            },
+            (error: StorageError) => {
+                uploadStatus.next({state: 'error', error})
+                uploadStatus.error(error);
+            },
+            async () => {
+                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                uploadStatus.next({state: 'success', progressPercentage: 100, bytesTransferred: file.size, downloadUrl});
+                uploadStatus.complete();
+            }
+        )
+        return {uploadTask, uploadStatus};
+    }
+
+    async downloadFile(path: string, toDisk = true) {
+        const fileName = path.substring(path.lastIndexOf('/') + 1);
+        const storageRef = ref(storage, path);
+        const blob = await getBlob(storageRef);
+        if (toDisk) {
+            saveBlobToFile(blob, fileName);
+        }
+        return blob;
+    }
+
+    async deleteFile(path: string) {
+        deleteObject(ref(storage, path));
+    }
+
+
 
 
     // Generic functions

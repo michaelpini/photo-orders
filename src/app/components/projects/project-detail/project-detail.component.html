@@ -22,6 +22,9 @@
                     quoteOrInvoice="quote"
                     [dataInput]="dataLoaded()?.quote || null"
                     (dataOutput)="onChangeQuote($event)"
+                    (docx)="onDocx($event)"
+                    (attach)="onAttach($event)"
+                    (downloadPDF)="onDownloadPDF($event)"
             ></project-detail-cost>
         </ng-template>
     </li>
@@ -33,6 +36,9 @@
                     quoteOrInvoice="invoice"
                     [dataInput]="dataLoaded()?.invoice || null"
                     (dataOutput)="onChangeInvoice($event)"
+                    (docx)="onDocx($event)"
+                    (attach)="onAttach($event)"
+                    (downloadPDF)="onDownloadPDF($event)"
             ></project-detail-cost>
         </ng-template>
     </li>
@@ -59,7 +65,7 @@
                         (click)="onSave()"
                 >Speichern</button>
                 <button type="button"
-                        class="btn btn-light col ms-3"
+                        class="btn btn-outline-secondary col ms-3"
                         (click)="onCancel()"
                 >Abbrechen</button>
 

@@ -15,9 +15,12 @@
                 @for(photo of photos(); track photo.id) {
                     <ng-template ngbSlide id="{{photo.guid}}">
                         <div class="picsum-img-wrapper">
-                            <img [src]="photo.urlLarge"
+                            <img [src]="photo.urlMedium"
+                                 srcset="{{photo.urlSmall}} 300w, {{photo.urlMedium}} 600w, {{photo.urlLarge}} 1200w, {{photo.urlXLarge}} 2000w"
+                                 sizes="min(100vw, 100vh)"
                                  alt="{{$index}}: {{photo.fileName}}"
                                  class="img"
+                                 loading="lazy"
                             />
                         </div>
                         <div class="heart-container">
