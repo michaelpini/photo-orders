@@ -16,6 +16,7 @@ export class PhotoItemComponent {
     }
     photo = input<PhotoExtended>();
     index = input<number>();
+    tabCount = input<number>(3);
 
     selected = output<PhotoExtended>();
     liked = output<PhotoExtended>();

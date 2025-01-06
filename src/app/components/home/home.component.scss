@@ -2,25 +2,28 @@
     letter-spacing: 1vw;
 }
 .feature-icon {
-    width: 4rem;
-    height: 4rem;
-    border-radius: .75rem;
+    width: 100%;
+    border-radius: 1rem;
     font-size: 2rem;
-    align-items: center;
-    justify-content: center;
-    display: inline-flex;
-    background: linear-gradient(#e20000, #b40000);
+    display: grid;
+    grid-template-columns: auto 1fr;
     transition: all 0.1s ease;
+    align-items: center;
+    background: linear-gradient(12deg, #f88c8c42, #ff47471a, #ffbbd740);
+    padding: 0;
 
     &:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 }
 .feature-icon-svg {
     display: block;
-    width: 2rem;
-    height: 2rem;
+    width: 4.5rem;
+    height: 4.5rem;
     fill: #eeeeee;
+    background: linear-gradient(#e20000, #b40000);
+    padding: 1rem;
+    border-radius: 1rem;
 }
 
 .icon-small {

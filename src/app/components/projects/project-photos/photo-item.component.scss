@@ -12,7 +12,7 @@
         transform: scale(1.02);
         z-index: 2;
 
-        .img-check, .heart-container, .download-svg, .filename {
+        .img-select, .heart-container, .download-svg, .filename {
             opacity: 1;
         }
     }
@@ -48,7 +48,7 @@
     height: auto;
 }
 
-.img-check {
+.img-select {
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 2rem;
@@ -60,23 +60,12 @@
 
     &:not(:checked) {
          background-color: transparent;
-         border-color: #4892ffb8;
+         border-color: #3787ff;
          border-width: 2px;
      }
 
-    &:hover {
-        outline: 5px #4892ffb8 solid;
-    }
-}
-
-.download-svg {
-    border-radius: 20px;
-    padding: 3px;
-    background: #1976D2;
-    opacity: 0;
-
-    &:hover {
-        outline: 5px #4892ffb8 solid;
+    &:hover, &:focus-within {
+        outline: 5px rgba(72, 146, 255, 0.84) solid;
     }
 }
 
@@ -89,7 +78,7 @@
 
 .heart-container {
     --heart-color: rgb(200, 0, 0);
-    --container-size: 32px;
+    --container-size: 36px;
     position: relative;
     width: var(--container-size);
     height: var(--container-size);
@@ -100,7 +89,7 @@
         opacity: 1;
     }
 
-    &:hover, &:focus {
+    &:hover, &:focus-within {
         background-color: rgba(255, 0, 0, 0.4);
     }
 
@@ -125,8 +114,8 @@
         fill: var(--heart-color);
         position: absolute;
         margin-top: 6%;
-        width: 75%;
-        height: 75%;
+        width: 70%;
+        height: 70%;
     }
 
     .svg-filled {

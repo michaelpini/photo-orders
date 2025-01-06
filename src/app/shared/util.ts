@@ -1,3 +1,5 @@
+import {max} from "rxjs";
+
 export type Primitive = string | number | boolean | Date | null | undefined
 export type ObjFlat = { [key: string]: Primitive };
 export type ObjAny = { [key: string]: any };
@@ -363,4 +365,20 @@ export function transformDateTime(value: string | number | Date | undefined | nu
         '';
     const strSpace = (strDate && strTime) ? formatSpace : '';
     return strDate + strSpace + strTime;
+}
+
+/**
+ * Returns the supplied number, if within the allowed range, otherwise the min or max value
+ * @param {number} number the value to be limited
+ * @param min the minimum allowed value
+ * @param max the maximum allowed value
+ * @example
+ * limit(-20, 0, 100) // 0
+ * limit(9.5, 0, 100) // 9.5
+ * limit(105, 0, 100) // 100
+ */
+export function limit(number: number, min: number, max: number) {
+    let n = Number(number);
+    n = Math.min(max, Math.max(min, n));
+    return n;
 }

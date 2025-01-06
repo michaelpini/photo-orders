@@ -29,7 +29,7 @@ export class ProjectPhotosComponent {
     filter = signal<FilterKey>(null);
     fullScreen = signal<boolean>(false);
     activePhotoGuid = signal<string>('');
-
+    tabCount = signal<number>(3);
 
     filteredPhotos = computed(() => {
         const key = this.filter();
@@ -120,21 +120,27 @@ export class ProjectPhotosComponent {
     onKeyDown(event: KeyboardEvent) {
         switch (event.key) {
             case 'ArrowRight':
+                event.preventDefault();
                 this.focusNextTile(1)
                 break;
             case 'ArrowLeft':
+                event.preventDefault();
                 this.focusNextTile(-1);
                 break;
             case 'ArrowDown':
+                event.preventDefault();
                 this.focusNextTile(3);
                 break;
             case 'ArrowUp':
+                event.preventDefault();
                 this.focusNextTile(-3);
                 break;
             case 'Home':
+                event.preventDefault();
                 this.focusFirstTile();
                 break;
             case 'End':
+                event.preventDefault();
                 this.focusLastTile();
                 break;
             case 'a':
@@ -154,23 +160,24 @@ export class ProjectPhotosComponent {
     onFocus(ev: FocusEvent) {
         const tile: HTMLElement | null = (ev.target as HTMLElement).closest('.tile');
         this.activePhotoGuid.set(tile?.dataset['guid'] || '');
+        tile?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
     }
 
     focusNextTile(step = 1) {
         const current: HTMLElement = document.querySelector('photo-item:focus-within>.tile')!;
-        const nextIndex = current!.tabIndex + step * 4;
+        const nextIndex = current!.tabIndex + step * this.tabCount();
         const nextElement: HTMLElement | null = document.querySelector(`[tabindex="${nextIndex}"]`);
         nextElement?.focus();
     }
 
     focusFirstTile() {
-        const firstPhotoItem: HTMLElement = document.querySelector('photo-item:first-of-type>.tile ')!
-        firstPhotoItem.focus();
+        const firstPhotoItem: HTMLElement | null = document.querySelector('.photo-grid-landscape .photo-item:first-of-type>.tile') || document.querySelector('.photo-grid-portrait .photo-item:first-of-type>.tile')
+        firstPhotoItem?.focus();
     }
 
     focusLastTile() {
-        const lastPhotoItem: HTMLElement = document.querySelector('photo-item:last-of-type>.tile ')!
-        lastPhotoItem.focus();
+        const lastPhotoItem: HTMLElement | null = document.querySelector('.photo-grid-portrait .photo-item:last-of-type>.tile') || document.querySelector('.photo-grid-landscape .photo-item:last-of-type>.tile');
+        lastPhotoItem?.focus();
     }
 
     focusActivePhoto() {
