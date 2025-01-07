@@ -51,23 +51,23 @@
 
         <div class="navbar-expand navbar-nav d-flex flex-row ms-auto">
             @if (store.activeUser()) {
-                <a class="nav-item nav-link mx-1" role="button" routerLink="/account" routerLinkActive="active">
+                <a class="nav-item nav-link mx-1" role="button" aria-label="Kundenkonto" routerLink="/account" routerLinkActive="active">
                     <svg class="icon" ngbTooltip="Kundenkonto"><use href="#account"></use></svg>
                 </a>
             } @else {
-                <button class="nav-item nav-link mx-1" role="button" (click)="onSignIn()">
+                <button class="nav-item nav-link mx-1" role="button" aria-label="Login" (click)="onSignIn()">
                     <svg class="icon" ngbTooltip="Login"><use href="#login"></use></svg>
                 </button>
             }
 
             <div ngbDropdown class="d-inline-block">
-                <button type="button" ngbDropdownToggle class="btn nav-item nav-link mx-1">
+                <button type="button" aria-label="Theme Auswahl" ngbDropdownToggle class="btn nav-item nav-link mx-1">
                     <svg class="icon"><use [attr.href]="'#' + theme()"></use></svg>
                 </button>
                 <div ngbDropdownMenu class="dropdown-menu-end position-absolute">
-                    <button ngbDropdownItem (click)="setTheme('light')"><svg class="icon icon-small"><use href="#light"></use></svg>Heller Modus</button>
-                    <button ngbDropdownItem (click)="setTheme('dark')"><svg class="icon icon-small"><use href="#dark"></use></svg>Dunkler Modus</button>
-                    <button ngbDropdownItem (click)="setTheme('auto')"><svg class="icon icon-small"><use href="#auto"></use></svg>Automatisch</button>
+                    <button ngbDropdownItem aria-label="Hell" (click)="setTheme('light')"><svg class="icon icon-small"><use href="#light"></use></svg>Heller Modus</button>
+                    <button ngbDropdownItem aria-label="Dunkel" (click)="setTheme('dark')"><svg class="icon icon-small"><use href="#dark"></use></svg>Dunkler Modus</button>
+                    <button ngbDropdownItem aria-label="Auto" (click)="setTheme('auto')"><svg class="icon icon-small"><use href="#auto"></use></svg>Automatisch</button>
                 </div>
             </div>
 

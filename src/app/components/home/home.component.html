@@ -22,92 +22,98 @@
         </symbol>
     </svg>
 
-    <div class="container px-4 py-4">
-        <div class="pb-2 border-bottom text-center display-2 spaced">PINI STUDIOS</div>
+    <div class="container px-4 pb-4">
+        <div class=" display-2 brand-banner">PINI STUDIOS</div>
+
+        <div class="d-flex justify-content-center">
+            <img src="KevinPini_full.jpg" alt="Kevin Pini Portrait" class="hero"
+                 srcset="KevinPini_300x200.jpg v300, KevinPini_600x400.jpg w600, KevinPini_1000x666.jpg w1000, KevinPini_2000x1333.jpg w2000, KevinPini_full.jpg w6048"
+                 sizes="100vw"
+            >
+        </div>
+
 
         <!------------ Feature cards ------------>
-        @defer() {
-            <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-                <div class="col mb-3">
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="col mb-3">
+                <div class="d-flex align-items-center gap-4 mb-4">
+                    <a href="mailto:michael.roland.pini@outlook.com" class="btn feature-icon">
+                        <svg class="feature-icon-svg"><use xlink:href="#email"></use></svg>
+                        <div class="fs-2">Offerte</div>
+                    </a>
+                </div>
+                <p>Wenn Du eine Offerte für ein Foto Shooting wünschst, kannst du mich unverbindlich per Mail, Whatsapp oder Telefon kontaktieren.</p>
+                <div class="contact-grid">
+                    <svg class="icon-small"><use xlink:href="#emailfilled"></use></svg>
+                    <a href="mailto:michael.roland.pini@outlook.com" class=" text-primary contact-text">michael.roland.pini&#64;outlook.com</a>
+                    <svg class="icon-small"><use xlink:href="#whatsapp"></use></svg>
+                    <a href="tel:+41787732560" class=" text-primary contact-text">+41 78 7732560</a>
+                </div>
+            </div>
+
+
+            <div class="col mb-3">
+                @if (store.authUser()) {
                     <div class="d-flex align-items-center gap-4 mb-4">
-                        <a href="mailto:michael.roland.pini@outlook.com" class="btn feature-icon">
-                            <svg class="feature-icon-svg"><use xlink:href="#email"></use></svg>
-                            <div class="fs-2">Offerte</div>
+                        <a href="/projects" class="btn feature-icon">
+                            <svg class="feature-icon-svg"><use xlink:href="#images"></use></svg>
+                            <div class="fs-2">Projekte</div>
                         </a>
                     </div>
-                    <p>Wenn Du eine Offerte für ein Foto Shooting wünschst, kannst du mich unverbindlich per Mail, Whatsapp oder Telefon kontaktieren.</p>
-                    <div class="contact-grid">
-                        <svg class="icon-small"><use xlink:href="#emailfilled"></use></svg>
-                        <a href="mailto:michael.roland.pini@outlook.com" class=" text-primary contact-text">michael.roland.pini&#64;outlook.com</a>
-                        <svg class="icon-small"><use xlink:href="#whatsapp"></use></svg>
-                        <a href="tel:+41787732560" class=" text-primary contact-text">+41 78 7732560</a>
+                    <p>Hier kannst du deine Projekte sehen und deine Fotos herunterladen.</p>
+                }
+                @else {
+                    <div class="d-flex align-items-center gap-4 mb-4">
+                        <button class="btn feature-icon" (click)="onSignIn()">
+                            <svg class="feature-icon-svg" fill="transparent"><use xlink:href="#images"></use></svg>
+                            <div class="fs-2">Login</div>
+                        </button>
                     </div>
-                </div>
-
-
-                <div class="col mb-3">
-                    @if (store.authUser()) {
-                        <div class="d-flex align-items-center gap-4 mb-4">
-                            <a href="/projects" class="btn feature-icon">
-                                <svg class="feature-icon-svg"><use xlink:href="#images"></use></svg>
-                                <div class="fs-2">Projekte</div>
-                            </a>
-                        </div>
-                        <p>Hier kannst du deine Projekte sehen und deine Fotos herunterladen.</p>
-                    }
-                    @else {
-                        <div class="d-flex align-items-center gap-4 mb-4">
-                            <button class="btn feature-icon" (click)="onSignIn()">
-                                <svg class="feature-icon-svg" fill="transparent"><use xlink:href="#images"></use></svg>
-                                <div class="fs-2">Login</div>
-                            </button>
-                        </div>
-                        <p>Um deine Projekte zu sehen und deine Fotos herunterzuladen,
-                            logge dich bitte zuerst mit deiner E-Mail Adresse und Passwort ein.
-                        </p>
-                    }
-                </div>
-
-
-                <div class="col mb-3">
-                    @if (store.authUser()) {
-                        <div class="d-flex align-items-center gap-4 mb-4">
-                            <a href="/account" class="btn feature-icon">
-                                <svg class="feature-icon-svg"><use xlink:href="#people-circle"></use></svg>
-                                <div class="fs-2">Konto</div>
-                            </a>
-                        </div>
-                        <p>Hier kannst du deinen Account verwalten (Name, Adresse, Telefon, etc).</p>
-                    }
-                    @else {
-                        <div class="d-flex align-items-center gap-4 mb-4">
-                            <a href="mailto:michael.roland.pini@outlook.com" class="btn feature-icon">
-                                <svg class="feature-icon-svg"><use xlink:href="#people-circle"></use></svg>
-                                <div class="fs-2">Kein Konto?</div>
-                            </a>
-                        </div>
-                        <p>Bist du bereits Kunde, hast aber noch kein Konto? <br>
-                            Melde dich bei mir, ich werde dir einen Link zur Registrierung per E-Mail schicken.
-                        </p>
-                    }
-                </div>
-
+                    <p>Um deine Projekte zu sehen und deine Fotos herunterzuladen,
+                        logge dich bitte zuerst mit deiner E-Mail Adresse und Passwort ein.
+                    </p>
+                }
             </div>
 
-            <!------------ Photos ------------>
-            <div class="portfolio">
-                <picture-item fullName="casual_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Casual Portraits"></picture-item>
-                <picture-item fullName="cv_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="CV Portraits"></picture-item>
-                <picture-item fullName="corporate_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Portraits"></picture-item>
-                <picture-item fullName="hochzeiten.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Hochzeiten"></picture-item>
-                <picture-item fullName="konzerte.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Konzerte"></picture-item>
-                <picture-item fullName="corporate_events.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Events"></picture-item>
-                <picture-item fullName="immobilien.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Immobilien"></picture-item>
-                <picture-item fullName="baustellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Baustellen"></picture-item>
-                <picture-item fullName="tankstellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Tankstellen"></picture-item>
+
+            <div class="col mb-3">
+                @if (store.authUser()) {
+                    <div class="d-flex align-items-center gap-4 mb-4">
+                        <a href="/account" class="btn feature-icon">
+                            <svg class="feature-icon-svg"><use xlink:href="#people-circle"></use></svg>
+                            <div class="fs-2">Konto</div>
+                        </a>
+                    </div>
+                    <p>Hier kannst du deinen Account verwalten (Name, Adresse, Telefon, etc).</p>
+                }
+                @else {
+                    <div class="d-flex align-items-center gap-4 mb-4">
+                        <a href="mailto:michael.roland.pini@outlook.com" class="btn feature-icon">
+                            <svg class="feature-icon-svg"><use xlink:href="#people-circle"></use></svg>
+                            <div class="fs-2">Kein Konto?</div>
+                        </a>
+                    </div>
+                    <p>Bist du bereits Kunde, hast aber noch kein Konto? <br>
+                        Melde dich bei mir, ich werde dir einen Link zur Registrierung per E-Mail schicken.
+                    </p>
+                }
             </div>
 
-        }
+        </div>
+
+        <!------------ Photos ------------>
+        <h3 class="display-5 text-center mb-3">Portfolio</h3>
+        <div class="portfolio">
+            <picture-item fullName="casual_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Casual Portraits"></picture-item>
+            <picture-item fullName="cv_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="CV Portraits"></picture-item>
+            <picture-item fullName="corporate_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Portraits"></picture-item>
+            <picture-item fullName="hochzeiten.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Hochzeiten"></picture-item>
+            <picture-item fullName="konzerte.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Konzerte"></picture-item>
+            <picture-item fullName="corporate_events.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Events"></picture-item>
+            <picture-item fullName="immobilien.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Immobilien"></picture-item>
+            <picture-item fullName="baustellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Baustellen"></picture-item>
+            <picture-item fullName="tankstellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Tankstellen"></picture-item>
+        </div>
 
     </div>
 

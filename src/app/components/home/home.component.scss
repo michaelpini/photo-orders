@@ -1,6 +1,19 @@
-.spaced {
+.brand-banner {
     letter-spacing: 1vw;
+    background: linear-gradient(90deg, transparent, #b8b8b824, transparent);
+    text-align: center;
+    padding: 1rem;
+    border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
+
+.hero {
+    width: 100%;
+    max-height: calc(100vh - 16rem);
+    margin: 1rem;
+    object-fit: contain;
+}
+
 .feature-icon {
     width: 100%;
     border-radius: 1rem;
@@ -14,6 +27,10 @@
 
     &:hover {
         transform: scale(1.05);
+    }
+
+    &:focus-within {
+        outline: 3px solid red;
     }
 }
 .feature-icon-svg {

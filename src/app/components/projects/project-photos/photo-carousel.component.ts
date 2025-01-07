@@ -27,10 +27,11 @@ export class PhotoCarouselComponent implements OnDestroy{
         return `min(${percent}vw, ${percent}vh)`
     });
 
+    doubleTap = false;
     pos = {
         storedOffset: {x: 0, y: 0},             // offset after last drag operation
         currentOffset: {x: 0, y: 0},            // current offset while dragging
-        dragStart: {screenX: 0, screenY: 0},    // position at drag start
+        dragStart: {x: 0, y: 0},                // position at drag start
         limitLeft: 0,                           // limit for pos.left in px
         limitTop: 0,                            // limit for pos.top in px
     }
@@ -43,13 +44,95 @@ export class PhotoCarouselComponent implements OnDestroy{
                 this.carousel.focus();
             })
         })
-
     }
 
     ngOnDestroy(): void {
         document.body.classList.remove('overflow-hidden');
     }
 
+    onClose() {
+        this.close.emit(this.currentGuid());
+    }
+
+    onLikedChanged(ev: Event, photo: PhotoExtended) {
+        let liked = (ev.target as HTMLInputElement).checked;
+        this.liked.emit({...photo, liked});
+    }
+
+    onSlide(ev: NgbSlideEvent) {
+        this.currentGuid.set(ev.current);
+        this.resetZoom();
+    }
+
+    zoom(zoom: number = 1) {
+        this.pos.storedOffset.x = (1 - zoom) * window.innerWidth / 2;
+        this.pos.storedOffset.y = (1 - zoom) * window.innerHeight / 2;
+        this.zoomLevel.set(zoom);
+        this.imgStyle.set({
+            width: zoom * 100 +'%',
+            height: zoom * 100 +'%',
+            left: this.pos.storedOffset.x + 'px',
+            top: this.pos.storedOffset.y + 'px',
+        });
+    }
+
+    resetZoom() {
+        this.zoomLevel.set(1);
+        this.imgStyle.set({height: '100%', width: '100%', left: '0', top: '0'});
+    }
+
+    dragStart(x: number, y: number) {
+        this.dragging.set(true);
+        this.pos.dragStart = {x, y};
+        this.pos.limitLeft = (1 - this.zoomLevel()) * window.innerWidth;
+        this.pos.limitTop = (1 - this.zoomLevel()) * window.innerHeight;
+    }
+
+    drag(x: number, y: number) {
+        if (this.zoomLevel() === 1) {
+            if (x) {
+                this.moveX(x);
+            }
+        } else {
+            if (x || y) {
+                this.moveXY(x, y);
+            }
+        }
+    }
+
+    dragEnd() {
+        if (this.zoomLevel() === 1) {
+            this.resetZoom();
+            if (this.scheduleNextPrev() === 'next') this.carousel.next();
+            if (this.scheduleNextPrev() === 'prev') this.carousel.prev();
+            this.scheduleNextPrev.set('');
+        } else {
+            this.pos.storedOffset.x = this.pos.currentOffset.x;
+            this.pos.storedOffset.y = this.pos.currentOffset.y;
+        }
+        this.dragging.set(false);
+    }
+
+    moveX(screenX: number) {
+        const deadBandPixels = window.innerWidth * 0.1;
+        const dx = screenX - this.pos.dragStart.x;
+        const nextPrev = (dx < -deadBandPixels) ? 'next' : (dx > deadBandPixels) ? 'prev' : '';
+        this.scheduleNextPrev.set(nextPrev);
+        const left = `${dx}px`;
+        this.imgStyle.update(x => ({...x, left}));
+    }
+
+    moveXY(x: number, y: number) {
+        const dx = x - this.pos.dragStart.x;
+        const dy = y - this.pos.dragStart.y;
+        this.pos.currentOffset.x = limit(this.pos.storedOffset.x + dx, this.pos.limitLeft, 0);
+        this.pos.currentOffset.y = limit(this.pos.storedOffset.y + dy, this.pos.limitTop, 0);
+        let left = this.pos.currentOffset.x + 'px';
+        let top = this.pos.currentOffset.y + 'px';
+        this.imgStyle.update(x => ({...x, left, top}));
+    }
+
+    // Keyboard events
     onKeyUp(event: KeyboardEvent) {
         switch (event.key) {
             case 'Escape':
@@ -70,109 +153,54 @@ export class PhotoCarouselComponent implements OnDestroy{
         }
     }
 
-    onClose() {
-        this.close.emit(this.currentGuid());
-    }
-
-    onLikedChanged(ev: Event, photo: PhotoExtended) {
-        let liked = (ev.target as HTMLInputElement).checked;
-        this.liked.emit({...photo, liked});
-    }
-
-    onSlide(ev: NgbSlideEvent) {
-        this.currentGuid.set(ev.current);
-        this.resetZoom();
-    }
-
-    onDblClick() {
+    // Mouse events
+    onDblClick(ev?: MouseEvent) {
         const newZoom = this.zoomLevel() === 1 ? 2 : 1;
         this.zoom(newZoom);
     }
 
-    zoom(zoom: number = 1) {
-        this.pos.storedOffset.x = (1 - zoom) * window.innerWidth / 2;
-        this.pos.storedOffset.y = (1 - zoom) * window.innerHeight / 2;
-        this.zoomLevel.set(zoom);
-        this.imgStyle.set({
-            width: zoom * 100 +'%',
-            height: zoom * 100 +'%',
-            left: this.pos.storedOffset.x + 'px',
-            top: this.pos.storedOffset.y + 'px',
-        });
-    }
-
-    resetZoom() {
-        this.zoomLevel.set(1);
-        this.imgStyle.set({height: '100%', width: '100%', left: '0', top: '0'});
-    }
-
-    onDragStart(ev: MouseEvent) {
-        this.dragging.set(true);
-        const {screenX, screenY} = ev;
-        this.pos.dragStart = {screenX, screenY};
-        this.pos.limitLeft = (1 - this.zoomLevel()) * window.innerWidth;
-        this.pos.limitTop = (1 - this.zoomLevel()) * window.innerHeight;
-    }
-
-    onDrag(ev: MouseEvent) {
-        if (this.zoomLevel() === 1) {
-            if (ev.screenX) {
-                this.moveX(ev.screenX);
-            }
-        } else {
-            if (ev.screenX || ev.screenY) {
-                this.moveXY(ev.screenX, ev.screenY);
-            }
-        }
-    }
-
-    onDragEnd() {
-        if (this.zoomLevel() === 1) {
-            this.resetZoom();
-            if (this.scheduleNextPrev() === 'next') this.carousel.next();
-            if (this.scheduleNextPrev() === 'prev') this.carousel.prev();
-            this.scheduleNextPrev.set('');
-        } else {
-            this.pos.storedOffset.x = this.pos.currentOffset.x;
-            this.pos.storedOffset.y = this.pos.currentOffset.y;
-        }
-        this.dragging.set(false);
-    }
-
-    moveX(screenX: number) {
-        const deadBandPixels = window.innerWidth * 0.1;
-        const dx = screenX - this.pos.dragStart.screenX;
-        const nextPrev = (dx < -deadBandPixels) ? 'next' : (dx > deadBandPixels) ? 'prev' : '';
-        this.scheduleNextPrev.set(nextPrev);
-        const left = `${dx}px`;
-        this.imgStyle.update(x => ({...x, left}));
-    }
-
-    moveXY(screenX: number, screenY: number) {
-        const dx = screenX - this.pos.dragStart.screenX;
-        const dy = screenY - this.pos.dragStart.screenY;
-        this.pos.currentOffset.x = limit(this.pos.storedOffset.x + dx, this.pos.limitLeft, 0);
-        this.pos.currentOffset.y = limit(this.pos.storedOffset.y + dy, this.pos.limitTop, 0);
-        let left = this.pos.currentOffset.x + 'px';
-        let top = this.pos.currentOffset.y + 'px';
-        this.imgStyle.update(x => ({...x, left, top}));
-    }
-
-    mouseDown(ev: MouseEvent) {
+    onMouseDown(ev: MouseEvent) {
         ev.preventDefault();
-        this.onDragStart(ev);
+        this.dragStart(ev.screenX, ev.screenY);
     }
 
-    mouseUp() {
-        if (this.dragging()) this.onDragEnd();
+    onMouseUp() {
+        if (this.dragging()) this.dragEnd();
     }
 
-    mouseMove(ev: MouseEvent) {
-        if (this.dragging()) this.onDrag(ev);
+    onMouseMove(ev: MouseEvent) {
+        if (this.dragging()) this.drag(ev.screenX, ev.screenY);
     }
 
     onMouseLeave() {
-        if (this.dragging()) this.onDragEnd();
-
+        if (this.dragging()) this.dragEnd();
     }
+
+    // Touch events
+    onTouchStart(ev: TouchEvent) {
+        this.dragStart(ev.touches[0].screenX, ev.touches[0].screenY);
+        // if (!this.doubleTap) {
+        //     this.doubleTap = true;
+        //     setTimeout( () => {
+        //         this.doubleTap = false;
+        //     }, 300);
+        // } else {
+        //     this.onDblClick();
+        // }
+    }
+
+    onTouchMove(ev: TouchEvent) {
+        if (this.dragging()) this.drag(ev.touches[0].screenX, ev.touches[0].screenY);
+    }
+
+    onTouchEnd() {
+        if (this.dragging()) this.dragEnd();
+    }
+
+    onContext(ev: MouseEvent) {
+        ev.preventDefault();
+        const newZoom = this.zoomLevel() === 1 ? 2 : 1;
+        this.zoom(newZoom);
+    }
+
 }

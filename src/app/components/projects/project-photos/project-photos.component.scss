@@ -11,7 +11,7 @@
 
 .photo-grid-portrait {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 .photo-item {
@@ -22,11 +22,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(100vw - 1.5rem);
+    width: calc(100vw);
     background: var(--bs-body-bg);
     padding: 1rem;
 }
-
 
 @container photo-container (width > 600px) {
     .photo-grid-landscape {
@@ -34,7 +33,7 @@
     }
 
     .photo-grid-portrait {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }
 

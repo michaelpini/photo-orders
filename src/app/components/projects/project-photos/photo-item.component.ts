@@ -23,6 +23,8 @@ export class PhotoItemComponent {
     viewInCarousel = output<PhotoExtended>();
     download = output<PhotoExtended>();
 
+    doubleTap = false;
+
     width = signal(300);
 
     height = computed(() => {
@@ -47,10 +49,14 @@ export class PhotoItemComponent {
         this.viewInCarousel.emit(this.photo()!);
     }
 
-    onContextMenu(ev: MouseEvent | PointerEvent) {
-        if (ev instanceof PointerEvent && ev.pointerType === 'touch') {
-            ev.preventDefault();
-            this.viewInCarousel.emit(this.photo()!);
+    onTouchStart(ev: TouchEvent) {
+        if (!this.doubleTap) {
+            this.doubleTap = true;
+            setTimeout( () => {
+                this.doubleTap = false;
+            }, 300);
+        } else {
+            this.onDblClick();
         }
     }
 
