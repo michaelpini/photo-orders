@@ -1,17 +1,22 @@
 
-.photo-container {
-    container-name: photo-container;
+.photo-gallery {
+    container-name: photo-gallery;
     container-type: inline-size;
 }
 
-.photo-grid-landscape {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.fullscreen .gallery-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding: 0.5rem;
+    background-color: var(--bs-body-bg);
+    margin: 0;
 }
 
-.photo-grid-portrait {
+.photo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    width: 100%
 }
 
 .photo-item {
@@ -22,17 +27,12 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(100vw);
+    width: 100%;
     background: var(--bs-body-bg);
-    padding: 1rem;
 }
 
-@container photo-container (width > 600px) {
-    .photo-grid-landscape {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .photo-grid-portrait {
+@container photo-gallery (width > 600px) {
+    .photo-grid {
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
