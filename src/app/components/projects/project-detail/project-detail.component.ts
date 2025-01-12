@@ -133,8 +133,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.firebaseService.downloadFile(path);
     }
 
-
-
     ngOnInit(): void {
         this.isRendered.emit(true);
     }

@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.0.5",
+    "@angular/cdk": "^19.0.5",
     "@angular/common": "^19.0.5",
     "@angular/compiler": "^19.0.5",
     "@angular/core": "^19.0.5",
@@ -22,6 +23,7 @@
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@ngrx/signals": "^19.0.0",
     "@popperjs/core": "^2.11.8",
+    "@swimlane/ngx-charts": "^21.1.2",
     "bootstrap": "^5.3.3",
     "docxtemplater": "^3.55.8",
     "firebase": "^11.1.0",

@@ -15,14 +15,10 @@ export class SpinnerComponent {
      */
     constructor() {
         effect(() => {
-            setTimeout(() => {
-                const dialog: HTMLDialogElement = this.dialogRef.nativeElement;
-                if (this.open()) {
-                    dialog.showModal();
-                } else {
-                    dialog.close();
-                }
-            })
+            const dialog: HTMLDialogElement = this.dialogRef?.nativeElement;
+            const open = this.open();
+            if (!dialog) return;
+            open ? dialog.showModal() : dialog.close();
         });
     }
 

@@ -1,0 +1,41 @@
+<div class="main">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <label for="range" class="form-label">Zeitraum</label>
+        </div>
+        <div class="col-auto">
+            <select id="range" class="form-select col-auto" (change)="onTimeRangeChange($event)">
+                <option value="currentYear">Laufendes Jahr</option>
+                <option value="lastYear">Letztes Jahr</option>
+                <option value="last12Months">Letzte 12 Monate</option>
+                <option value="all">Alle</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-5">
+            <ngx-charts-bar-vertical
+                    [results]="statusData()"
+                    scheme="ocean"
+                    [yScaleMax]="5"
+                    [view]="view()"
+                    [gradient]="false"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [legend]="true"
+                    [showXAxisLabel]="true"
+                    [showYAxisLabel]="true"
+                    xAxisLabel="Status"
+                    yAxisLabel="Anzahl Projekte"
+                    [animations]="false"
+                    style="fill: white"
+                    (select)="onSelect($event)">
+            </ngx-charts-bar-vertical>
+
+        </div>
+    </div>
+
+</div>
+

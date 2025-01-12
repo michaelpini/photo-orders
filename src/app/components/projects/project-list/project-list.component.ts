@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ColDef, TableComponent, TableState} from "../../../shared/table/table.component";
 import {patchState} from "@ngrx/signals";
 import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
@@ -22,13 +22,21 @@ export class ProjectListComponent implements OnInit, OnDestroy{
     colDefs: ColDef[] = [
         {field: 'projectName', headerName: 'Projektname', width: '25%'},
         {field: 'eventDate', headerName: 'Datum', format: 'date', width: '25%'},
-        // {field: 'eventLocation', headerName: 'Ort', disableSort: true, width: '25%'},
-        {field: 'quote.totalCHF', headerName: 'Offerte CHF', width: '25%', format: 'chf'},
+        {field: '_companyOrCustomer', headerName: 'Kunde', width: 'auto'},
+        // {field: 'quote.totalCHF', headerName: 'Offerte CHF', width: '25%', format: 'chf'},
         {field: 'status', headerName: 'Status', format: val => this.getStatus(val as ProjectStatus), excludeFromQuickFilter: true},
         {field: 'id', headerName: 'Id', hidden: true},
     ]
 
     constructor(private router: Router) {}
+
+    data = computed(() => {
+        return this.store.projectsEntities().map(project => {
+            const user = this.store.getUser(project.userId);
+            const _companyOrCustomer = user?.isCompany ? user?.companyName || 'Company?' : `${user?.firstName || ''} ${user?.lastName || ''}`;
+            return {...project, _companyOrCustomer};
+        })
+    })
 
     checkUrlAndSetProjectId(url: string) {
         const segments = url.split('/');

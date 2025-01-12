@@ -24,6 +24,9 @@ export const routes: Routes = [
     {path: 'signup/:userId',
         loadComponent: () => import('../components/account/account-signup.component').then(m => m.AccountSignupComponent),
     },
+    {path: 'dashboard', canActivate: [allowIfAdminGuard],
+        loadComponent: () => import('../components/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    },
     {path: '**', redirectTo: '404', pathMatch: 'full'},
 ];
 

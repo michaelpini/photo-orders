@@ -7,7 +7,7 @@ export enum ProjectStatus {
     'paid' = 21,
     'cancelled' = 30
 }
-export const statusMapDe = {
+export const statusMapDe: {[key: number]: string} = {
     0: 'Entwurf',
     1: 'Offerte erstellt',
     10: 'Auftrag erhalten',

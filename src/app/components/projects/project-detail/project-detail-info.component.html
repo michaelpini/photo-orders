@@ -27,7 +27,7 @@
                        ngModel
                >
                    @for (user of store.getAllUsers(); track user.id) {
-                       <option value="{{user.id}}">{{ user.firstName }} {{user.lastName}}</option>
+                       <option value="{{user.id}}">{{user.firstName + ' ' + user.lastName}}{{ user.isCompany ? ' (' + user.companyName + ')' : ''}}</option>
                    }
                </select>
            </div>

@@ -28,7 +28,6 @@ export const storage = getStorage(firebaseApp);
 bootstrapApplication(AppComponent, appConfig)
     .then(() => {
         registerLocaleData(deCH.default);
-
     })
     .catch((err) => console.error(err));
 

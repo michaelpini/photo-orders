@@ -200,6 +200,25 @@ export const PhotoOrdersStore = signalStore(
             return store.projectsEntities();
         },
 
+        getNewCustomerNumber(highestPlus1 = false): string {
+            const numbersArray = store.usersEntities()
+                .map(user => Number(user.customerNumber) || 0)
+                .sort();
+            let result = '001';
+            if (highestPlus1) {
+                if (numbersArray.length > 0) {
+                    result = (numbersArray[numbersArray.length - 1] + 1).toString().padStart(3, '0');
+                }
+            } else {
+                for (let i = 1; i <= numbersArray.length + 1; i++) {
+                    if (!numbersArray.includes(i)) {
+                        return i.toString().padStart(3, '0');
+                    }
+                }
+            }
+            return result;
+        },
+
         async loadProjects(authUser: AuthUser | null | undefined): Promise<Project[]>{
             patchState(store, setBusy());
             let projects: Project[] = [];
@@ -308,8 +327,6 @@ export const PhotoOrdersStore = signalStore(
                 throw error;
             }
         },
-
-
 
     })),
 

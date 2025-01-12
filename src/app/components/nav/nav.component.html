@@ -46,6 +46,12 @@
                         >Projekte</a>
                     </li>
                 }
+                @if (store.authUser()?.authType === 'admin') {
+                    <li class="nav-item px-2">
+                        <a class="nav-link" role="button" routerLink="/dashboard" routerLinkActive="active"
+                        >Dashboard</a>
+                    </li>
+                }
             </ul>
         </div>
 

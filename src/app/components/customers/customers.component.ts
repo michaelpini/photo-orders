@@ -19,7 +19,11 @@ export class CustomersComponent {
 
     async createUser() {
         try {
-            const template = {firstName: '<NEUER>', lastName:'<KUNDE>'};
+            const template = {
+                firstName: '<NEUER>',
+                lastName:'<KUNDE>',
+                customerNumber: this.store.getNewCustomerNumber(),
+            };
             this.store.setBusy();
             const newUser: User = await this.firebaseService.addUser(template);
             this.store.setUser(newUser);
