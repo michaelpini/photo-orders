@@ -1,8 +1,9 @@
-import {Component, computed, effect, inject, input, output, signal, ViewChild} from '@angular/core';
+import {Component, effect, inject, input, output, signal, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {ProjectInvoice, ProjectQuote} from "../project.model";
 import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
+import {ModalService} from "../../../modals/modal.service";
 
 @Component({
     selector: 'project-detail-cost',
@@ -25,7 +26,7 @@ export class ProjectDetailCostComponent {
     attach = output<'quote' | 'invoice'>();
     downloadPDF = output<'quote' | 'invoice'>();
 
-    constructor() {
+    constructor(private modalService: ModalService) {
         effect(async () => {
             if (this.dataInput()) {
                 setTimeout(() => this.setFormData(this.dataInput()));
@@ -47,10 +48,6 @@ export class ProjectDetailCostComponent {
         const photoShootingHours = data.photoShootingHours || 0;
         const postProductionHours = data.postProductionHours || 0;
         return preparationHours + travelHours + photoShootingHours + postProductionHours;
-    }
-
-    getCost(hours: number, rate: number) {
-        return
     }
 
     ngOnInit(): void {
@@ -75,7 +72,11 @@ export class ProjectDetailCostComponent {
         this.docx.emit(this.quoteOrInvoice());
     }
 
-    onAttachPDF() {
+    async onAttachPDF() {
+        if (this.store.isDirty()) {
+            await this.modalService.info('Bitte Änderungen zuerst speichern.','Bitte Speichern')
+            return;
+        }
         this.attach.emit(this.quoteOrInvoice());
     }
 

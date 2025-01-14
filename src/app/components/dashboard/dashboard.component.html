@@ -1,41 +1,102 @@
 <div class="main">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="range" class="form-label">Zeitraum</label>
+    <form #form="ngForm">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="timeRangeSelection" class="form-label">Zeitraum</label>
+            </div>
+            <div class="col-auto">
+                <select id="timeRangeSelection"
+                        name="timeRangeSelection"
+                        class="form-select col-auto"
+                        [(ngModel)]="timeRangeSelection"
+                >
+                    <option value="currentYear">Laufendes Jahr</option>
+                    <option value="lastYear">Letztes Jahr</option>
+                    <option value="currentAndLastYear">Laufendes und letztes Jahr</option>
+                    <option value="all">Alle</option>
+                </select>
+            </div>
         </div>
-        <div class="col-auto">
-            <select id="range" class="form-select col-auto" (change)="onTimeRangeChange($event)">
-                <option value="currentYear">Laufendes Jahr</option>
-                <option value="lastYear">Letztes Jahr</option>
-                <option value="last12Months">Letzte 12 Monate</option>
-                <option value="all">Alle</option>
-            </select>
+    </form>
+
+
+    <div class="row m-3">
+        <div class="col-xl-6 mb-5">
+            <div class="row">
+                <div class="col display-6 text-center my-3">
+                    Projekte nach Status
+                </div>
+            </div>
+            <div class="row">
+                <div class="col height-m">
+                    <ngx-charts-bar-vertical
+                        scheme="ocean"
+                        class="fill"
+                        [results]="statusData()"
+                        [yScaleMax]="5"
+                        [animations]="false"
+                        [gradient]="true"
+                        [xAxis]="true"
+                        [yAxis]="false"
+                        [wrapTicks]="true"
+                        [showDataLabel]="true"
+                        [showXAxisLabel]="false"
+                        [showYAxisLabel]="false"
+                        [maxXAxisTickLength]="9"
+                        [rotateXAxisTicks]="true"
+                        [showGridLines]="false"
+                        [yAxisTickFormatting]="roundToInteger"
+                        (select)="onSelect($event)"
+
+                >
+                </ngx-charts-bar-vertical>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 mb-5 separator">
+            <div class="row">
+                <div class="col display-6 text-center my-3">
+                    Einnahmen
+                </div>
+            </div>
+            <div class="row">
+                <div class="col height-m-l">
+                    <ngx-charts-advanced-pie-chart
+                            scheme="ocean"
+                            class="fill"
+                            [animations]="true"
+                            [valueFormatting]="formatCHF"
+                            [percentageFormatting]="formatPercent"
+                            [results]="financialData()"
+                            (select)="onSelect($event)"
+                    >
+                    </ngx-charts-advanced-pie-chart>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="row align-items-center justify-content-center">
+        <div class="col-xl-10 position-relative">
+            <div class="col display-6 text-center my-3">
+                {{ tableHeading() }}
+            </div>
+            <button type="button"
+                    class="btn btn-secondary position-absolute w-auto right-1"
+                    (click)="onShowAll()"
+                    [hidden]="tableHeading() === 'Alle Projekte'"
+            >Alle</button>
+        </div>
 
+    </div>
     <div class="row">
-        <div class="col-sm-5">
-            <ngx-charts-bar-vertical
-                    [results]="statusData()"
-                    scheme="ocean"
-                    [yScaleMax]="5"
-                    [view]="view()"
-                    [gradient]="false"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [legend]="true"
-                    [showXAxisLabel]="true"
-                    [showYAxisLabel]="true"
-                    xAxisLabel="Status"
-                    yAxisLabel="Anzahl Projekte"
-                    [animations]="false"
-                    style="fill: white"
-                    (select)="onSelect($event)">
-            </ngx-charts-bar-vertical>
-
+        <div class="col-xl-10 mx-auto">
+            <app-table
+                    [rowData]="tableData()"
+                    [colDefs]="colDefs()"
+                    (selected)="onSelectProject($event)"
+            ></app-table>
         </div>
     </div>
-
 </div>
 

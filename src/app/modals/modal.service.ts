@@ -76,6 +76,16 @@ export class ModalService {
         return this.confirm(config);
     }
 
+    info(message: string, title = 'Info') {
+        const config: ModalConfirmConfig = {
+            title,
+            message,
+            btnOkText: 'Schliessen',
+            btnCancelText: '',
+        }
+        return this.confirm(config);
+    }
+
     // Auth
     signIn(): Promise<void> {
         const modalRef = this.ngbModal.open(SignInComponent);

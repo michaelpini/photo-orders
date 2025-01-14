@@ -8,6 +8,7 @@
 
 // ************* Modify existing bootstrap colors *************
 $body-bg: #f7f7f7;
+$body-bg-dark: #151515;
 $cs-light: #ebebeb;
 $cs-dark: #5d5d5d;
 // ************************************************************
@@ -104,7 +105,8 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
 [data-bs-theme="dark"] {
     .form-control, .form-control:focus, .form-select {
-        background-color: #383838
+        //background-color: #383838;
+        background-color: #212121;
     }
 }
 

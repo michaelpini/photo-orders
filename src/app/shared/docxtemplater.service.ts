@@ -111,17 +111,17 @@ export class DocxTemplaterService {
         data.editingOptions = details.editingOptions || '';
         data.deadline = transformDateTime(details.deadline);
         data.remarks = details.remarks || '';
-        data.prepH = cost.preparationHours?.toPrecision(1) || '';
+        data.prepH = cost.preparationHours?.toString() || '';
         data.prepCHF = __calcCost(cost.preparationHours);
-        data.travelH = cost.travelHours?.toPrecision(1) || '';
+        data.travelH = cost.travelHours?.toString() || '';
         data.travelCHF = __calcCost(cost.travelHours);
-        data.shootingH = cost.photoShootingHours?.toPrecision(1) || '';
+        data.shootingH = cost.photoShootingHours?.toString() || '';
         data.shootingCHF = __calcCost(cost.photoShootingHours);
-        data.postH = cost.postProductionHours?.toPrecision(1) || '';
+        data.postH = cost.postProductionHours?.toString() || '';
         data.postCHF = __calcCost(cost.postProductionHours);
-        data.totalH = cost.totalHours?.toPrecision(1) || '';
+        data.totalH = cost.totalHours?.toString() || '';
         data.totalCHF = __calcCost(cost.totalHours);
-        data.remarksCost = cost.remarks;
+        data.remarksCost = cost.remarks || '';
         return data;
 
         function __calcCost(hours?: number) {

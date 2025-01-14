@@ -3,6 +3,7 @@ export enum ProjectStatus {
     'offer submitted' = 1,
     'po received' = 10,
     'photo selection' = 11,
+    'post processing' = 12,
     'billing' = 20,
     'paid' = 21,
     'cancelled' = 30
@@ -11,8 +12,9 @@ export const statusMapDe: {[key: number]: string} = {
     0: 'Entwurf',
     1: 'Offerte erstellt',
     10: 'Auftrag erhalten',
-    11: 'Photo Auswahl',
-    20: 'Rechnung verschickt',
+    11: 'Foto Auswahl',
+    12: 'Foto Bearbeitung',
+    20: 'Rechnung gestellt',
     21: 'Bezahlt',
     30: 'Storniert'
 }

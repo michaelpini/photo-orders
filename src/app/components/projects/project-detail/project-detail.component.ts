@@ -116,10 +116,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 const upload = this.firebaseService.uploadFile(file, path, metadata);
                 upload.uploadStatus.subscribe(uploadState => {
                     if (uploadState.state === 'success') {
-                        const data: Project = {id: this.id()!};
-                        if (type === 'quote') data['quote'] = {pdf: file.name};
-                        if (type === 'invoice') data['invoice'] = {pdf: file.name};
+                        const data: { id: string, [key: string]: any } = {id: this.id()!};
+                        if (type === 'quote') data['quote.pdf'] = file.name;
+                        if (type === 'invoice') data['invoice.pdf'] = file.name;
                         this.store.updateProject(data);
+                        this.dataLoaded.update(x => {
+                            if (!x) return null;
+                            let data = {...x};
+                            if (type === 'quote') data.quote = {...data.quote, pdf: file.name};
+                            if (type === 'invoice') data.invoice = {...data.invoice, pdf: file.name};
+                            return data;
+                        })
                     }
                 })
             };

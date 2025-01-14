@@ -20,14 +20,20 @@
     </div>
 </div>
 
-<div class="modal-footer">
-    <button type="button"
-            class="btn"
-            [class]="config().btnClass"
-            (click)="modal.close('ok')"
-    >{{ config().btnOkText }}</button>
-    <button type="button"
-            class="btn btn-outline-secondary"
-            (click)="modal.dismiss('cancel')"
-    >{{ config().btnCancelText }}</button>
-</div>
+@if (config().btnOkText || config().btnCancelText) {
+    <div class="modal-footer">
+        @if (config().btnOkText) {
+            <button type="button"
+                    class="btn"
+                    [class]="config().btnClass"
+                    (click)="modal.close('ok')"
+            >{{ config().btnOkText }}</button>
+        }
+        @if (config().btnCancelText) {
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="modal.dismiss('cancel')"
+            >{{ config().btnCancelText }}</button>
+        }
+    </div>
+}

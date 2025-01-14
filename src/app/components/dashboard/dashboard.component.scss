@@ -1,1 +1,54 @@
+.fill {
+    fill: var(--bs-body-color);
+}
 
+.height-m, .height-m-l {
+    height: clamp(10rem, 30vh, 90vh);
+}
+
+.right-1 {
+    right: 1rem;
+}
+
+.separator {
+    border-top: 1px solid silver;
+}
+
+.textDataLabel {
+    font-size: 1.5rem !important;
+    transform: translateY(5px);
+    text-anchor: middle;
+    text-shadow: 1px 1px 1px var(--bs-body-bg);
+}
+
+.advanced-pie-legend {
+    height: 100%;
+
+    .legend-items-container .legend-items {
+        white-space: nowrap;
+        overflow: auto;
+        display: flex;
+        flex-wrap: wrap;
+
+        .legend-item {
+            margin-bottom: 20px;
+
+            &:hover {
+                color: red;
+            }
+        }
+    }
+}
+
+@media (max-width: 390px) {
+    .height-m-l {
+        height: clamp(10rem, 40vh, 90vh);
+    }
+}
+
+@media (min-width: 1200px) {
+    .separator {
+        border-top: none;
+        border-left: 1px solid silver;
+    }
+}

@@ -246,7 +246,7 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
-        async updateProject(project: Project): Promise<Project> {
+        async updateProject(project: {id: string, [key: string]: any}): Promise<Project> {
             try {
                 patchState(store, setBusy());
                 const updatedProject = await firebaseService.updateProject(project);
