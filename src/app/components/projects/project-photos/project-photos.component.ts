@@ -114,7 +114,6 @@ export class ProjectPhotosComponent {
         const {id: projectId, userId} = this.projectInfo();
         if (!projectId || !userId) return;
         const result = await this.modalService.uploadPhotos(projectId, userId);
-        console.log(result);
     }
 
     onKeyDown(event: KeyboardEvent) {

@@ -53,7 +53,6 @@ function addThumbnails(photos: Photo[], projectId: string): PhotoExtended[] {
             const urlFull = base + encodeURIComponent(`${urlBase}/${photo.fullName}`) + '?alt=media';
             return {...photo, urlSmall, urlMedium, urlLarge, urlXLarge, urlFull}
         });
-        console.log(result);
         return result;
     }
     return [];

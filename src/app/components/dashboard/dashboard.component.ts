@@ -187,7 +187,6 @@ export class DashboardComponent {
         if (await this.modalService.confirm({message: 'Das entsprechende Projekt öffnen?' })) {
             await this.router.navigate(['/projects', project?.['id']]);
         }
-        console.log('Project selected', project?.['id']);
     }
 
     onShowAll() {

@@ -43,7 +43,6 @@ export class FileUploadItem implements OnInit, OnDestroy  {
         if (!this.file() || !this.path()) return null;
         const response = this.firebaseService.uploadImage(this.file()!, this.path(), this.metadata());
         response.uploadStatus.subscribe(status => {
-            console.log('uploadStatus' ,status);
             if (this.state() !== status.state) {
                 this.state.set(status.state)
                 this.statusChanged.emit(this.state());

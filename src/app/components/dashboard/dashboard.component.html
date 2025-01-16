@@ -34,7 +34,7 @@
                         class="fill"
                         [results]="statusData()"
                         [yScaleMax]="5"
-                        [animations]="false"
+                        [animations]="true"
                         [gradient]="true"
                         [xAxis]="true"
                         [yAxis]="false"
@@ -64,7 +64,7 @@
                     <ngx-charts-advanced-pie-chart
                             scheme="ocean"
                             class="fill"
-                            [animations]="true"
+                            [animations]="false"
                             [valueFormatting]="formatCHF"
                             [percentageFormatting]="formatPercent"
                             [results]="financialData()"

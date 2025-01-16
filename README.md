@@ -12,6 +12,7 @@ Customers can be signed up to view their projects and download their photos.
   - quotation
   - invoice
   - photo gallery (upload / download photos)
+- dashboard (project status / financials)
 
 > [!NOTE]  
 > To manage users, add and edit projects, you must log in with an admin account.  
@@ -19,11 +20,11 @@ Customers can be signed up to view their projects and download their photos.
 
 ### Permissions:
 
-| Login | Home page | User data  | Project data | Photos            |
-|-------|-----------|------------|--------------|-------------------|
-| n/a   | view      | --         | --           | --                |
-| User  | view      | edit own   | view own     | download          |
-| Admin | view      | add / edit | add / edit   | upload / download |
+| Login | Home page | User data  | Project data | Photos            | Dashboard |
+|-------|-----------|------------|--------------|-------------------|-----------|
+| n/a   | view      | --         | --           | --                | --        |
+| User  | view      | edit own   | view own     | download          | view      |
+| Admin | view      | add / edit | add / edit   | upload / download | view      |
 
  
 
@@ -31,11 +32,13 @@ Customers can be signed up to view their projects and download their photos.
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.  
 This Angular application uses ***signals*** with `provideExperimentalZonelessChangeDetection`  
 Additional dependencies:  
-- [NgRx/Signals](https://ngrx.io/guide/signals) store version 19.0.0
-- [Bootstrap](https://getbootstrap.com/) version 5.3.3
-- [NG Bootstrap](https://ng-bootstrap.github.io/) component library version 18.0.0
-- [RxJS](https://rxjs.dev/guide/overview) version 7.8.0
-- [Firebase SDK](https://github.com/firebase/firebase-js-sdk) 11.1.0
+- [NgRx/Signals](https://ngrx.io/guide/signals) v19.0.0 (data store)
+- [Bootstrap](https://getbootstrap.com/) v5.3.3 (CSS framework)
+- [NG Bootstrap](https://ng-bootstrap.github.io/) v18.0.0 (component library)
+- [RxJS](https://rxjs.dev/guide/overview) v7.8.0
+- [Firebase SDK](https://github.com/firebase/firebase-js-sdk) v11.1.0 (Google Firebase Database)
+- [Docxtemplater](https://docxtemplater.com/) v3.55.8 (Word export library)
+- [ngx-charts](https://www.npmjs.com/package/@swimlane/ngx-charts?activeTab=readme) v21.1.2 (Charting library)
 
 ## Development server
 

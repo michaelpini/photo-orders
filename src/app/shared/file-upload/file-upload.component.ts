@@ -102,7 +102,6 @@ export class FileUploadComponent implements OnDestroy {
             let files: File[] = Array.from(input.files || []);
             this.uploadFiles.set(files);
             this.statusArray = files.map((file: File) => {
-                console.log(file);
                 return {
                     filename: file.name,
                     sizeTotal: file.size,
