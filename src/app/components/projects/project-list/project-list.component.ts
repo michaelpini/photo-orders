@@ -23,7 +23,6 @@ export class ProjectListComponent implements OnInit, OnDestroy{
         {field: 'projectName', headerName: 'Projektname', width: '25%'},
         {field: 'eventDate', headerName: 'Datum', format: 'date', width: '25%'},
         {field: '_companyOrCustomer', headerName: 'Kunde', width: 'auto'},
-        // {field: 'quote.totalCHF', headerName: 'Offerte CHF', width: '25%', format: 'chf'},
         {field: 'status', headerName: 'Status', format: val => this.getStatus(val as ProjectStatus), excludeFromQuickFilter: true},
         {field: 'id', headerName: 'Id', hidden: true},
     ]

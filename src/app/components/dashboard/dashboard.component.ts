@@ -1,11 +1,11 @@
-import {Component, computed, inject, signal, ViewEncapsulation} from '@angular/core';
+import {Component, computed, inject, model, signal, ViewEncapsulation} from '@angular/core';
 import {BarChartModule, Color, PieChartModule, ScaleType} from "@swimlane/ngx-charts";
 import {Project, ProjectStatus, statusMapDe} from "../projects/project.model";
 import {PhotoOrdersStore} from "../../store/photoOrdersStore";
 import {FormsModule} from "@angular/forms";
 import {formatCurrency, formatNumber} from "@angular/common";
 import {ColDef, TableComponent} from "../../shared/table/table.component";
-import {ObjAny} from "../../shared/util";
+import {ObjAny, safeAwait} from "../../shared/util";
 import {ModalService} from "../../modals/modal.service";
 import {Router} from "@angular/router";
 
@@ -36,6 +36,22 @@ export class DashboardComponent {
     timeRangeSelection = signal<TimeRange>('all');
     tableHeading = signal<string>('Alle Projekte');
     tableData = signal<Project[]>([]);
+    colDefs = signal<ColDef[]>([
+        {field: 'projectName', headerName: 'Projektname', width: '20%'},
+        {field: 'eventDate', headerName: 'Datum', format: 'date', width: 'auto'},
+        {field: '_customer', headerName: 'Kunde', width: '20%'},
+        {field: 'quote.totalCHF', headerName: 'Offerte CHF', width: 'auto', format: 'chf'},
+        {field: 'invoice.totalCHF', headerName: 'Rechnung CHF', width: 'auto', format: 'chf'},
+        {field: 'status', headerName: 'Status', format: val => this.getStatus(val as ProjectStatus), excludeFromQuickFilter: true},
+        {field: 'id', headerName: 'Id', hidden: true},
+    ] )
+    selectedProjectId = signal<string>('');
+    colorSchemeStatus = signal<Color>({
+        name: 'custom',
+        selectable: false,
+        group: ScaleType.Ordinal,
+        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+    });
 
     timeRange = computed<{start: Date, end: Date}>(() => {
         const selection = this.timeRangeSelection();
@@ -139,25 +155,15 @@ export class DashboardComponent {
         return Object.values(data);
     })
 
-    colorSchemeStatus = signal<Color>({
-        name: 'custom',
-        selectable: false,
-        group: ScaleType.Ordinal,
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    });
-
-    colDefs = signal<ColDef[]>([
-        {field: 'projectName', headerName: 'Projektname', width: '20%'},
-        {field: 'eventDate', headerName: 'Datum', format: 'date', width: 'auto'},
-        {field: '_customer', headerName: 'Kunde', width: '20%'},
-        {field: 'quote.totalCHF', headerName: 'Offerte CHF', width: 'auto', format: 'chf'},
-        {field: 'invoice.totalCHF', headerName: 'Rechnung CHF', width: 'auto', format: 'chf'},
-        {field: 'status', headerName: 'Status', format: val => this.getStatus(val as ProjectStatus), excludeFromQuickFilter: true},
-        {field: 'id', headerName: 'Id', hidden: true},
-    ] )
-
-
     constructor(private modalService: ModalService, private router: Router) {
+    }
+
+    builtTableData(projects: Project[]) {
+        return projects.map(project => {
+            const user = this.store.getUser(project.userId);
+            const _customer = user ? user.companyName || `${user.firstName} ${user.lastName}` : project.userId;
+            return {...project, _customer};
+        })
     }
 
     roundToInteger(num: number) {
@@ -176,17 +182,10 @@ export class DashboardComponent {
         return statusMapDe[status] || '?: ' + status;
     }
 
-
-    onSelect(ev: ChartData) {
+    onSelectChartItem(ev: ChartData) {
         const str= ev.extra.type === 'status' ? `Status «${ev.name}»` : `${ev.name}`;
         this.tableHeading.set(str);
         this.tableData.set(ev.extra.projects)
-    }
-
-    async onSelectProject(project: ObjAny) {
-        if (await this.modalService.confirm({message: 'Das entsprechende Projekt öffnen?' })) {
-            await this.router.navigate(['/projects', project?.['id']]);
-        }
     }
 
     onShowAll() {
@@ -194,12 +193,13 @@ export class DashboardComponent {
         this.tableData.set(this.projectsInTimeRange());
     }
 
-    builtTableData(projects: Project[]) {
-        return projects.map(project => {
-            const user = this.store.getUser(project.userId);
-            const _customer = user ? user.companyName || `${user.firstName} ${user.lastName}` : project.userId;
-            return {...project, _customer};
-        })
+    async onSelectProject(project: ObjAny) {
+        const [error, proceed] = await safeAwait(this.modalService.confirm({message: 'Das entsprechende Projekt öffnen?' ,btnOkText: 'Zum Projekt', title: 'Projekt öffnen?'}))
+        if (proceed) {
+            await this.router.navigate(['/projects', project?.['id']]);
+        } else {
+            this.selectedProjectId.set('');
+        }
     }
 
 }

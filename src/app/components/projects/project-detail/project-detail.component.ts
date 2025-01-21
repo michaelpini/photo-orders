@@ -77,6 +77,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     async onSave(): Promise<void> {
         const data: Project = this.data() as Project;
+        this.dataLoaded.set(data);
         this.store.setProject(data);
         this.store.setDirty(false);
     }

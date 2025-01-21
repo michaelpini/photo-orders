@@ -25,7 +25,7 @@
                     <ng-template ngbSlide id="{{photo.guid}}">
                         <div class="picsum-img-wrapper">
                             <img [src]="photo.urlMedium"
-                                 srcset="{{photo.urlSmall}} 300w, {{photo.urlMedium}} 600w, {{photo.urlLarge}} 1200w, {{photo.urlXLarge}} 2000w, {{photo.urlFull}} {{photo.width}}w"
+                                 srcset="{{photo.urlSmall}} 300w, {{photo.urlMedium}} 600w, {{photo.urlLarge}} 1200w, {{photo.urlXLarge}} 2000w"
                                  [sizes]="sizes()"
                                  alt="{{$index}}: {{photo.fileName}}"
                                  loading="lazy"

@@ -20,7 +20,7 @@
     </form>
 
 
-    <div class="row m-3">
+    <div class="row dashboard-container">
         <div class="col-xl-6 mb-5">
             <div class="row">
                 <div class="col display-6 text-center my-3">
@@ -34,8 +34,8 @@
                         class="fill"
                         [results]="statusData()"
                         [yScaleMax]="5"
-                        [animations]="true"
-                        [gradient]="true"
+                        [animations]="false"
+                        [gradient]="false"
                         [xAxis]="true"
                         [yAxis]="false"
                         [wrapTicks]="true"
@@ -46,13 +46,14 @@
                         [rotateXAxisTicks]="true"
                         [showGridLines]="false"
                         [yAxisTickFormatting]="roundToInteger"
-                        (select)="onSelect($event)"
+                        (select)="onSelectChartItem($event)"
 
                 >
                 </ngx-charts-bar-vertical>
                 </div>
             </div>
         </div>
+
         <div class="col-xl-6 mb-5 separator">
             <div class="row">
                 <div class="col display-6 text-center my-3">
@@ -68,7 +69,7 @@
                             [valueFormatting]="formatCHF"
                             [percentageFormatting]="formatPercent"
                             [results]="financialData()"
-                            (select)="onSelect($event)"
+                            (select)="onSelectChartItem($event)"
                     >
                     </ngx-charts-advanced-pie-chart>
                 </div>
@@ -89,11 +90,13 @@
         </div>
 
     </div>
+
     <div class="row">
         <div class="col-xl-10 mx-auto">
             <app-table
                     [rowData]="tableData()"
                     [colDefs]="colDefs()"
+                    [(selectedId)]="selectedProjectId"
                     (selected)="onSelectProject($event)"
             ></app-table>
         </div>
