@@ -1,8 +1,8 @@
 import {Component, computed, inject, input, signal} from '@angular/core';
 import {ProjectInfo} from "../project.model";
 import {FormsModule} from "@angular/forms";
-import {ModalService, Photo} from "../../../modals/modal.service";
-import {PhotoExtended, PhotoOrdersStore} from "../../../store/photoOrdersStore";
+import {ModalService} from "../../../modals/modal.service";
+import {Photo, PhotoExtended, PhotoOrdersStore} from "../../../store/photoOrdersStore";
 import {PhotoItemComponent} from "./photo-item.component";
 import {FirebaseService} from "../../../persistance/firebase.service";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
@@ -81,7 +81,8 @@ export class ProjectPhotosComponent {
     }
 
     onLikedChanged(photo: PhotoExtended) {
-        this.store.updatePhoto(this.projectInfo().id!, photo);
+        const {id, liked = false} = photo;
+        this.store.updatePhoto(this.projectInfo().id!, {id, liked});
     }
 
     onFilter(key: FilterKey) {

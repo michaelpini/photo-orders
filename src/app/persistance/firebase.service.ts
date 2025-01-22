@@ -15,9 +15,8 @@ import {
     UploadMetadata,
 } from "firebase/storage";
 import {Subject} from "rxjs";
-import {Photo} from "../modals/modal.service";
 import {saveBlobToFile} from "../shared/util";
-import {PhotoExtended} from "../store/photoOrdersStore";
+import {Photo, PhotoExtended} from "../store/photoOrdersStore";
 
 export interface UploadState {
     state: TaskState;
@@ -129,7 +128,7 @@ export class FirebaseService {
         return this.set<Photo>(`projects/${projectId}/photos`, photo, 'Photo');
     }
 
-    updateProjectPhoto(projectId: string = '', photo: PhotoExtended) {
+    updateProjectPhoto(projectId: string = '', photo: {id: string} & Partial<PhotoExtended>) {
         const {urlSmall, urlMedium, urlLarge, urlXLarge, urlFull, selected, ...cleanedPhoto} = photo;
         return this.update<Photo>(`projects/${projectId}/photos`, cleanedPhoto, 'Foto');
     }
@@ -180,7 +179,9 @@ export class FirebaseService {
         const ext = photo.fileExtension;
         return Promise.all([
             deleteObject(ref(storage, `images/projects/${projectId}/${photo.id}`)),
+            deleteObject(ref(storage, `${thumbsBase}_300x300.${ext}`)),
             deleteObject(ref(storage, `${thumbsBase}_600x600.${ext}`)),
+            deleteObject(ref(storage, `${thumbsBase}_1200x1200.${ext}`)),
             deleteObject(ref(storage, `${thumbsBase}_2000x2000.${ext}`)),
         ])
     }

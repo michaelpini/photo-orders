@@ -6,11 +6,9 @@ import {SignUpComponent} from "./auth/sign-up.component";
 import {ChangePwComponent} from "./auth/change-pw.component";
 import {ChangeEmailComponent} from "./auth/change-email.component";
 import {FileUploadComponent, FileUploadSuccess, ModalUploadConfig} from "../shared/file-upload/file-upload.component";
-import {getImageMeta, getRandomId, ImageFileMetaData} from "../shared/util";
-import {PhotoExtended, PhotoOrdersStore} from "../store/photoOrdersStore";
+import {getImageMeta, getRandomId} from "../shared/util";
+import {Photo, PhotoExtended, PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FileDownloadComponent, ModalDownloadConfig} from "../shared/file-download/file-download.component";
-
-export interface Photo extends ImageFileMetaData {id: string, downloadUrl: string, liked?: boolean, tag?: string, guid?: string}
 
 @Injectable({providedIn: "root"})
 export class ModalService {

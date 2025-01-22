@@ -9,8 +9,7 @@ import {setBusy, setError, setIdle, withLoadingState} from "./withLoadingState";
 import {ToastService} from "../shared/toasts/toast.service";
 import {AuthType, AuthUser} from "../auth/authUser.model";
 import {Project} from "../components/projects/project.model";
-import {Photo} from "../modals/modal.service";
-import {delay} from "../shared/util";
+import {delay, ImageFileMetaData} from "../shared/util";
 
 export type State = {
     authInitializingNewUser: boolean;
@@ -18,6 +17,14 @@ export type State = {
     activeUser: User | null | undefined;
     isDirty: boolean;
     isInitialized: boolean;
+}
+
+export interface Photo extends ImageFileMetaData {
+    id: string,
+    downloadUrl: string,
+    liked?: boolean,
+    tag?: string,
+    guid?: string
 }
 
 export interface PhotoExtended extends Photo {
@@ -301,10 +308,14 @@ export const PhotoOrdersStore = signalStore(
             }
         },
 
-        async updatePhoto(projectId: string | null, photo: PhotoExtended): Promise<void> {
+        async updatePhoto(projectId: string | null, photo: {id: string} & Partial<PhotoExtended>): Promise<void> {
             try {
                 if (projectId) await firebaseService.updateProjectPhoto(projectId, photo);
-                patchState(store, setEntity(photo, {collection: `photos`}));
+                const {id, ...partialPhoto} = photo;
+                patchState(store,
+                    // setEntity(photo, {collection: `photos`}),
+                    updateEntity({id, changes: partialPhoto}, {collection: 'photos'}),
+                );
             } catch (error) {
                 this.setError((error as Error).message);
             }

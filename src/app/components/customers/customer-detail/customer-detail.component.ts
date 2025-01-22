@@ -57,7 +57,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
                 const activeUser = this.store.activeUser();
                 if (activeUser) {
                     setTimeout(() => {
-                        const authUser: AuthUser = this.store.authUser()!;
+                        const authUser: AuthUser = {...this.store.authUser()!};
                         authUser.emailVerified = firebaseAuth.currentUser?.emailVerified || false;
                         this.authUser.set(authUser);
                         this.setFormData(activeUser);

@@ -8,8 +8,8 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import {FileDownloadItem} from "./file-download-item";
 import {FileSizePipe} from "../file-size.pipe";
-import {Photo} from "../../modals/modal.service";
 import {ExtendedTaskState} from "../file-upload/file-upload.component";
+import {Photo} from "../../store/photoOrdersStore";
 
 export interface ModalDownloadConfig {
     title?: string;
