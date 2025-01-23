@@ -1,4 +1,13 @@
-<div class="container-md">
+<div class=" display-2 brand-banner my-neg1">PINI STUDIOS</div>
+
+<div class="d-flex justify-content-center my-neg1">
+    <img src="KevinPini_full.jpg" alt="Kevin Pini Portrait" class="hero"
+         srcset="KevinPini_300x200.jpg 300w, KevinPini_600x400.jpg 600w, KevinPini_1000x666.jpg 1000w, KevinPini_2000x1333.jpg 2000w, KevinPini_full.jpg 6048w"
+         sizes="calc(100vw - 4.5rem)"
+    >
+</div>
+
+<div class="container-md ps-0 pe-0">
 
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
         <symbol id="images" viewBox="0 0 16 16">
@@ -22,19 +31,10 @@
         </symbol>
     </svg>
 
-    <div class="container px-4 pb-4">
-        <div class=" display-2 brand-banner">PINI STUDIOS</div>
-
-        <div class="d-flex justify-content-center">
-            <img src="KevinPini_full.jpg" alt="Kevin Pini Portrait" class="hero"
-                 srcset="KevinPini_300x200.jpg 300w, KevinPini_600x400.jpg 600w, KevinPini_1000x666.jpg 1000w, KevinPini_2000x1333.jpg 2000w, KevinPini_full.jpg 6048w"
-                 sizes="calc(100vw - 4.5rem)"
-            >
-        </div>
-
+<!--    <div class="container px-4 pb-4">-->
 
         <!------------ Feature cards ------------>
-        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="row g-4 px-4 py-5 row-cols-1 row-cols-lg-3">
             <div class="col mb-3">
                 <div class="d-flex align-items-center gap-4 mb-4">
                     <a href="mailto:michael.roland.pini@outlook.com" class="btn feature-icon">
@@ -50,7 +50,6 @@
                     <a href="tel:+41787732560" class=" text-primary contact-text">+41 78 7732560</a>
                 </div>
             </div>
-
 
             <div class="col mb-3">
                 @if (store.authUser()) {
@@ -75,7 +74,6 @@
                 }
             </div>
 
-
             <div class="col mb-3">
                 @if (store.authUser()) {
                     <div class="d-flex align-items-center gap-4 mb-4">
@@ -98,23 +96,21 @@
                     </p>
                 }
             </div>
-
         </div>
+<!--    </div>-->
 
-        <!------------ Photos ------------>
-        <h3 class="display-5 text-center mb-3">Portfolio</h3>
-        <div class="portfolio">
-            <picture-item fullName="casual_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Casual Portraits"></picture-item>
-            <picture-item fullName="cv_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="CV Portraits"></picture-item>
-            <picture-item fullName="corporate_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Portraits"></picture-item>
-            <picture-item fullName="hochzeiten.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Hochzeiten"></picture-item>
-            <picture-item fullName="konzerte.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Konzerte"></picture-item>
-            <picture-item fullName="corporate_events.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Events"></picture-item>
-            <picture-item fullName="immobilien.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Immobilien"></picture-item>
-            <picture-item fullName="baustellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Baustellen"></picture-item>
-            <picture-item fullName="tankstellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Tankstellen"></picture-item>
-        </div>
-
+    <!------------ Portfolio ------------>
+    <h3 class="display-5 text-center my-5 portfolio-text">Portfolio</h3>
+    <div class="portfolio my-neg1 mb-5">
+        <picture-item fullName="casual_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Casual Portraits"></picture-item>
+        <picture-item fullName="cv_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="CV Portraits"></picture-item>
+        <picture-item fullName="corporate_portraits.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Portraits"></picture-item>
+        <picture-item fullName="hochzeiten.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Hochzeiten"></picture-item>
+        <picture-item fullName="konzerte.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Konzerte"></picture-item>
+        <picture-item fullName="corporate_events.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Corporate Events"></picture-item>
+        <picture-item fullName="immobilien.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Immobilien"></picture-item>
+        <picture-item fullName="baustellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Baustellen"></picture-item>
+        <picture-item fullName="tankstellen.jpg" [baseUrl]="baseUrl()" class="picture-item" name="Tankstellen"></picture-item>
     </div>
 
 </div>

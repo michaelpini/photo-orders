@@ -2,12 +2,14 @@
     <div class="col">
         <h1 class="">Projekte</h1>
     </div>
-    <div class="col-auto float-end">
-        <button class="btn btn-primary"
-                (click)="createProject()"
-        >Neues Projekt
-        </button>
-    </div>
+    @if (store.isAdmin()) {
+        <div class="col-auto float-end">
+            <button class="btn btn-primary"
+                    (click)="createProject()"
+            >Neues Projekt
+            </button>
+        </div>
+    }
 </div>
 
 <div class="row m-0">

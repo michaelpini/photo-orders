@@ -9,9 +9,15 @@
 
 .hero {
     width: 100%;
-    max-height: calc(100vh - 16rem);
-    margin: 1rem;
+    max-height: calc(100vh - 14.5rem);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     object-fit: contain;
+}
+
+.my-neg1 {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
 }
 
 .feature-icon {
@@ -22,7 +28,7 @@
     grid-template-columns: auto 1fr;
     transition: all 0.1s ease;
     align-items: center;
-    background: linear-gradient(12deg, #f88c8c42, #ff47471a, #ffbbd740);
+    background: linear-gradient(6deg, rgba(248, 140, 140, 0.35), rgba(255, 71, 71, 0), rgba(255, 187, 215, 0.35));
     padding: 0;
 
     &:hover {
@@ -40,7 +46,8 @@
     fill: #eeeeee;
     background: linear-gradient(#e20000, #b40000);
     padding: 1rem;
-    border-radius: 1rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
 }
 
 .icon-small {
@@ -60,11 +67,15 @@
     font-size: 1.1rem;
 }
 
-
 .portfolio {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1px;
+}
+
+.portfolio-text {
+    letter-spacing: 1rem;
+    opacity: 60%;
 }
 
 .picture-item {
