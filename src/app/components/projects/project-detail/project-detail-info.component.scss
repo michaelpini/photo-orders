@@ -19,6 +19,12 @@
     width: 50%;
 }
 
+.btn-tel {
+    padding: 0;
+    background: #0d6efd;
+}
+
+
 @container (max-width: 400px) {
     .grid-2-col {
         display: block;

@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, output, signal, ViewChild} from '@angular/core';
+import {Component, computed, effect, inject, input, OnDestroy, OnInit, output, signal, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {ProjectInfo, statusMapDe} from "../project.model";
@@ -11,7 +11,7 @@ import {PhotoOrdersStore} from "../../../store/photoOrdersStore";
     templateUrl: './project-detail-info.component.html',
     styleUrl: './project-detail-info.component.scss'
 })
-export class ProjectDetailInfoComponent {
+export class ProjectDetailInfoComponent implements OnInit, OnDestroy {
     private valueChangesSubscription: Subscription | undefined;
     private formInitializing = false;
     protected store = inject(PhotoOrdersStore);
@@ -21,6 +21,9 @@ export class ProjectDetailInfoComponent {
     dataInput = input<ProjectInfo | null>(null);
     data = signal<ProjectInfo | null>(null);
     dataOutput = output<ProjectInfo>();
+    customer = computed(() => {
+        return this.store.getUser(this.data()?.userId);
+    })
 
     constructor(){
         effect(async () => {
