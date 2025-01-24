@@ -1,16 +1,20 @@
 import {getImageMeta, transformDateTime, transformSize, transformUnits, truncateStr} from "./util";
 
 describe('utils: transformSize', () => {
-    it('transformSize(2300) should be 2.3 KB', () => {
-        expect(transformSize(2300)).toBe('2.3 KB');
+    it('transformSize(6073) should be 5.93 KB', () => {
+        expect(transformSize(6073)).toBe('5.93 KB');
     });
 
-    it('transformSize(12340000000) should be 12.3 GB', () => {
-        expect(transformSize(12340000000)).toBe('12.3 GB');
+    it('transformSize(15075000) should be 14.4 MB', () => {
+        expect(transformSize(15075000)).toBe('14.4 MB');
     });
 
-    it('transformSize(12345, 3) should be 12.345 KB', () => {
-        expect(transformSize(12345, 3)).toBe('12.345 KB');
+    it('transformSize(15100100100) should be 14.1 GB', () => {
+        expect(transformSize(15100100100)).toBe('14.1 GB');
+    });
+
+    it('transformSize(12345, 3) should be 12.056 KB', () => {
+        expect(transformSize(12345, 3)).toBe('12.056 KB');
     });
 })
 

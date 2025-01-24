@@ -1,4 +1,3 @@
-import {max} from "rxjs";
 
 export type Primitive = string | number | boolean | Date | null | undefined
 export type ObjFlat = { [key: string]: Primitive };
@@ -187,7 +186,6 @@ export function saveBlobToFile(blob: Blob, filename: string) {
     URL.revokeObjectURL(url);
 }
 
-
 /**
  * Sets the src property of an \<img> tag to a placeholder image if the src is broken. <br>
  * The brokenImg is hardcoded, update as needed
@@ -281,14 +279,11 @@ export const getImageMeta = async (file: File): Promise<ImageFileMetaData> => {
  @param bytes {number} size in Bytes
  @param precision {number} optional decimal precision, if undefined it is figured out on the fly
  * @example
- * // returns 2.3 KB
- * transformSize(2300)
+ * transformSize(6073)       // 5.93 KB
  * @example
- * // returns 12.3 GB
- * transformSize(12340000000)
+ * transformSize(15075000)   // 14.4 MB
  * @example with fixed precision
- * // returns 12.345 KB
- * transformSize(12345, 3)
+ * transformSize(12345, 3)   // 12.056 KB
  *
  */
 export function transformSize(bytes: number = 0, precision?: number): string {
