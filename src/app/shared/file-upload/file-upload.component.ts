@@ -4,8 +4,10 @@ import {FileUploadItem} from "./file-upload-item";
 import {TaskState, UploadMetadata} from "firebase/storage";
 import {FileSizePipe} from "../file-size.pipe";
 import {UploadState} from "../../persistance/firebase.service";
+import {transformSize} from "../util";
+import {ModalService} from "../../modals/modal.service";
 
-export type ExtendedTaskState = 'queued' | TaskState
+export type ExtendedTaskState = TaskState | 'queued';
 export interface ModalUploadConfig {
     title?: string;
     message?: string;
@@ -20,6 +22,8 @@ export interface ModalUploadConfig {
     maxConcurrentUploads?: number;
     multiple?: boolean;
     accept?: string;
+    acceptedExtensions?: string[];
+    maxBytes?: number;
 }
 interface Status {
     filename: string;
@@ -48,6 +52,8 @@ const defaultConfig: ModalUploadConfig = {
     maxConcurrentUploads: 3,
     multiple: true,
     accept: 'image/*',
+    acceptedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'avif'],
+    maxBytes: 15*1024*1024,
 }
 
 @Component({
@@ -86,7 +92,7 @@ export class FileUploadComponent implements OnDestroy {
 
     statusArray: Status[] = [];
 
-    constructor(public modal: NgbActiveModal, private modalConfig: NgbModalConfig) { }
+    constructor(public modal: NgbActiveModal, private modalConfig: NgbModalConfig, private modalService: ModalService) { }
 
     configure(config: ModalUploadConfig) {
         const updatedConfig = {...defaultConfig, ...config};
@@ -100,7 +106,8 @@ export class FileUploadComponent implements OnDestroy {
         input.multiple = this.config().multiple || false;
         input.onchange = _ => {
             let files: File[] = Array.from(input.files || []);
-            this.uploadFiles.set(files);
+            const {valid, invalid, errorMsg} = this.checkFiles(files, this.config().maxBytes, this.config().acceptedExtensions);
+            this.uploadFiles.set(valid);
             this.statusArray = files.map((file: File) => {
                 return {
                     filename: file.name,
@@ -110,8 +117,34 @@ export class FileUploadComponent implements OnDestroy {
                     triggerUpload: signal(false)
                 }
             })
+            if (errorMsg.length > 0) {
+                this.modalService.info(errorMsg.join('\n'), `${errorMsg.length} Dateien zurückgewiesen`, 'warning');
+            }
         };
         input.click();
+    }
+
+    checkFiles(files: File[], maxBytes: number = 10*1024*1024, acceptedExt: string[] = ['jpg', 'jpeg']): { valid: File[], invalid: File[], errorMsg: string[] } {
+        let errorMsg: string[] = [];
+        const invalid: File[] = [];
+        const valid = files.filter((file: File) => {
+            const ext = file.name.split('.').pop() || '';
+            let msgArr: string[] = [];
+            if (file.size > maxBytes) {
+                msgArr.push(`Datei zu gross (${transformSize(file.size)})`);
+            }
+            if (!acceptedExt.includes(ext)) {
+                msgArr.push(`Datei-Typ nicht erlaubt (${ext})`);
+            }
+            if (msgArr.length === 0) {
+                return true;
+            } else {
+                errorMsg.push(file.name + ': ' + msgArr.join(', '));
+                invalid.push(file);
+                return false;
+            }
+        })
+        return {valid, invalid, errorMsg};
     }
 
     onItemStatusChanged(status: ExtendedTaskState, index: number) {
@@ -204,7 +237,10 @@ export class FileUploadComponent implements OnDestroy {
         this.modalConfig.backdrop = true;
     }
 
-
+    onRemove(index: number) {
+        this.statusArray.splice(index, 1);
+        this.uploadFiles.update(files => files.toSpliced(index, 1));
+    }
 }
 
 

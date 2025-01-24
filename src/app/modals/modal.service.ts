@@ -1,5 +1,5 @@
 import {inject, Injectable} from "@angular/core";
-import {ModalConfirm, ModalConfirmConfig} from "./confirm/confirm";
+import {ModalConfirm, ModalConfirmConfig, ModalIcons} from "./confirm/confirm";
 import {NgbModal, NgbModalConfig} from "@ng-bootstrap/ng-bootstrap";
 import {SignInComponent} from "./auth/sign-in.component";
 import {SignUpComponent} from "./auth/sign-up.component";
@@ -74,12 +74,13 @@ export class ModalService {
         return this.confirm(config);
     }
 
-    info(message: string, title = 'Info') {
+    info(message: string, title = 'Info', icon: ModalIcons = '') {
         const config: ModalConfirmConfig = {
             title,
             message,
             btnOkText: 'Schliessen',
             btnCancelText: '',
+            icon,
         }
         return this.confirm(config);
     }
@@ -117,9 +118,11 @@ export class ModalService {
                     resolution: 'full'}
             },
             title: 'Photos hochladen',
-            message: 'Es können Photos bis zu 10MB hochgeladen werden (jpg, png, webp)',
-            accept: 'image/jpeg, image/png, image/webp',
+            message: '👉 Nur Bilder bis max. 15MB   (JPG, WEBP, AVIF, PNG)',
+            accept: 'image/jpeg, image/webp, image/avif, image/png',
+            acceptedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'avif'],
             multiple: true,
+            maxBytes: 15*1024*1024,
         }
         this.modalConfig.backdrop = 'static';
         const modalRef = this.ngbModal.open(FileUploadComponent);

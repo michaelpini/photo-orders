@@ -1,4 +1,4 @@
-import {getImageMeta, transformDateTime, transformSize, transformUnits} from "../util";
+import {getImageMeta, transformDateTime, transformSize, transformUnits, truncateStr} from "./util";
 
 describe('utils: transformSize', () => {
     it('transformSize(2300) should be 2.3 KB', () => {
@@ -57,6 +57,21 @@ describe('utils: transformDateTime', () => {
     it("transformDateTime(myDate, 'dmy', 'hms', ', ') should be '30.12.2024, 18:30:40'", () => {
         expect(transformDateTime(myDate, 'dmy', 'hms', ', ')).toBe('30.12.2024, 18:30:40');
     });
+})
+
+describe('utils: truncateStr', () => {
+    it("truncateStr('This sentence is way too long', 20) should be 'This sent...too long", () => {
+        expect(truncateStr('This sentence is way too long', 20)).toBe('This sent...too long');
+    })
+
+    it("truncateStr('This sentence is ok!', 20) should be 'This sentence is ok!", () => {
+        expect(truncateStr('This sentence is ok!', 20)).toBe('This sentence is ok!');
+    })
+
+    it("truncateStr('This is a long sentence, which needs to be shortened', 25) should have 25 characters", () => {
+        expect(truncateStr('This sentence is ok!', 25).length).toBeLessThanOrEqual(25);
+    })
+
 })
 
 describe('utils: getImageMeta', async () => {

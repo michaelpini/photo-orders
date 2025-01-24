@@ -14,7 +14,7 @@ import {transformUnits} from "./util";
  * {{ 0 | units:'no one', 'man', 'men'}}    // 1 man
  * {{ 0 | units:'no one', 'man', 'men'}}    // 2 men
  * */
-@Pipe({ name: 'Units' })
+@Pipe({ name: 'units' })
 export class UnitsPipe implements PipeTransform {
 
     transform(value: number | null | undefined,

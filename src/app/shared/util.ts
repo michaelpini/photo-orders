@@ -295,7 +295,7 @@ export function transformSize(bytes: number = 0, precision?: number): string {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
     let index = 0;
     while (bytes >= 900) {
-        bytes /= 1000;
+        bytes /= 1024;
         index++;
     }
     const unit = units[index];
@@ -391,12 +391,13 @@ export function limit(number: number, min: number, max: number) {
  * truncateStr('This sentence is way too long', 20)     // 'This sent...too long'
  * truncateStr('This sentence is ok!', 20);             // 'This sentence is ok!'
  */
-export function truncateStr(str: string, maxChar: 30) {
+export function truncateStr(str: string | null | undefined, maxChar: number = 30) {
+    if (str == null) return '';
     if (str.length <= maxChar) return str;
     const startLength = Math.floor(maxChar / 2) - 1;
     const endLength = maxChar - startLength - 3;
     const str1 = str.substring(0, startLength);
     const str2 = str.substring(str.length - endLength);
-    return str1 + + '...' + str2;
+    return str1 + '...' + str2;
 }
 
