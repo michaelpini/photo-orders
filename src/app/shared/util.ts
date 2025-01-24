@@ -382,3 +382,21 @@ export function limit(number: number, min: number, max: number) {
     n = Math.min(max, Math.max(min, n));
     return n;
 }
+
+/**
+ * Truncates a string exceeding a max number of characters by replacing the middle part with ...
+ * @param {string} str source string
+ * @param {number} maxChar maximum allowed number of characters, default=30
+ * @example
+ * truncateStr('This sentence is way too long', 20)     // 'This sent...too long'
+ * truncateStr('This sentence is ok!', 20);             // 'This sentence is ok!'
+ */
+export function truncateStr(str: string, maxChar: 30) {
+    if (str.length <= maxChar) return str;
+    const startLength = Math.floor(maxChar / 2) - 1;
+    const endLength = maxChar - startLength - 3;
+    const str1 = str.substring(0, startLength);
+    const str2 = str.substring(str.length - endLength);
+    return str1 + + '...' + str2;
+}
+
