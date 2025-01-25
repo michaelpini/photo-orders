@@ -26,6 +26,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     data = signal<Project | null>(null);
     id = model('');  // Will be populated by router :id when projects/:id
     isRendered = output<boolean>();
+    active = model<string>('photos');
 
     constructor(
         private router: Router,

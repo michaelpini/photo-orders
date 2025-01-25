@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, output, signal, ViewChild} from '@angular/core';
+import {Component, effect, inject, input, OnDestroy, OnInit, output, signal, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {ProjectInvoice, ProjectQuote} from "../project.model";
@@ -11,7 +11,7 @@ import {ModalService} from "../../../modals/modal.service";
     templateUrl: './project-detail-cost.component.html',
     styleUrl: './project-detail-cost.component.scss'
 })
-export class ProjectDetailCostComponent {
+export class ProjectDetailCostComponent implements OnInit, OnDestroy {
     private valueChangesSubscription: Subscription | undefined;
     private formInitializing = false;
     protected store = inject(PhotoOrdersStore);

@@ -12,7 +12,7 @@
         >
         <label>h</label>
 
-        <label class="col col-form-label" for="travelHours">Anfahrt</label>
+        <label class="col col-form-label" for="travelHours">Hin-Rückfahrt</label>
         <input type="number"
                class="form-control w-md"
                [disabled]="!store.isAdmin()"
@@ -122,8 +122,8 @@
     <div class="row mb-3">
         <div class="col">
             @if (store.isAdmin()) {
-                <button type="button" class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-3" (click)="onDocx()">
-                    <svg viewBox="0 0 32 32" width=40 height="40" xmlns="http://www.w3.org/2000/svg">
+                <button type="button" class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-2" (click)="onDocx()">
+                    <svg viewBox="0 0 32 32" width=36 height="36" xmlns="http://www.w3.org/2000/svg">
                         <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="4.494" x2="13.832" y1="7.914" y2="24.086">
                             <stop offset="0" stop-color="#2368c4"/>
                             <stop offset=".5" stop-color="#1a5dbe"/>
@@ -150,8 +150,8 @@
                     </svg>
                     {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }} erstellen
                 </button>
-                <button type="button" class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-3" (click)="onAttachPDF()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 1080 1080">
+                <button type="button" class="btn btn-light btn-light-dark btn-admin me-2 mb-2 p-2" (click)="onAttachPDF()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 1080 1080">
                         <rect x="0" y="0" width="100%" height="100%" fill="transparent"></rect>
                         <g transform="matrix(1 0 0 1 540 540)">
                             <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
@@ -188,8 +188,8 @@
             }
 
             @if (data()?.pdf) {
-                <button type="button" class="btn btn-light btn-light-dark mb-2 p-3" (click)="onDownloadPDF()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 1080 1080">
+                <button type="button" class="btn btn-light btn-light-dark btn-admin mb-2 p-2" (click)="onDownloadPDF()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 1080 1080">
                         <g transform="matrix(1 0 0 1 540 540)">
                             <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
                         </g>
@@ -223,7 +223,7 @@
                             <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(234,84,64); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-45, -38.11)" d="M 58.137 38.012 C 57.983 37.638 57.617 37.395 57.213 37.395 L 52.408 37.395 L 52.408 25.616 C 52.408 25.064 51.961 24.616 51.408 24.616 L 38.592 24.616 C 38.04 24.616 37.592 25.064 37.592 25.616 L 37.592 37.394 L 32.787 37.394 C 32.38 37.394 32.018 37.638 31.863 38.01 C 31.708 38.385 31.794 38.815 32.08 39.101 L 44.293 51.314 C 44.488 51.509 44.744 51.607 45 51.607 C 45.256 51.607 45.512 51.509 45.707 51.314 L 57.92 39.102 C 58.206 38.815 58.292 38.386 58.137 38.012 z" stroke-linecap="round" />
                         </g>
                     </svg>
-                    {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }}
+                    Download {{ quoteOrInvoice() === "quote" ? "Offerte" : "Rechnung" }}
                 </button>
             }
 

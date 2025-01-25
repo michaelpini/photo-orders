@@ -15,13 +15,13 @@ import {ObjAny} from "../../../shared/util";
 })
 export class ProjectListComponent implements OnInit, OnDestroy{
     readonly store = inject(PhotoOrdersStore);
-    readonly tableState = signal<TableState>({filter: '', sortColumn: '', sortOrder: ''});
+    readonly tableState = signal<TableState>({filter: '', sortColumn: 'eventDate', sortOrder: 'desc'});
 
     selectedId = signal('');
 
     colDefs: ColDef[] = [
         {field: 'projectName', headerName: 'Projektname', width: '25%'},
-        {field: 'eventDate', headerName: 'Datum', format: 'date', width: '25%'},
+        {field: 'eventDate', headerName: 'Datum', format: 'date', initialSortOrder: 'desc', width: '25%'},
         {field: '_companyOrCustomer', headerName: 'Kunde', width: 'auto'},
         {field: 'status', headerName: 'Status', format: val => this.getStatus(val as ProjectStatus), excludeFromQuickFilter: true},
         {field: 'id', headerName: 'Id', hidden: true},
@@ -49,7 +49,7 @@ export class ProjectListComponent implements OnInit, OnDestroy{
     }
 
     ngOnInit() {
-        this.tableState.set(storedTableState().users);
+        this.tableState.set(storedTableState().projects);
         this.checkUrlAndSetProjectId(this.router.url);
         this.router.events.subscribe((event: any) => {
             if (event instanceof NavigationEnd) this.checkUrlAndSetProjectId(event.url);

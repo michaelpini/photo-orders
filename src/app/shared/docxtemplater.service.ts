@@ -25,6 +25,7 @@ interface DocxData {
     editingOptions: string;
     deadline: string;
     remarks: string;
+    rateCHF: string;
     prepH: string;
     prepCHF: string;
     travelH: string;
@@ -76,14 +77,14 @@ export class DocxTemplaterService {
     async generateQuote(project: Project) {
         const template = await this.firebaseService.downloadFile('/documents/template-offerte.docx', false);
         const data = this.constructDocxData(project, 'quote');
-        const filename = `Offerte ${data.referenceNumber}.docx`;
+        const filename = `Offerte ${data.referenceNumber} ${data.projectName}.docx`;
         await this.generateDocx(template, data, filename);
     }
 
     async generateInvoice(project: Project) {
         const template = await this.firebaseService.downloadFile('/documents/template-rechnung.docx', false);
         const data = this.constructDocxData(project, 'invoice');
-        const filename = `Rechnung ${data.referenceNumber}.docx`;
+        const filename = `Rechnung ${data.referenceNumber} ${data.projectName}.docx`;
         await this.generateDocx(template, data, filename);
     }
 
@@ -111,6 +112,7 @@ export class DocxTemplaterService {
         data.editingOptions = details.editingOptions || '';
         data.deadline = transformDateTime(details.deadline);
         data.remarks = details.remarks || '';
+        data.rateCHF = rate.toString();
         data.prepH = cost.preparationHours?.toString() || '';
         data.prepCHF = __calcCost(cost.preparationHours);
         data.travelH = cost.travelHours?.toString() || '';

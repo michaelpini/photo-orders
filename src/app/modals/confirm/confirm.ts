@@ -1,6 +1,7 @@
 import {Component, computed, signal} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {SafeHtmlPipe} from "../../shared/safeHtml.pipe";
+import {ModalConfigure} from "../modal.service";
 
 export type ModalIcons = '' | 'warning' | 'danger' | 'info' | 'question' | 'success';
 
@@ -37,7 +38,7 @@ const defaultConfig: ModalConfirmConfig = {
     }`,
     imports: [SafeHtmlPipe]
 })
-export class ModalConfirm {
+export class ModalConfirm implements ModalConfigure<ModalConfirmConfig> {
     config = signal<ModalConfirmConfig>(defaultConfig);
     iconId = computed(() => {
         return '#' + this.config()?.icon;

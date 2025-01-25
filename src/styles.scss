@@ -18,8 +18,6 @@ $cs-dark: #5d5d5d;
 
 // ******************* Add new custom colors *******************
 $custom-colors: (
-        "custom-pink": #ff51c6,
-        "custom-purple": #b516f5,
         "custom-light" : #ebebeb,
         "custom-dark": #5d5d5d,
 );
@@ -69,21 +67,13 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 // Utilities
 @import "bootstrap/scss/utilities/api";
 
+* {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: #034cff08;
+}
 
-// ************ additional style to be used with btn-light (class=".btn btn-light btn-light-dark") ******************
-[data-bs-theme="dark"] {
-    .btn-light-dark {
-        --bs-btn-font-weight: 400;
-        --bs-btn-color: var(--bs-body-color);
-        --bs-btn-bg: var(--bs-custom-dark);
-        --bs-btn-border-color: var(--bs-custom-dark);
-        --bs-btn-hover-color: var(--bs-body-color);
-        --bs-btn-hover-bg: #{shade-color($cs-dark, 10%)};
-        --bs-btn-hover-border-color: #{shade-color($cs-dark, 10%)};
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #{shade-color($cs-dark, 20%)};
-        --bs-btn-active-border-color: #{shade-color($cs-dark, 20%)};
-    }
+.modal-content {
+    box-shadow: 0px 0px 20px 0px #607d8bf7;
 }
 
 
@@ -95,19 +85,6 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .form-control:focus, .form-select:focus {
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 80%);
     border-color: transparent;
-}
-
-[data-bs-theme="light"] {
-    .form-control, .form-control:focus, .form-select {
-        background-color: white
-    }
-}
-
-[data-bs-theme="dark"] {
-    .form-control, .form-control:focus, .form-select {
-        //background-color: #383838;
-        background-color: #212121;
-    }
 }
 
 .form-floating > .form-control:not(:placeholder-shown) ~ label::after,
@@ -153,10 +130,44 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     filter: none!important;
 }
 
-[data-bs-theme=dark] .carousel {
+[data-bs-theme="light"] {
+    background: radial-gradient(circle, rgb(247 243 245) 0%, rgb(242 248 255) 100%);
+
+    .form-control, .form-control:focus, .form-select {
+        background-color: white
+    }
+}
+
+[data-bs-theme="dark"] {
+    background: radial-gradient(circle, rgb(0 39 47) 0%, rgb(0 0 0) 100%);
+
+    * {
+        --bs-table-striped-bg: rgba(57, 92, 138, 0.15);
+    }
+
+    .form-control, .form-control:focus, .form-select {
+        background-color: #2a393d;
+    }
+
+    // ************ additional style to be used with btn-light (class=".btn btn-light btn-light-dark") ******************
+    .btn-light-dark {
+        --bs-btn-font-weight: 400;
+        --bs-btn-color: var(--bs-body-color);
+        --bs-btn-bg: var(--bs-custom-dark);
+        --bs-btn-border-color: var(--bs-custom-dark);
+        --bs-btn-hover-color: var(--bs-body-color);
+        --bs-btn-hover-bg: #{shade-color($cs-dark, 10%)};
+        --bs-btn-hover-border-color: #{shade-color($cs-dark, 10%)};
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #{shade-color($cs-dark, 20%)};
+        --bs-btn-active-border-color: #{shade-color($cs-dark, 20%)};
+    }
+
     .carousel-indicators [data-bs-target] {
         background-color: white;
     }
+
 }
+
 
 

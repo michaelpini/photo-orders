@@ -1,7 +1,13 @@
 {
   "name": "photo-orders",
   "version": "1.0.0",
-  "author": "Michael Pini",
+  "author": {
+    "name": "Michael Pini",
+    "email": "michael.roland.pini@outlook.com",
+    "url": "https://www.linkedin.com/in/michaelpini"
+  },
+  "description": "An application for independent photographers to manage the photos shooting projects. Includes user management, project management (info, offer, invoice), photo upload",
+  "homepage": "https://photo-orders-12b89.web.app/home",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

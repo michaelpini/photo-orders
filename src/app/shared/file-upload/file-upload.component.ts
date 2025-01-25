@@ -5,7 +5,7 @@ import {TaskState, UploadMetadata} from "firebase/storage";
 import {FileSizePipe} from "../file-size.pipe";
 import {UploadState} from "../../persistance/firebase.service";
 import {transformSize} from "../util";
-import {ModalService} from "../../modals/modal.service";
+import {ModalConfigure, ModalService} from "../../modals/modal.service";
 
 export type ExtendedTaskState = TaskState | 'queued';
 export interface ModalUploadConfig {
@@ -62,7 +62,7 @@ const defaultConfig: ModalUploadConfig = {
     styleUrl: './file-upload.component.scss',
     imports: [FileUploadItem, FileSizePipe, NgbProgressbar, NgbProgressbarStacked],
 })
-export class FileUploadComponent implements OnDestroy {
+export class FileUploadComponent implements OnDestroy, ModalConfigure<ModalUploadConfig> {
     config = signal<ModalUploadConfig>(defaultConfig);
     uploadFiles = signal<File[]>([]);
     isStarted = signal(false);
@@ -108,7 +108,7 @@ export class FileUploadComponent implements OnDestroy {
             let files: File[] = Array.from(input.files || []);
             const {valid, invalid, errorMsg} = this.checkFiles(files, this.config().maxBytes, this.config().acceptedExtensions);
             this.uploadFiles.set(valid);
-            this.statusArray = files.map((file: File) => {
+            this.statusArray = valid.map((file: File) => {
                 return {
                     filename: file.name,
                     sizeTotal: file.size,
@@ -125,6 +125,7 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     checkFiles(files: File[], maxBytes: number = 10*1024*1024, acceptedExt: string[] = ['jpg', 'jpeg']): { valid: File[], invalid: File[], errorMsg: string[] } {
+        acceptedExt = acceptedExt.map(x => x.toLowerCase());
         let errorMsg: string[] = [];
         const invalid: File[] = [];
         const valid = files.filter((file: File) => {
@@ -133,7 +134,7 @@ export class FileUploadComponent implements OnDestroy {
             if (file.size > maxBytes) {
                 msgArr.push(`Datei zu gross (${transformSize(file.size)})`);
             }
-            if (!acceptedExt.includes(ext)) {
+            if (!acceptedExt.includes(ext.toLowerCase())) {
                 msgArr.push(`Datei-Typ nicht erlaubt (${ext})`);
             }
             if (msgArr.length === 0) {

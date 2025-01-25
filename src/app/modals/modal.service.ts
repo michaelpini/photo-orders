@@ -10,6 +10,10 @@ import {getImageMeta, getRandomId} from "../shared/util";
 import {Photo, PhotoExtended, PhotoOrdersStore} from "../store/photoOrdersStore";
 import {FileDownloadComponent, ModalDownloadConfig} from "../shared/file-download/file-download.component";
 
+export declare interface ModalConfigure<T> {
+    configure(config: T): void;
+}
+
 @Injectable({providedIn: "root"})
 export class ModalService {
     protected ngbModal = inject(NgbModal);
@@ -28,6 +32,7 @@ export class ModalService {
             title: 'Nicht gespeicherte Änderung',
             html: `<div>Es gibt nicht gespeicherte Änderungen<br>Änderungen verwerfen und weiterfahren?</div>`,
             btnOkText: 'Weiter',
+            icon: "warning",
         }
         return this.confirm(config);
     }
@@ -38,6 +43,7 @@ export class ModalService {
             html: `<div>User ${firstName || ''} ${lastName || ''} wirklich löschen?<br> Dies kann nicht rückgängig gemacht werden!</div>`,
             btnOkText: 'Löschen',
             btnClass: 'btn-danger',
+            icon: 'danger',
         }
         return this.confirm(config);
     }
@@ -48,6 +54,7 @@ export class ModalService {
             html: `<div>Projekt ${name || ''} wirklich löschen?<br> Dies kann nicht rückgängig gemacht werden!</div>`,
             btnOkText: 'Löschen',
             btnClass: 'btn-danger',
+            icon: 'danger',
         }
         return this.confirm(config);
     }
@@ -58,6 +65,7 @@ export class ModalService {
             html: `<p>Zur Überprüfung der E-mail Addresse wird ein Mail mit einem Bestätigungslink an ${email} geschickt.</p>
                    <p>Bitte im e-mail den Bestätigungs-Link klicken.</p>`,
             btnOkText: 'Weiter',
+            icon: 'question',
         }
         return this.confirm(config);
     }

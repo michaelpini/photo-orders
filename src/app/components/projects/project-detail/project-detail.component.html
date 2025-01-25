@@ -4,8 +4,8 @@
     </div>
 </div>
 
-<ul ngbNav #nav="ngbNav" class="nav-tabs mb-4">
-    <li ngbNavItem [destroyOnHide]="false">
+<ul ngbNav #nav="ngbNav" class="nav-tabs mb-4" [(activeId)]="active">
+    <li ngbNavItem="info" [destroyOnHide]="false">
         <button ngbNavLink>Projekt Info</button>
         <ng-template ngbNavContent>
             <project-detail-info
@@ -15,7 +15,7 @@
         </ng-template>
     </li>
 
-    <li ngbNavItem [destroyOnHide]="false">
+    <li ngbNavItem="offer" [destroyOnHide]="false">
         <button ngbNavLink>Offerte</button>
         <ng-template ngbNavContent>
             <project-detail-cost
@@ -29,7 +29,7 @@
         </ng-template>
     </li>
 
-    <li ngbNavItem [destroyOnHide]="false">
+    <li ngbNavItem="invoice" [destroyOnHide]="false">
         <button ngbNavLink>Rechnung</button>
         <ng-template ngbNavContent>
             <project-detail-cost
@@ -43,7 +43,7 @@
         </ng-template>
     </li>
 
-    <li ngbNavItem>
+    <li ngbNavItem="photos">
         <button ngbNavLink>Fotos</button>
         <ng-template ngbNavContent>
             <project-photos
@@ -57,12 +57,13 @@
 
 
 <!-- Button Ok / Cancel / Delete -->
-    @if (store.isAdmin()) {
+    @if (store.isAdmin() && active() !== 'photos') {
         <div class="row mt-5 mb-4">
             <div class="col d-flex justify-content-center">
                 <button type="button"
                         class="btn btn-primary col"
                         (click)="onSave()"
+                        [disabled]="!store.isDirty()"
                 >Speichern</button>
                 <button type="button"
                         class="btn btn-outline-secondary col ms-3"
