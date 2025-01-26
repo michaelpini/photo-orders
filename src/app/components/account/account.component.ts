@@ -36,7 +36,7 @@ export class AccountComponent {
 
     async logout() {
         await this.authService.signOut();
-        await this.router.navigate(['home']);
+        location.href = '/home';
     }
 
 }
